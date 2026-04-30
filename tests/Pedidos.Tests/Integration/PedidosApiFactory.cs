@@ -9,7 +9,7 @@ namespace Pedidos.Tests.Integration;
 public class PedidosApiFactory : IAsyncLifetime
 {
     // Futura implementação com WebApplicationFactory
-    private readonly string _connectionString = "Data Source=:memory:;";
+    // private readonly string _connectionString = "Data Source=:memory:;";
 
     public async Task InitializeAsync()
     {

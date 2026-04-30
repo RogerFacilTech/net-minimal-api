@@ -1,5 +1,4 @@
-using ProdutosAPI.Produtos.Domain;
-using System.Reflection;
+using ProdutosAPI.Catalogo.Domain;
 
 namespace Pedidos.Tests.Builders;
 
@@ -49,10 +48,10 @@ public class ProdutoTestBuilder
         var result = Produto.Criar(_nome, _descricao, _preco, _categoria, _estoque, _email);
         if (!result.IsSuccess)
             throw new InvalidOperationException($"Produto builder falhou: {result.Error}");
-        
+
         var produto = result.Value!;
         typeof(Produto).GetProperty("Id")?.SetValue(produto, _id);
-        
+
         return produto;
     }
 }

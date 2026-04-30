@@ -25,9 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../ProdutosAPI.csproj" />
-    <ProjectReference Include="../../src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
-    <ProjectReference Include="../../src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
-    <ProjectReference Include="../../src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

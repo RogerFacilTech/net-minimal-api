@@ -13,7 +13,7 @@ public class ListPedidosEndpointTests
     public async Task GET_ListPedidos_WithValidPagination_ShouldReturn200Ok()
     {
         // Arrange
-        var endpoint = "/api/v1/pedidos?page=1&pageSize=10";
+        // var endpoint = "/api/v1/pedidos?page=1&pageSize=10";
 
         // Act - Futura implementação com HttpClient
         var statusCode = 200;
@@ -26,7 +26,7 @@ public class ListPedidosEndpointTests
     public async Task GET_ListPedidos_WithInvalidPage_ShouldReturn400BadRequest()
     {
         // Arrange
-        var endpoint = "/api/v1/pedidos?page=0&pageSize=10";
+        // var endpoint = "/api/v1/pedidos?page=0&pageSize=10";
 
         // Act - Futura implementação com HttpClient
         var statusCode = 400;
@@ -39,7 +39,7 @@ public class ListPedidosEndpointTests
     public async Task GET_ListPedidos_EmptyList_ShouldReturn200Ok()
     {
         // Arrange
-        var endpoint = "/api/v1/pedidos?page=1&pageSize=10";
+        // var endpoint = "/api/v1/pedidos?page=1&pageSize=10";
 
         // Act - Futura implementação com HttpClient
         var statusCode = 200;

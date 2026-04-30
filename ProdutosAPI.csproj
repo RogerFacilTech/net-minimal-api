@@ -61,4 +61,30 @@
     <PackageReference Include="AutoMapper" Version="16.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Exclude development and documentation files from being copied to test bins -->
+    <Content Remove="src/**" />
+    <Content Remove="tests/**" />
+    <Content Remove="docs/**" />
+    <Content Remove="examples/**" />
+    <Content Remove="plans/**" />
+    <Content Remove="superpowers/**" />
+    <Content Remove="CLAUDE.md" />
+    <Content Remove="README.md" />
+    <Content Remove="setup.sh" />
+    <Content Remove="dotnet-tools.json" />
+    <Content Remove="ProdutosAPI.slnx" />
+    <None Remove="src/**" />
+    <None Remove="tests/**" />
+    <None Remove="docs/**" />
+    <None Remove="examples/**" />
+    <None Remove="plans/**" />
+    <None Remove="superpowers/**" />
+    <None Remove="CLAUDE.md" />
+    <None Remove="README.md" />
+    <None Remove="setup.sh" />
+    <None Remove="dotnet-tools.json" />
+    <None Remove="ProdutosAPI.slnx" />
+  </ItemGroup>
+
 </Project>
