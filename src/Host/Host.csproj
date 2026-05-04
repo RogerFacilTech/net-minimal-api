@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ProdutosAPI</RootNamespace>
+    <AssemblyName>ProdutosAPI</AssemblyName>
+    <Version>2.0.0</Version>
+    <Description>API REST de Produtos com Minimal API e .NET 10</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>ProdutosAPI.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Pedidos/Pedidos.csproj" />
+    <ProjectReference Include="../Shared/Common/Shared.Common.csproj" />
+    <ProjectReference Include="../Shared/Data/Shared.Data.csproj" />
+    <ProjectReference Include="../Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
+    <ProjectReference Include="../Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- OpenAPI/Swagger -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <!-- Autenticação JWT -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    <!-- Logging estruturado -->
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <!-- Mapeamento -->
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
+    <!-- Validação -->
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+  </ItemGroup>
+</Project>

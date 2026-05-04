@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ProdutosAPI.Pedidos.Domain</RootNamespace>
+    <AssemblyName>Pedidos.Domain</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
+    <ProjectReference Include="../../Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
+  </ItemGroup>
+</Project>

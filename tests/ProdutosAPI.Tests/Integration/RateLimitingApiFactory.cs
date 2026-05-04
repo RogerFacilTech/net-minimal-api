@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using ProdutosAPI.Catalogo.API.Extensions;
+using ProdutosAPI.Catalogo.Endpoints.Extensions;
 
 namespace ProdutosAPI.Tests.Integration;
 

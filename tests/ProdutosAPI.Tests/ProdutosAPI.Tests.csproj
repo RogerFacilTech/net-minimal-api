@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../ProdutosAPI.csproj" />
+    <ProjectReference Include="../../src/Host/Host.csproj" />
   </ItemGroup>
 
 </Project>
