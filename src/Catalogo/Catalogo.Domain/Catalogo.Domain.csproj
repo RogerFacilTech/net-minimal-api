@@ -7,7 +7,7 @@
     <AssemblyName>Catalogo.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
+    <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">

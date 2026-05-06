@@ -1,7 +1,7 @@
 using Catalogo.Domain;
 using FacShopAPI.Catalogo.Application.DTOs.Atributo;
 using FacShopAPI.Catalogo.Application.Repositories;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 
 namespace FacShopAPI.Catalogo.Application.Services;
 

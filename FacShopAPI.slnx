@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Shared/">
-    <Project Path="src/Shared/Common/Shared.Common.csproj" />
+    <Project Path="src/Shared/Kernel/Shared.Kernel.csproj" />
+    <Project Path="src/Shared/Web/Shared.Web.csproj" />
     <Project Path="src/Shared/Data/Shared.Data.csproj" />
   </Folder>
   <Folder Name="/Catalogo/">

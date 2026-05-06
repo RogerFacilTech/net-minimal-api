@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Shared.Common</RootNamespace>
-    <AssemblyName>Shared.Common</AssemblyName>
+    <RootNamespace>FacShopAPI.Shared.Web</RootNamespace>
+    <AssemblyName>Shared.Web</AssemblyName>
   </PropertyGroup>
 </Project>

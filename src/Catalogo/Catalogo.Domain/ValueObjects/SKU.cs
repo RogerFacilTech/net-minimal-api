@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 
 namespace Catalogo.Domain.ValueObjects;
 

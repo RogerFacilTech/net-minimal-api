@@ -11,7 +11,6 @@
     <DocumentationFile>ProdutosAPI.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
     <ProjectReference Include="../Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <ProjectReference Include="../Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />

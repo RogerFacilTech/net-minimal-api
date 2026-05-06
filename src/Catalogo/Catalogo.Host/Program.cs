@@ -7,7 +7,6 @@ using FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
 using FacShopAPI.Catalogo.Endpoints.Extensions;
-using FacShopAPI.Shared.Common;
 using FacShopAPI.Shared.Data;
 using FacShopAPI.Shared.Middleware;
 using FluentValidation;

@@ -10,7 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="../Pedidos.Application/Pedidos.Application.csproj" />
     <ProjectReference Include="../Pedidos.Common/Pedidos.Common.csproj" />
-    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
+    <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
+    <ProjectReference Include="../../Shared/Web/Shared.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

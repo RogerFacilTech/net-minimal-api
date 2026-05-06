@@ -1,6 +1,6 @@
 using Catalogo.Domain;
 using Catalogo.Tests.Builders;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 using FluentAssertions;
 using Xunit;
 

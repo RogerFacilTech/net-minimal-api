@@ -1,7 +1,7 @@
 using Catalogo.Domain;
 using FacShopAPI.Catalogo.Application.DTOs.Categoria;
 using FacShopAPI.Catalogo.Application.Repositories;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 using Microsoft.Extensions.Logging;
 
 namespace FacShopAPI.Catalogo.Application.Services;

@@ -1,4 +1,4 @@
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 using FluentAssertions;
 using Xunit;
 

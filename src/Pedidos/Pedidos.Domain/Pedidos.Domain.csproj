@@ -7,6 +7,6 @@
     <AssemblyName>Pedidos.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
+    <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 
 namespace FacShopAPI.Pedidos.Domain;
 

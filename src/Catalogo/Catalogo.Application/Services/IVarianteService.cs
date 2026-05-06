@@ -1,5 +1,5 @@
 using FacShopAPI.Catalogo.Application.DTOs.Variante;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
 
 namespace FacShopAPI.Catalogo.Application.Services;
 

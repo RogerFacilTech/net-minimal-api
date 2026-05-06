@@ -5,7 +5,7 @@ using FacShopAPI.Pedidos.GetPedido;
 using FacShopAPI.Pedidos.Infrastructure;
 using FacShopAPI.Pedidos.ListPedidos;
 using FacShopAPI.Pedidos.Repositories;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Web;
 using FacShopAPI.Shared.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;

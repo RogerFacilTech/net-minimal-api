@@ -57,9 +57,145 @@ Entregavel da fase:
 
 4. Validar compilacao e testes em cada migracao.
 
-Entregavel da fase:
+#### Sub-plano detalhado da Fase 2 (para verificacao futura)
 
-- Shared com fronteiras claras por tipo de responsabilidade.
+Objetivo operacional:
+
+- Separar contratos neutros (Result) de contratos web (IEndpoint/EndpointExtensions) em lotes pequenos, reversiveis e com validacao a cada etapa.
+
+Pre-condicoes de seguranca:
+
+- Criar branch dedicada para a refatoracao.
+- Validar build baseline antes de qualquer alteracao estrutural.
+- Nao remover projeto da solution enquanto houver referencia ativa em qualquer .csproj.
+
+Lote 1 - Estrutura inicial sem remocoes:
+
+1. Criar os projetos Shared.Kernel e Shared.Web em src/Shared.
+2. Adicionar ambos na solution mantendo Shared.Common ativo.
+3. Mover/copiar Result para Shared.Kernel.
+4. Mover/copiar IEndpoint e EndpointExtensions para Shared.Web.
+5. Build da solution.
+
+Criterio de saida do lote:
+
+- Solution compila com Shared.Common ainda presente.
+
+Lote 2 - Migracao Catalogo (Kernel primeiro):
+
+1. Atualizar referencias:
+
+- Catalogo.Domain e Catalogo.Application -> Shared.Kernel.
+
+2. Atualizar usings necessarios para Result.
+3. Validar build.
+4. Executar testes de Catalogo.
+
+Criterio de saida do lote:
+
+- Catalogo compila e testes de Catalogo passam sem dependencia funcional de Shared.Common para Result.
+
+Lote 3 - Migracao Pedidos (Kernel + Web quando aplicavel):
+
+1. Atualizar referencias:
+
+- Pedidos.Domain e Pedidos.Common -> Shared.Kernel.
+- Pedidos.Endpoints e Pedidos.Host -> Shared.Web e Shared.Kernel (somente se houver uso de Result no projeto).
+
+2. Atualizar usings de Result e IEndpoint/EndpointExtensions.
+3. Validar build.
+4. Executar testes de Pedidos.
+
+Criterio de saida do lote:
+
+- Pedidos compila e testes de Pedidos passam com dependencias segregadas.
+
+Lote 4 - Limpeza controlada de Shared.Common:
+
+1. Verificar que nao existe mais ProjectReference para Shared.Common em src e tests.
+2. Verificar que nao existem usings de FacShopAPI.Shared.Common para tipos ja migrados.
+3. Remover Shared.Common da solution apenas apos os itens 1 e 2 estarem zerados.
+4. Build da solution e rodada final de testes Catalogo + Pedidos.
+
+Criterio de saida do lote:
+
+- Shared.Common removido sem regressao de compilacao e testes.
+
+Lote 5 - Ajuste de namespace (opcional):
+
+1. Renomear namespace dos contratos para refletir Kernel/Web explicitamente.
+2. Atualizar usings por contexto (Catalogo/Pedidos) em lotes pequenos.
+3. Build e testes por lote.
+
+Criterio de saida do lote:
+
+- Namespaces finalizados sem impacto comportamental.
+
+Regras de verificacao por etapa:
+
+1. Cada lote deve gerar commit pequeno e reversivel.
+2. Nao agrupar mudancas de varios contextos no mesmo commit.
+3. Em caso de erro de referencia, corrigir no mesmo lote antes de avancar.
+4. Nao executar remocao fisica de pasta/projeto sem validacao previa de referencias.
+
+Pontos de controle obrigatorios (go/no-go):
+
+1. Go para Lote 2 somente apos build verde do Lote 1.
+2. Go para Lote 3 somente apos testes de Catalogo verdes.
+3. Go para Lote 4 somente apos testes de Pedidos verdes.
+4. Go para Lote 5 (opcional) apenas se houver ganho claro de legibilidade/arquitetura.
+
+#### Checklist operacional de PR (Fase 2)
+
+Instrucoes de uso:
+
+- Marcar cada item somente com evidencia objetiva (comando executado, build/teste verde ou diff revisado).
+- Nao iniciar o lote seguinte sem concluir o checkpoint go/no-go do lote atual.
+
+Checklist geral:
+
+- [ ] Branch dedicada criada para a refatoracao.
+- [ ] Build baseline validado antes de alteracoes estruturais.
+- [x] Shared.Common mantido ate zerar referencias em src e tests.
+
+Lote 1 - Estrutura inicial sem remocoes:
+
+- [x] Criado projeto Shared.Kernel em src/Shared.
+- [x] Criado projeto Shared.Web em src/Shared.
+- [x] Projetos adicionados na solution sem remover Shared.Common.
+- [x] Result movido/copiado para Shared.Kernel.
+- [x] IEndpoint e EndpointExtensions movidos/copiados para Shared.Web.
+- [x] Build da solution verde apos Lote 1.
+- [x] Go/no-go aprovado para iniciar Lote 2.
+
+Lote 2 - Migracao Catalogo:
+
+- [x] Catalogo.Domain referenciando Shared.Kernel.
+- [x] Catalogo.Application referenciando Shared.Kernel.
+- [x] Usings de Result ajustados no Catalogo.
+- [x] Build verde apos migracao do Catalogo.
+- [x] Testes de Catalogo verdes.
+- [x] Go/no-go aprovado para iniciar Lote 3.
+
+Lote 3 - Migracao Pedidos:
+
+- [x] Pedidos.Domain referenciando Shared.Kernel.
+- [x] Pedidos.Common referenciando Shared.Kernel.
+- [x] Pedidos.Endpoints referenciando Shared.Web (e Shared.Kernel quando aplicavel).
+- [x] Pedidos.Host referenciando Shared.Web (e Shared.Kernel quando aplicavel).
+- [x] Usings de Result e IEndpoint/EndpointExtensions ajustados em Pedidos.
+- [x] Build verde apos migracao de Pedidos.
+- [x] Testes de Pedidos verdes.
+- [x] Go/no-go aprovado para iniciar Lote 4.
+
+Lote 4 - Limpeza controlada de Shared.Common:
+
+- [x] Nao ha ProjectReference para Shared.Common em src.
+- [x] Nao ha ProjectReference para Shared.Common em tests.
+- [x] Nao ha usings residuais de FacShopAPI.Shared.Common para tipos migrados.
+- [x] Shared.Common removido da solution somente apos validacoes acima.
+- [x] Build final verde.
+- [x] Testes finais de Catalogo + Pedidos verdes.
 
 ### Fase 3 - Revisao de Shared.Data (medio/longo prazo)
 

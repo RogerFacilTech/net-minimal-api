@@ -1,6 +1,7 @@
 using FacShopAPI.Pedidos.Common;
 using FacShopAPI.Pedidos.Repositories;
-using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Kernel;
+using FacShopAPI.Shared.Web;
 
 namespace FacShopAPI.Pedidos.AddItemPedido;
 
