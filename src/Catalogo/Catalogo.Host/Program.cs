@@ -72,11 +72,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddCatalogoRateLimiting();
 }
 
-// Registrar validators dos slices de Pedidos (no assembly principal)
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-// Registrar slices de Pedidos via scan automático
-builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 
 // ==========================================
 // CONFIGURAÇÃO DE MAPEAMENTO
@@ -239,9 +235,6 @@ catalogo.MapCategoriaEndpoints();
 catalogo.MapVarianteEndpoints();
 catalogo.MapAtributoEndpoints();
 catalogo.MapMidiaEndpoints();
-
-// Slices de Pedidos (IEndpoint)
-app.MapRegisteredEndpoints();
 
 // Health check simples
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))

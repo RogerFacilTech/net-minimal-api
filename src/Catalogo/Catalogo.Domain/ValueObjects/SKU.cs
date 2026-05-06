@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using ProdutosAPI.Catalogo.Domain.Common;
+using Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace Catalogo.Domain.ValueObjects;
 
 public sealed record SKU
 {

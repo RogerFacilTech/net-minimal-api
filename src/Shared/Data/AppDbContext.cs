@@ -1,8 +1,8 @@
+using Catalogo.Domain;
+using Catalogo.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Pedidos.Domain;
 using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using ProdutosAPI.Pedidos.Domain;
 
 namespace ProdutosAPI.Shared.Data;
 

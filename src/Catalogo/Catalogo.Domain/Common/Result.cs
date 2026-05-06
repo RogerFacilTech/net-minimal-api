@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Domain.Common;
+namespace Catalogo.Domain.Common;
 
 public record Result(bool IsSuccess, string? Error = null)
 {

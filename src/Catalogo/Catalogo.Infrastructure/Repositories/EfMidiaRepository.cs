@@ -1,8 +1,8 @@
+using Catalogo.Domain;
 using Microsoft.EntityFrameworkCore;
 using ProdutosAPI.Catalogo.Application.DTOs.Midia;
 using ProdutosAPI.Catalogo.Application.Interfaces;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
 
@@ -17,8 +17,12 @@ public class EfMidiaRepository(ICatalogoContext context) : IMidiaRepository
 
         return midias.Select(m => new MidiaResponse
         {
-            Id = m.Id, ProdutoId = m.ProdutoId, Url = m.Url,
-            Tipo = m.Tipo, Ordem = m.Ordem, DataCriacao = m.DataCriacao
+            Id = m.Id,
+            ProdutoId = m.ProdutoId,
+            Url = m.Url,
+            Tipo = m.Tipo,
+            Ordem = m.Ordem,
+            DataCriacao = m.DataCriacao
         }).ToList();
     }
 

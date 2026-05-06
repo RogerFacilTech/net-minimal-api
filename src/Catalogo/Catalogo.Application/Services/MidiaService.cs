@@ -1,7 +1,7 @@
+using Catalogo.Domain;
+using Catalogo.Domain.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Midia;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
 
 namespace ProdutosAPI.Catalogo.Application.Services;
 

@@ -1,6 +1,6 @@
 using AutoMapper;
+using Catalogo.Domain;
 using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Application.Mappings;
 

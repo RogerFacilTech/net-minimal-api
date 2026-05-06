@@ -1,5 +1,5 @@
+using Catalogo.Domain;
 using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Application.Repositories;
 

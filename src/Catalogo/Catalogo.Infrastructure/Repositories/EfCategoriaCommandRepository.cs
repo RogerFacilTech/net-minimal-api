@@ -1,7 +1,7 @@
+using Catalogo.Domain;
 using Microsoft.EntityFrameworkCore;
 using ProdutosAPI.Catalogo.Application.Interfaces;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
 

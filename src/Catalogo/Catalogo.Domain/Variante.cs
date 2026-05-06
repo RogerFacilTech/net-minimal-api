@@ -1,7 +1,7 @@
-using ProdutosAPI.Catalogo.Domain.Common;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using Catalogo.Domain.Common;
+using Catalogo.Domain.ValueObjects;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace Catalogo.Domain;
 
 public class Variante
 {

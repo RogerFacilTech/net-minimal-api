@@ -1,7 +1,7 @@
-using ProdutosAPI.Catalogo.Domain.Common;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using Catalogo.Domain.Common;
+using Catalogo.Domain.ValueObjects;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace Catalogo.Domain;
 
 public class Produto
 {
@@ -65,13 +65,16 @@ public class Produto
         if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id));
         return new Produto
         {
-            Id = id, Nome = nome,
+            Id = id,
+            Nome = nome,
             Descricao = DescricaoProduto.Reconstituir(descricao),
             Preco = PrecoProduto.Reconstituir(preco),
             Categoria = CategoriaProduto.Reconstituir(categoria),
             Estoque = EstoqueProduto.Reconstituir(estoque),
-            Ativo = ativo, ContatoEmail = contatoEmail,
-            DataCriacao = dataCriacao, DataAtualizacao = dataAtualizacao
+            Ativo = ativo,
+            ContatoEmail = contatoEmail,
+            DataCriacao = dataCriacao,
+            DataAtualizacao = dataAtualizacao
         };
     }
 

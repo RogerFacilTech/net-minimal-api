@@ -1,4 +1,4 @@
-using ProdutosAPI.Catalogo.Domain;
+using Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Application.Interfaces;
 

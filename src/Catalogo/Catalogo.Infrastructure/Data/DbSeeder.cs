@@ -1,5 +1,5 @@
+using Catalogo.Domain;
 using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Infrastructure.Data;
 

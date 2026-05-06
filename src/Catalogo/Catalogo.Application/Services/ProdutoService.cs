@@ -1,9 +1,9 @@
 using AutoMapper;
+using Catalogo.Domain;
 using Microsoft.Extensions.Logging;
 using ProdutosAPI.Catalogo.Application.DTOs.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Produto;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Application.Services;
 
@@ -39,7 +39,8 @@ public class ProdutoService : IProdutoService
             Data = produtos.ToList(),
             Pagination = new PaginationInfo
             {
-                Page = page, PageSize = pageSize,
+                Page = page,
+                PageSize = pageSize,
                 TotalItems = total,
                 TotalPages = (int)Math.Ceiling(total / (double)pageSize)
             }

@@ -1,6 +1,6 @@
-using ProdutosAPI.Catalogo.Domain.Common;
+using Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace Catalogo.Domain;
 
 public class Atributo
 {

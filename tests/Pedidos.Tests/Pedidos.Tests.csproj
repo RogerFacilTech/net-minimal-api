@@ -27,7 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Host/Host.csproj" />
+    <ProjectReference Include="../../src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
+    <ProjectReference Include="../../src/Pedidos/Pedidos.Host/Pedidos.Host.csproj" />
   </ItemGroup>
 
 </Project>

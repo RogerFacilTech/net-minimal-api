@@ -1,5 +1,5 @@
+using Catalogo.Domain;
 using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Application.Repositories;
 

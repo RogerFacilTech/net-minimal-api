@@ -1,8 +1,8 @@
+using Catalogo.Domain;
+using Catalogo.Domain.Common;
 using Microsoft.Extensions.Logging;
 using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
 
 namespace ProdutosAPI.Catalogo.Application.Services;
 

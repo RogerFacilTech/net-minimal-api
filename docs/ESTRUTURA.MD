@@ -14,26 +14,30 @@ A solucao foi reorganizada para separar claramente:
 
 ```text
 src/
-  Host/                          -> Entry point da API
+  Catalogo/
+    Catalogo.Application/        -> Casos de uso do Catalogo
+    Catalogo.Common/             -> Contratos e utilitarios especificos do Catalogo
+    Catalogo.Domain/             -> Dominio do Catalogo
+    Catalogo.Endpoints/          -> Endpoints, DTOs, extensoes HTTP
+    Catalogo.Host/               -> Entry point especifico do Catalogo
+    Catalogo.Infrastructure/     -> EF Core, Dapper, DbSeeder
+  Pedidos/
+    Pedidos.Application/         -> Casos de uso de Pedidos
+    Pedidos.Common/              -> Contratos e utilitarios especificos de Pedidos
+    Pedidos.Domain/              -> Dominio rico de Pedidos
+    Pedidos.Endpoints/           -> Endpoints, DTOs, validadores
+    Pedidos.Host/                -> Entry point especifico de Pedidos
+    Pedidos.Infrastructure/      -> Implementacoes de persistencia e integracoes
   Shared/
     Common/                      -> Contratos e utilitarios transversais
     Data/                        -> Persistencia compartilhada
-  Catalogo/
-    Catalogo.Domain/             -> Dominio do Catalogo
-    Catalogo.Application/        -> Casos de uso do Catalogo
-    Catalogo.Infrastructure/     -> EF Core, Dapper, DbSeeder
-    Catalogo.Endpoints/          -> Endpoints, DTOs, extensoes HTTP
-  Pedidos/
-    Domain/                      -> Dominio rico de Pedidos
-    (raiz)/                      -> Slices verticais de Pedidos
-  Pix/
-    Pix.MockServer/              -> Servidor mock Pix (mTLS + OAuth2)
-    Pix.ClientDemo/              -> Console app cliente Pix
 samples/
   Catalogo.HttpClientDemo/       -> Demo de resiliencia HTTP do Catalogo
+  Pix.ClientDemo/                -> Console app cliente Pix
+  Pix.MockServer/                -> Servidor mock Pix (mTLS + OAuth2)
 tests/
-  ProdutosAPI.Tests/             -> Testes de Catalogo + integracao geral
-  Pedidos.Tests/                 -> Testes dos slices de Pedidos
+  Catalogo.Tests/                -> Testes de Catalogo
+  Pedidos.Tests/                 -> Testes de Pedidos
   Pix.MockServer.Tests/          -> Testes do mock Pix
 ```
 
@@ -41,16 +45,23 @@ tests/
 
 | Projeto                 | Responsabilidade                                                                                                                      |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Host                    | Program.cs, appsettings.json, middlewares, registro de DI, roteamento. Nao contem logica de negocio.                                  |
+| Catalogo.Application    | Interfaces de repositorio, servicos de aplicacao, DTOs internos. Orquestra o dominio.                                                 |
+| Catalogo.Common         | Contratos e utilitarios especificos do Catalogo.                                                                                      |
+| Catalogo.Domain         | Entidades, value objects e regras de negocio do Catalogo. Sem dependencia de framework.                                               |
+| Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensoes de rate limiting.                                             |
+| Catalogo.Host           | Entry point especifico do Catalogo.                                                                                                   |
+| Catalogo.Infrastructure | Implementacoes de repositorio (EF Core + Dapper), DbSeeder, extensoes de DI.                                                          |
+| Pedidos.Application     | Interfaces de repositorio, servicos de aplicacao, DTOs internos. Orquestra o dominio.                                                 |
+| Pedidos.Common          | Contratos e utilitarios especificos de Pedidos.                                                                                       |
+| Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negocio.                                                             |
+| Pedidos.Endpoints       | Endpoints Minimal API, validadores, DTOs de request/response.                                                                         |
+| Pedidos.Host            | Entry point especifico de Pedidos.                                                                                                    |
+| Pedidos.Infrastructure  | Implementacoes de persistencia e integracoes.                                                                                         |
 | Shared.Common           | IEndpoint, Result<T>, EndpointExtensions - contratos usados por todos os bounded contexts.                                            |
 | Shared.Data             | AppDbContext e migrations - unico DbContext da solucao, cobrindo Catalogo e Pedidos.                                                  |
-| Catalogo.Domain         | Entidades, value objects e regras de negocio do Catalogo. Sem dependencia de framework.                                               |
-| Catalogo.Application    | Interfaces de repositorio, servicos de aplicacao, DTOs internos. Orquestra o dominio.                                                 |
-| Catalogo.Infrastructure | Implementacoes de repositorio (EF Core + Dapper), DbSeeder, extensoes de DI.                                                          |
-| Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensoes de rate limiting.                                             |
-| Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negocio.                                                             |
-| Pedidos                 | Slices verticais (Create, Get, List, AddItem, Cancel) com handlers, validators, endpoints e repositorios CQRS.                        |
 | Catalogo.HttpClientDemo | Console app demonstrando resiliencia HTTP (retry + circuit breaker) contra a API do Catalogo. Nao e parte da arquitetura de producao. |
+| Pix.ClientDemo          | Console app cliente Pix.                                                                                                              |
+| Pix.MockServer          | Servidor mock Pix (mTLS + OAuth2).                                                                                                    |
 
 ## Grafo de Dependencias
 

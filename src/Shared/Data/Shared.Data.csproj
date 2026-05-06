@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Common/Shared.Common.csproj" />
-    <ProjectReference Include="../../Pedidos/Domain/Pedidos.Domain.csproj" />
+    <ProjectReference Include="../../Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
     <ProjectReference Include="../../Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
     <ProjectReference Include="../../Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
   </ItemGroup>

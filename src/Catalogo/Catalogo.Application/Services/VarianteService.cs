@@ -1,8 +1,8 @@
+using Catalogo.Domain;
+using Catalogo.Domain.Common;
 using Microsoft.Extensions.Logging;
 using ProdutosAPI.Catalogo.Application.DTOs.Variante;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
 
 namespace ProdutosAPI.Catalogo.Application.Services;
 
@@ -74,9 +74,14 @@ public class VarianteService : IVarianteService
 
     private static VarianteResponse MapToResponse(Variante v) => new()
     {
-        Id = v.Id, ProdutoId = v.ProdutoId, Sku = v.Sku.Valor,
-        Descricao = v.Descricao, PrecoAdicional = v.PrecoAdicional.Value,
-        Estoque = v.Estoque.Value, Ativa = v.Ativa,
-        DataCriacao = v.DataCriacao, DataAtualizacao = v.DataAtualizacao
+        Id = v.Id,
+        ProdutoId = v.ProdutoId,
+        Sku = v.Sku.Valor,
+        Descricao = v.Descricao,
+        PrecoAdicional = v.PrecoAdicional.Value,
+        Estoque = v.Estoque.Value,
+        Ativa = v.Ativa,
+        DataCriacao = v.DataCriacao,
+        DataAtualizacao = v.DataAtualizacao
     };
 }

@@ -1,8 +1,8 @@
+using Catalogo.Domain;
 using Microsoft.EntityFrameworkCore;
 using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
 using ProdutosAPI.Catalogo.Application.Interfaces;
 using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
 
 namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
 
@@ -17,8 +17,11 @@ public class EfAtributoRepository(ICatalogoContext context) : IAtributoRepositor
 
         return atributos.Select(a => new AtributoResponse
         {
-            Id = a.Id, ProdutoId = a.ProdutoId,
-            Chave = a.Chave, Valor = a.Valor, DataCriacao = a.DataCriacao
+            Id = a.Id,
+            ProdutoId = a.ProdutoId,
+            Chave = a.Chave,
+            Valor = a.Valor,
+            DataCriacao = a.DataCriacao
         }).ToList();
     }
 

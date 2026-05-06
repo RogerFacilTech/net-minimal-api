@@ -1,5 +1,5 @@
+using Catalogo.Domain.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Domain.Common;
 
 namespace ProdutosAPI.Catalogo.Application.Services;
 

@@ -1,6 +1,6 @@
 using FluentAssertions;
-using ProdutosAPI.Pedidos.Domain;
 using Pedidos.Tests.Builders;
+using ProdutosAPI.Pedidos.Domain;
 using Xunit;
 
 namespace Pedidos.Tests.Domain;
@@ -43,21 +43,23 @@ public class PedidoTests
     }
 
     [Fact]
-    public void AdicionarItem_ProdutoComEstoqueInsuficiente_RetornaFalha()
+    public void AdicionarItem_PedidoJaConfirmado_RetornaFalha()
     {
         // Arrange
         var pedido = Pedido.Criar();
         var produto = ProdutoTestBuilder.Padrao()
-            .ComEstoque(1) // Apenas 1 em estoque
             .ComPreco(100m)
+            .ComEstoque(10)
             .Build();
+        pedido.AdicionarItem(produto, 1);
+        pedido.Confirmar();
 
-        // Act
-        var resultado = pedido.AdicionarItem(produto, 5); // Pedindo 5
+        // Act — tentar adicionar item a pedido confirmado
+        var resultado = pedido.AdicionarItem(produto, 1);
 
         // Assert
         resultado.IsSuccess.Should().BeFalse();
-        resultado.Error.Should().Contain("estoque");
+        resultado.Error.Should().Contain("rascunho");
     }
 
     [Fact]

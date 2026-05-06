@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using ProdutosAPI.Catalogo.Domain.Common;
+using Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace Catalogo.Domain;
 
 public class Categoria
 {

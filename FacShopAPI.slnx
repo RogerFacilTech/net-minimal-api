@@ -1,30 +1,31 @@
 <Solution>
-  <Folder Name="/Host/">
-    <Project Path="src/Host/Host.csproj" />
-  </Folder>
   <Folder Name="/Shared/">
     <Project Path="src/Shared/Common/Shared.Common.csproj" />
     <Project Path="src/Shared/Data/Shared.Data.csproj" />
   </Folder>
   <Folder Name="/Catalogo/">
+    <Project Path="src/Catalogo/Catalogo.Common/Catalogo.Common.csproj" />
     <Project Path="src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
     <Project Path="src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
     <Project Path="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
     <Project Path="src/Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
+    <Project Path="src/Catalogo/Catalogo.Host/Catalogo.Host.csproj" />
   </Folder>
   <Folder Name="/Pedidos/">
-    <Project Path="src/Pedidos/Domain/Pedidos.Domain.csproj" />
-    <Project Path="src/Pedidos/Pedidos.csproj" />
-  </Folder>
-  <Folder Name="/Pix/">
-    <Project Path="src/Pix/Pix.MockServer/Pix.MockServer.csproj" />
-    <Project Path="src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Host/Pedidos.Host.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Common/Pedidos.Common.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Application/Pedidos.Application.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Endpoints/Pedidos.Endpoints.csproj" />
   </Folder>
   <Folder Name="/Samples/">
     <Project Path="samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csproj" />
+    <Project Path="samples/Pix.MockServer/Pix.MockServer.csproj" />
+    <Project Path="samples/Pix.ClientDemo/Pix.ClientDemo.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj" />
+    <Project Path="tests/Catalogo.Tests/Catalogo.Tests.csproj" />
     <Project Path="tests/Pedidos.Tests/Pedidos.Tests.csproj" />
     <Project Path="tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
   </Folder>

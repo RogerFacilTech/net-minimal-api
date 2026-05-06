@@ -1,6 +1,6 @@
-using ProdutosAPI.Catalogo.Domain.Common;
+using Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace Catalogo.Domain;
 
 public enum TipoMidia { Imagem, Video, Documento }
 
@@ -25,8 +25,10 @@ public class Midia
 
         return Result<Midia>.Ok(new Midia
         {
-            ProdutoId = produtoId, Url = url.Trim(),
-            Tipo = tipo, Ordem = ordem,
+            ProdutoId = produtoId,
+            Url = url.Trim(),
+            Tipo = tipo,
+            Ordem = ordem,
             DataCriacao = DateTime.UtcNow
         });
     }

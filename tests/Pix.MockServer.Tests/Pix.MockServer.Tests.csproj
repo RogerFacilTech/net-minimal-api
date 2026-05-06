@@ -19,6 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Pix/Pix.MockServer/Pix.MockServer.csproj" />
+    <ProjectReference Include="../../samples/Pix.MockServer/Pix.MockServer.csproj" />
   </ItemGroup>
 </Project>
