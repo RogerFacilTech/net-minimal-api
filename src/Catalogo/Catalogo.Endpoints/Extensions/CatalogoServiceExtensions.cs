@@ -1,11 +1,11 @@
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Application.Validators;
+using FacShopAPI.Catalogo.Infrastructure.Queries;
+using FacShopAPI.Catalogo.Infrastructure.Repositories;
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Application.Services;
-using ProdutosAPI.Catalogo.Application.Validators;
-using ProdutosAPI.Catalogo.Infrastructure.Queries;
-using ProdutosAPI.Catalogo.Infrastructure.Repositories;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Extensions;
+namespace FacShopAPI.Catalogo.Endpoints.Extensions;
 
 public static class CatalogoServiceExtensions
 {

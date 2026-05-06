@@ -1,20 +1,20 @@
 using System.Text;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Atributos;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Auth;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Categorias;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
+using FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
+using FacShopAPI.Catalogo.Endpoints.Extensions;
+using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Data;
+using FacShopAPI.Shared.Middleware;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Atributos;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Auth;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Categorias;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Midias;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Produtos;
-using ProdutosAPI.Catalogo.Endpoints.Endpoints.Variantes;
-using ProdutosAPI.Catalogo.Endpoints.Extensions;
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Shared.Data;
-using ProdutosAPI.Shared.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,7 +78,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
 // CONFIGURAÇÃO DE MAPEAMENTO
 // ==========================================
 
-builder.Services.AddAutoMapper(_ => { }, typeof(ProdutosAPI.Catalogo.Application.Mappings.ProdutoMappingProfile).Assembly);
+builder.Services.AddAutoMapper(_ => { }, typeof(FacShopAPI.Catalogo.Application.Mappings.ProdutoMappingProfile).Assembly);
 
 // ==========================================
 // CONFIGURAÇÃO DE CORS
@@ -191,7 +191,7 @@ if (!app.Environment.IsEnvironment("Testing"))
     using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
-    ProdutosAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
+    FacShopAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
 }
 
 // ==========================================

@@ -1,9 +1,9 @@
 using Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfVarianteCommandRepository(ICatalogoContext context) : IVarianteCommandRepository
 {

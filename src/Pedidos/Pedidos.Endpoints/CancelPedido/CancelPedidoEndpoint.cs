@@ -1,7 +1,7 @@
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.CancelPedido;
+namespace FacShopAPI.Pedidos.CancelPedido;
 
 public class CancelPedidoEndpoint : IEndpoint
 {

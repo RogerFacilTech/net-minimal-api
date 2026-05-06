@@ -1,10 +1,10 @@
 using Catalogo.Domain;
 using Catalogo.Domain.ValueObjects;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Pedidos.Domain;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Pedidos.Domain;
 
-namespace ProdutosAPI.Shared.Data;
+namespace FacShopAPI.Shared.Data;
 
 public class AppDbContext : DbContext, ICatalogoContext
 {

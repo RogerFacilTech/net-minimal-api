@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace ProdutosAPI.Shared.Common;
+namespace FacShopAPI.Shared.Common;
 
 public static class EndpointExtensions
 {

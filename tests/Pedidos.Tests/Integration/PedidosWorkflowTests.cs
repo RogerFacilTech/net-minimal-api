@@ -1,6 +1,6 @@
+using FacShopAPI.Pedidos.Domain;
 using FluentAssertions;
 using Pedidos.Tests.Builders;
-using ProdutosAPI.Pedidos.Domain;
 using Xunit;
 
 namespace Pedidos.Tests.Integration;

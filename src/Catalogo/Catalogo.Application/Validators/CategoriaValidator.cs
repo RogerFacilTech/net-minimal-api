@@ -1,7 +1,7 @@
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarCategoriaValidator : AbstractValidator<CriarCategoriaRequest>
 {

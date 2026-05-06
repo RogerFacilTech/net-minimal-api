@@ -1,8 +1,8 @@
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
-using ProdutosAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.AddItemPedido;
+namespace FacShopAPI.Pedidos.AddItemPedido;
 
 public record AddItemCommand(int PedidoId, int ProdutoId, int Quantidade);
 

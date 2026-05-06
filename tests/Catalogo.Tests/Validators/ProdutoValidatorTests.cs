@@ -1,5 +1,5 @@
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Validators;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Validators;
 using FluentAssertions;
 using Xunit;
 

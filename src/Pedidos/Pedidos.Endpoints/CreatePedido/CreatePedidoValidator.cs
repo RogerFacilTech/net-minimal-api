@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace ProdutosAPI.Pedidos.CreatePedido;
+namespace FacShopAPI.Pedidos.CreatePedido;
 
 public class CreatePedidoValidator : AbstractValidator<CreatePedidoCommand>
 {

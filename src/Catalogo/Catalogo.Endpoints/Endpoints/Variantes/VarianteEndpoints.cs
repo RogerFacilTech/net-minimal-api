@@ -1,11 +1,11 @@
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Endpoints.Variantes;
+namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
 
 public static class VarianteEndpoints
 {
@@ -74,8 +74,11 @@ public static class VarianteEndpoints
         var validation = await validator.ValidateAsync(request);
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
-            { Status = 422, Title = "Validação falhou",
-              Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)) });
+            {
+                Status = 422,
+                Title = "Validação falhou",
+                Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage))
+            });
 
         var result = await service.CriarAsync(request);
         if (!result.IsSuccess)

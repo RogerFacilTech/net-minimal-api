@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 
-namespace ProdutosAPI.Catalogo.HttpClientDemo;
+namespace FacShopAPI.Catalogo.HttpClientDemo;
 
 public class CatalogoHttpClient(HttpClient http)
 {

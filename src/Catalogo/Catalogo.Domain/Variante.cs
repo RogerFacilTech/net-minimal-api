@@ -1,5 +1,5 @@
-using ProdutosAPI.Shared.Common;
 using Catalogo.Domain.ValueObjects;
+using FacShopAPI.Shared.Common;
 
 namespace Catalogo.Domain;
 

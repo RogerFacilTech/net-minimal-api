@@ -1,6 +1,6 @@
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IProdutoQueryRepository
 {

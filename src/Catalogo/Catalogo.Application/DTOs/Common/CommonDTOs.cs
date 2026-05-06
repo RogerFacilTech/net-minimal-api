@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Application.DTOs.Common;
+namespace FacShopAPI.Catalogo.Application.DTOs.Common;
 
 public class PaginatedResponse<T>
 {

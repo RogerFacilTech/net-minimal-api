@@ -1,6 +1,6 @@
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IVarianteQueryRepository
 {

@@ -1,7 +1,7 @@
 using Catalogo.Domain;
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IMidiaRepository
 {

@@ -1,10 +1,10 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using ProdutosAPI.Catalogo.Application.DTOs.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using FluentAssertions;
 using Catalogo.Tests.Integration;
+using FacShopAPI.Catalogo.Application.DTOs.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FluentAssertions;
 using Xunit;
 
 namespace Catalogo.Tests.Endpoints;

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Shared.Common;
 
 namespace Catalogo.Domain;
 

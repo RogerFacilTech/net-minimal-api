@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Application.DTOs.Atributo;
+namespace FacShopAPI.Catalogo.Application.DTOs.Atributo;
 
 public class CriarAtributoRequest
 {

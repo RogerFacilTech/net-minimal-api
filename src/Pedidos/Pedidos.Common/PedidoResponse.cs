@@ -1,6 +1,6 @@
-using ProdutosAPI.Pedidos.Domain;
+using FacShopAPI.Pedidos.Domain;
 
-namespace ProdutosAPI.Pedidos.Common;
+namespace FacShopAPI.Pedidos.Common;
 
 public record PedidoResponse(
     int Id,

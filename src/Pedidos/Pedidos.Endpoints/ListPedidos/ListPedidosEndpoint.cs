@@ -1,6 +1,6 @@
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.ListPedidos;
+namespace FacShopAPI.Pedidos.ListPedidos;
 
 public class ListPedidosEndpoint : IEndpoint
 {

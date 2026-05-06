@@ -1,8 +1,8 @@
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Shared.Common;
 using FluentValidation;
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
 
-namespace ProdutosAPI.Pedidos.CreatePedido;
+namespace FacShopAPI.Pedidos.CreatePedido;
 
 public class CreatePedidoEndpoint : IEndpoint
 {

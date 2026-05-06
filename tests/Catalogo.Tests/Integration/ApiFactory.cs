@@ -1,11 +1,11 @@
-using ProdutosAPI.Catalogo.Endpoints.Extensions;
-using ProdutosAPI.Catalogo.Infrastructure.Data;
+using FacShopAPI.Catalogo.Endpoints.Extensions;
+using FacShopAPI.Catalogo.Infrastructure.Data;
+using FacShopAPI.Shared.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProdutosAPI.Shared.Data;
 
 namespace Catalogo.Tests.Integration;
 

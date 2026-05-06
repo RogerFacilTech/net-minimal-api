@@ -1,7 +1,7 @@
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IAtributoService
 {

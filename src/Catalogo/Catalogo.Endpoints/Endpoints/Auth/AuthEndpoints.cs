@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Endpoints.Auth;
+namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Auth;
 
 public static class AuthEndpoints
 {

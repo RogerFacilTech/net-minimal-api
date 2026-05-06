@@ -1,12 +1,12 @@
 using System.Data;
 using System.Data.Common;
 using Dapper;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperVarianteQueryRepository : IVarianteQueryRepository
 {
@@ -49,9 +49,15 @@ FROM Variantes WHERE Id = @Id AND Ativa = 1;";
 
     private static VarianteResponse MapToDto(VarianteRow row) => new()
     {
-        Id = row.Id, ProdutoId = row.ProdutoId, Sku = row.Sku, Descricao = row.Descricao,
-        PrecoAdicional = row.PrecoAdicional, Estoque = row.Estoque, Ativa = row.Ativa,
-        DataCriacao = row.DataCriacao, DataAtualizacao = row.DataAtualizacao
+        Id = row.Id,
+        ProdutoId = row.ProdutoId,
+        Sku = row.Sku,
+        Descricao = row.Descricao,
+        PrecoAdicional = row.PrecoAdicional,
+        Estoque = row.Estoque,
+        Ativa = row.Ativa,
+        DataCriacao = row.DataCriacao,
+        DataAtualizacao = row.DataAtualizacao
     };
 
     private sealed class VarianteRow

@@ -1,13 +1,13 @@
 using System.Data;
 using System.Data.Common;
 using Dapper;
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Domain;
+using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Data;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Pedidos.Common;
-using ProdutosAPI.Pedidos.Domain;
-using ProdutosAPI.Pedidos.Repositories;
-using ProdutosAPI.Shared.Data;
 
-namespace ProdutosAPI.Pedidos.Infrastructure;
+namespace FacShopAPI.Pedidos.Infrastructure;
 
 public class PedidoQueryRepository(AppDbContext db) : IPedidoQueryRepository
 {

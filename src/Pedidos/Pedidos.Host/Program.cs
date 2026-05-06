@@ -1,15 +1,15 @@
+using FacShopAPI.Pedidos.AddItemPedido;
+using FacShopAPI.Pedidos.CancelPedido;
+using FacShopAPI.Pedidos.CreatePedido;
+using FacShopAPI.Pedidos.GetPedido;
+using FacShopAPI.Pedidos.Infrastructure;
+using FacShopAPI.Pedidos.ListPedidos;
+using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Common;
+using FacShopAPI.Shared.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ProdutosAPI.Pedidos.AddItemPedido;
-using ProdutosAPI.Pedidos.CancelPedido;
-using ProdutosAPI.Pedidos.CreatePedido;
-using ProdutosAPI.Pedidos.GetPedido;
-using ProdutosAPI.Pedidos.Infrastructure;
-using ProdutosAPI.Pedidos.ListPedidos;
-using ProdutosAPI.Pedidos.Repositories;
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Shared.Data;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

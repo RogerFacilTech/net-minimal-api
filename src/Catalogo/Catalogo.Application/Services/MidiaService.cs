@@ -1,9 +1,9 @@
 using Catalogo.Domain;
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class MidiaService : IMidiaService
 {

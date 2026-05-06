@@ -1,6 +1,6 @@
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface ICategoriaQueryRepository
 {

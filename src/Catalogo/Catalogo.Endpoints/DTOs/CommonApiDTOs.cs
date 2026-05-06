@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Endpoints.DTOs;
+namespace FacShopAPI.Catalogo.Endpoints.DTOs;
 
 public class ErrorResponse
 {

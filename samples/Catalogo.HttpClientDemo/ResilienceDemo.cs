@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 
-namespace ProdutosAPI.Catalogo.HttpClientDemo;
+namespace FacShopAPI.Catalogo.HttpClientDemo;
 
 public static class ResilienceDemo
 {

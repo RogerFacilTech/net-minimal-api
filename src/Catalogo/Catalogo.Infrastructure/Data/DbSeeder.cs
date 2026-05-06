@@ -1,7 +1,7 @@
 using Catalogo.Domain;
-using ProdutosAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Interfaces;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Data;
+namespace FacShopAPI.Catalogo.Infrastructure.Data;
 
 public static class DbSeeder
 {

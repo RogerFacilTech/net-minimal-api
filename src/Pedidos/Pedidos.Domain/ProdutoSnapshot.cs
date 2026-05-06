@@ -1,3 +1,3 @@
-namespace ProdutosAPI.Pedidos.Domain;
+namespace FacShopAPI.Pedidos.Domain;
 
 public record ProdutoSnapshot(int Id, string Nome, decimal Preco);

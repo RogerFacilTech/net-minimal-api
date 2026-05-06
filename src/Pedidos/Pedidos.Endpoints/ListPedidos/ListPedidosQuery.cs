@@ -1,9 +1,9 @@
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
-using ProdutosAPI.Pedidos.Domain;
-using ProdutosAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Domain;
+using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.ListPedidos;
+namespace FacShopAPI.Pedidos.ListPedidos;
 
 public record ListPedidosQuery(int Page = 1, int PageSize = 20, string? Status = null);
 

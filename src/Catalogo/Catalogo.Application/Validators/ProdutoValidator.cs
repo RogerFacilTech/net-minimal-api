@@ -1,7 +1,7 @@
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarProdutoValidator : AbstractValidator<CriarProdutoRequest>
 {

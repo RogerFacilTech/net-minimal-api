@@ -1,7 +1,7 @@
-using ProdutosAPI.Catalogo.Application.DTOs.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IProdutoService
 {

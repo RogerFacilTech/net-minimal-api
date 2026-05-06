@@ -1,6 +1,6 @@
+using FacShopAPI.Catalogo.HttpClientDemo;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProdutosAPI.Catalogo.HttpClientDemo;
 
 var builder = Host.CreateApplicationBuilder(args);
 var apiBase = args.Length > 0 ? args[0] : "https://localhost:5001";

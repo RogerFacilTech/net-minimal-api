@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Application.DTOs.Categoria;
+namespace FacShopAPI.Catalogo.Application.DTOs.Categoria;
 
 public class CriarCategoriaRequest
 {

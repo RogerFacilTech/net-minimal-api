@@ -1,5 +1,5 @@
-using ProdutosAPI.Shared.Common;
-namespace ProdutosAPI.Pedidos.Domain;
+using FacShopAPI.Shared.Common;
+namespace FacShopAPI.Pedidos.Domain;
 
 public enum StatusPedido
 {

@@ -1,8 +1,8 @@
 using AutoMapper;
 using Catalogo.Domain;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Mappings;
+namespace FacShopAPI.Catalogo.Application.Mappings;
 
 public class ProdutoMappingProfile : Profile
 {

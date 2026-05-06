@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Application.DTOs.Produto;
+namespace FacShopAPI.Catalogo.Application.DTOs.Produto;
 
 public class CriarProdutoRequest
 {

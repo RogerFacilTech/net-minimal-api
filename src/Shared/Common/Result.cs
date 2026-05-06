@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Shared.Common;
+namespace FacShopAPI.Shared.Common;
 
 public record Result(bool IsSuccess, string? Error = null)
 {

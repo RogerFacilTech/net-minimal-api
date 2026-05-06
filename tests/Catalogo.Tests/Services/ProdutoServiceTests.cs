@@ -1,8 +1,8 @@
 using AutoMapper;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Application.Services;
 using Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;

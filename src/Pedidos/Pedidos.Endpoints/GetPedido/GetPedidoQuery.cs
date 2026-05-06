@@ -1,8 +1,8 @@
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
-using ProdutosAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.GetPedido;
+namespace FacShopAPI.Pedidos.GetPedido;
 
 public record GetPedidoQuery(int Id);
 

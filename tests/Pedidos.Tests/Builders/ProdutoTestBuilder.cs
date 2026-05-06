@@ -1,4 +1,4 @@
-using ProdutosAPI.Pedidos.Domain;
+using FacShopAPI.Pedidos.Domain;
 
 namespace Pedidos.Tests.Builders;
 

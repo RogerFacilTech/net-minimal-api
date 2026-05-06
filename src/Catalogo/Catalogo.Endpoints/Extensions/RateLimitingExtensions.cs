@@ -2,7 +2,7 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Extensions;
+namespace FacShopAPI.Catalogo.Endpoints.Extensions;
 
 public static class RateLimitingExtensions
 {

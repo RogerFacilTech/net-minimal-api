@@ -1,6 +1,6 @@
 using Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Interfaces;
+namespace FacShopAPI.Catalogo.Application.Interfaces;
 
 public interface ICatalogoContext
 {

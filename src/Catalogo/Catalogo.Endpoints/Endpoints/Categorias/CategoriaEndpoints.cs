@@ -1,11 +1,11 @@
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Endpoints.Categorias;
+namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Categorias;
 
 public static class CategoriaEndpoints
 {
@@ -59,7 +59,8 @@ public static class CategoriaEndpoints
         if (categoria is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Categoria não encontrada",
+                Status = 404,
+                Title = "Categoria não encontrada",
                 Detail = $"Categoria com ID {id} não encontrada.",
                 Instance = $"/api/v1/catalogo/categorias/{id}"
             });
@@ -74,7 +75,8 @@ public static class CategoriaEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422,
+                Title = "Validação falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage))
             });
 
@@ -82,7 +84,9 @@ public static class CategoriaEndpoints
         if (!result.IsSuccess)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Regra de negócio violada", Detail = result.Error!
+                Status = 422,
+                Title = "Regra de negócio violada",
+                Detail = result.Error!
             });
 
         return Results.Created($"/api/v1/catalogo/categorias/{result.Value!.Id}", result.Value);
@@ -96,7 +100,8 @@ public static class CategoriaEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422,
+                Title = "Validação falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage))
             });
 
@@ -104,7 +109,9 @@ public static class CategoriaEndpoints
         if (!result.IsSuccess)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Categoria não encontrada", Detail = result.Error!
+                Status = 404,
+                Title = "Categoria não encontrada",
+                Detail = result.Error!
             });
 
         return Results.Ok(result.Value);

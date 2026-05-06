@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ProdutosAPI.Shared.Data.Migrations
+namespace FacShopAPI.Shared.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddPedidos : Migration

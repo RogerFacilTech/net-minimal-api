@@ -1,4 +1,4 @@
-namespace ProdutosAPI.Catalogo.Application.DTOs.Variante;
+namespace FacShopAPI.Catalogo.Application.DTOs.Variante;
 
 public class CriarVarianteRequest
 {

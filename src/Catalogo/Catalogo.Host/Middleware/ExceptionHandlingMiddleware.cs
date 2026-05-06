@@ -1,8 +1,8 @@
 using System.Net;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
 using FluentValidation;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
 
-namespace ProdutosAPI.Shared.Middleware;
+namespace FacShopAPI.Shared.Middleware;
 
 /// <summary>
 /// Middleware global para tratamento de exceções

@@ -1,7 +1,7 @@
 using Catalogo.Domain;
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IAtributoRepository
 {

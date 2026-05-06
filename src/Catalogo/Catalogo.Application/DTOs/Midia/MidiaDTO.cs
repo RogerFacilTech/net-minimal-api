@@ -1,6 +1,6 @@
 using Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.DTOs.Midia;
+namespace FacShopAPI.Catalogo.Application.DTOs.Midia;
 
 public class CriarMidiaRequest
 {

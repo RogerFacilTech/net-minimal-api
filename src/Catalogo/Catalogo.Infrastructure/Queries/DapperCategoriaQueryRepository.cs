@@ -1,12 +1,12 @@
 using System.Data;
 using System.Data.Common;
 using Dapper;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperCategoriaQueryRepository : ICategoriaQueryRepository
 {
@@ -33,15 +33,21 @@ ORDER BY CategoriaPaiId NULLS FIRST, Nome;";
                 .Where(r => r.CategoriaPaiId is null)
                 .Select(r => new CategoriaResponse
                 {
-                    Id = r.Id, Nome = r.Nome, Slug = r.Slug,
-                    CategoriaPaiId = r.CategoriaPaiId, Ativa = r.Ativa,
+                    Id = r.Id,
+                    Nome = r.Nome,
+                    Slug = r.Slug,
+                    CategoriaPaiId = r.CategoriaPaiId,
+                    Ativa = r.Ativa,
                     DataCriacao = r.DataCriacao,
                     Subcategorias = rows
                         .Where(s => s.CategoriaPaiId == r.Id)
                         .Select(s => new CategoriaResponse
                         {
-                            Id = s.Id, Nome = s.Nome, Slug = s.Slug,
-                            CategoriaPaiId = s.CategoriaPaiId, Ativa = s.Ativa,
+                            Id = s.Id,
+                            Nome = s.Nome,
+                            Slug = s.Slug,
+                            CategoriaPaiId = s.CategoriaPaiId,
+                            Ativa = s.Ativa,
                             DataCriacao = s.DataCriacao
                         }).ToList()
                 }).ToList();
@@ -67,13 +73,19 @@ FROM Categorias WHERE CategoriaPaiId = @Id AND Ativa = 1;";
 
             return new CategoriaResponse
             {
-                Id = row.Id, Nome = row.Nome, Slug = row.Slug,
-                CategoriaPaiId = row.CategoriaPaiId, Ativa = row.Ativa,
+                Id = row.Id,
+                Nome = row.Nome,
+                Slug = row.Slug,
+                CategoriaPaiId = row.CategoriaPaiId,
+                Ativa = row.Ativa,
                 DataCriacao = row.DataCriacao,
                 Subcategorias = subs.Select(s => new CategoriaResponse
                 {
-                    Id = s.Id, Nome = s.Nome, Slug = s.Slug,
-                    CategoriaPaiId = s.CategoriaPaiId, Ativa = s.Ativa,
+                    Id = s.Id,
+                    Nome = s.Nome,
+                    Slug = s.Slug,
+                    CategoriaPaiId = s.CategoriaPaiId,
+                    Ativa = s.Ativa,
                     DataCriacao = s.DataCriacao
                 }).ToList()
             };

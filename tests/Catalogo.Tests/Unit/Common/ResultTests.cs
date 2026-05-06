@@ -1,5 +1,5 @@
+using FacShopAPI.Shared.Common;
 using FluentAssertions;
-using ProdutosAPI.Shared.Common;
 using Xunit;
 
 namespace Catalogo.Tests.Unit.Common;

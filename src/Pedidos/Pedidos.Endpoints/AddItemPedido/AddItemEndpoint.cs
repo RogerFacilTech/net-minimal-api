@@ -1,8 +1,8 @@
+using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Shared.Common;
 using FluentValidation;
-using ProdutosAPI.Shared.Common;
-using ProdutosAPI.Pedidos.Common;
 
-namespace ProdutosAPI.Pedidos.AddItemPedido;
+namespace FacShopAPI.Pedidos.AddItemPedido;
 
 public class AddItemEndpoint : IEndpoint
 {

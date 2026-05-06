@@ -1,6 +1,6 @@
-using ProdutosAPI.Pedidos.Domain;
+using FacShopAPI.Pedidos.Domain;
 
-namespace ProdutosAPI.Pedidos.Repositories;
+namespace FacShopAPI.Pedidos.Repositories;
 
 public interface IPedidoCommandRepository
 {

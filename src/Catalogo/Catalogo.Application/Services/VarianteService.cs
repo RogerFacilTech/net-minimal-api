@@ -1,10 +1,10 @@
 using Catalogo.Domain;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Shared.Common;
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class VarianteService : IVarianteService
 {

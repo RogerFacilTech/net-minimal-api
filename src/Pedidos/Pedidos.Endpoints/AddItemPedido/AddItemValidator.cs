@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace ProdutosAPI.Pedidos.AddItemPedido;
+namespace FacShopAPI.Pedidos.AddItemPedido;
 
 public record AddItemRequest(int ProdutoId, int Quantidade);
 

@@ -1,7 +1,7 @@
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarVarianteValidator : AbstractValidator<CriarVarianteRequest>
 {

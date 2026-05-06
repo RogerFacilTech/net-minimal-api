@@ -1,7 +1,7 @@
 using Catalogo.Domain;
 using Catalogo.Tests.Builders;
+using FacShopAPI.Shared.Common;
 using FluentAssertions;
-using ProdutosAPI.Shared.Common;
 using Xunit;
 
 namespace Catalogo.Tests.Unit.Domain;

@@ -1,10 +1,10 @@
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Endpoints.Midias;
+namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
 
 public static class MidiaEndpoints
 {

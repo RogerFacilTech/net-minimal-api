@@ -1,6 +1,6 @@
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Pedidos.Domain;
+namespace FacShopAPI.Pedidos.Domain;
 
 public class Pedido
 {

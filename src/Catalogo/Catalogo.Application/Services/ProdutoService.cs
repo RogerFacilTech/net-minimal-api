@@ -1,11 +1,11 @@
 using AutoMapper;
 using Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Repositories;
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class ProdutoService : IProdutoService
 {

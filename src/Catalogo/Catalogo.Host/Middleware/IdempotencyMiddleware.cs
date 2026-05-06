@@ -4,7 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace ProdutosAPI.Shared.Middleware;
+namespace FacShopAPI.Shared.Middleware;
 
 /// <summary>
 /// Middleware para garantir Idempotência em requisições críticas (POST, PUT, PATCH).

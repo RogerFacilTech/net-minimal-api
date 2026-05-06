@@ -1,6 +1,6 @@
 using Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IVarianteCommandRepository
 {

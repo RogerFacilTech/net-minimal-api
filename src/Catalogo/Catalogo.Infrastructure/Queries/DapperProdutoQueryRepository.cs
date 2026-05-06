@@ -2,13 +2,13 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 using Dapper;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperProdutoQueryRepository : IProdutoQueryRepository
 {
@@ -78,9 +78,16 @@ FROM Produtos WHERE Id = @Id AND Ativo = 1;";
 
     private static ProdutoResponse MapToDto(ProdutoRow row) => new()
     {
-        Id = row.Id, Nome = row.Nome, Descricao = row.Descricao, Preco = row.Preco,
-        Categoria = row.Categoria, Estoque = row.Estoque, Ativo = row.Ativo,
-        ContatoEmail = row.ContatoEmail, DataCriacao = row.DataCriacao, DataAtualizacao = row.DataAtualizacao
+        Id = row.Id,
+        Nome = row.Nome,
+        Descricao = row.Descricao,
+        Preco = row.Preco,
+        Categoria = row.Categoria,
+        Estoque = row.Estoque,
+        Ativo = row.Ativo,
+        ContatoEmail = row.ContatoEmail,
+        DataCriacao = row.DataCriacao,
+        DataAtualizacao = row.DataAtualizacao
     };
 
     private sealed class ProdutoRow

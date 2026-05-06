@@ -1,12 +1,12 @@
+using FacShopAPI.Catalogo.Application.DTOs.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Endpoints.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.Endpoints.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Common;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.Endpoints.Endpoints.Produtos;
+namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
 
 public static class ProdutoEndpoints
 {
@@ -68,7 +68,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
+                Status = 404,
+                Title = "Produto não encontrado",
                 Detail = $"Produto com ID {id} não encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
@@ -84,7 +85,8 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422,
+                Title = "Validação falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -100,7 +102,8 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422,
+                Title = "Validação falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -108,7 +111,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
+                Status = 404,
+                Title = "Produto não encontrado",
                 Detail = $"Produto com ID {id} não encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
@@ -124,7 +128,8 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422,
+                Title = "Validação falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -132,7 +137,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
+                Status = 404,
+                Title = "Produto não encontrado",
                 Detail = $"Produto com ID {id} não encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
@@ -146,7 +152,8 @@ public static class ProdutoEndpoints
         if (!deletado)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
+                Status = 404,
+                Title = "Produto não encontrado",
                 Detail = $"Produto com ID {id} não encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
