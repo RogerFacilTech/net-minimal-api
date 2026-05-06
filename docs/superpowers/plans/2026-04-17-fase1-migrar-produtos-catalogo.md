@@ -13,6 +13,7 @@
 ### Task 1: Criar os 4 csproj de Catalogo
 
 **Files:**
+
 - Create: `src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj`
 - Create: `src/Catalogo/Catalogo.Application/Catalogo.Application.csproj`
 - Create: `src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj`
@@ -142,6 +143,7 @@ Crie `src/Catalogo/Catalogo.API/Catalogo.API.csproj`:
 ### Task 2: Criar Catalogo.Domain — Result, ValueObjects e Produto
 
 **Files:**
+
 - Create: `src/Catalogo/Catalogo.Domain/Common/Result.cs`
 - Create: `src/Catalogo/Catalogo.Domain/ValueObjects/PrecoProduto.cs`
 - Create: `src/Catalogo/Catalogo.Domain/ValueObjects/EstoqueProduto.cs`
@@ -450,6 +452,7 @@ public class Produto
 ```bash
 dotnet build src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj
 ```
+
 Esperado: `Build succeeded, 0 errors`.
 
 ---
@@ -457,6 +460,7 @@ Esperado: `Build succeeded, 0 errors`.
 ### Task 3: Criar Catalogo.Application
 
 **Files:**
+
 - Create: `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`
 - Create: `src/Catalogo/Catalogo.Application/Repositories/IProdutoCommandRepository.cs`
 - Create: `src/Catalogo/Catalogo.Application/Repositories/IProdutoQueryRepository.cs`
@@ -794,6 +798,7 @@ public class ProdutoMappingProfile : Profile
 ```bash
 dotnet build src/Catalogo/Catalogo.Application/Catalogo.Application.csproj
 ```
+
 Esperado: `Build succeeded, 0 errors`.
 
 ---
@@ -801,6 +806,7 @@ Esperado: `Build succeeded, 0 errors`.
 ### Task 4: Criar Catalogo.Infrastructure
 
 **Files:**
+
 - Create: `src/Catalogo/Catalogo.Infrastructure/Repositories/EfProdutoCommandRepository.cs`
 - Create: `src/Catalogo/Catalogo.Infrastructure/Queries/DapperProdutoQueryRepository.cs`
 - Create: `src/Catalogo/Catalogo.Infrastructure/Data/DbSeeder.cs`
@@ -987,6 +993,7 @@ public static class DbSeeder
 ```bash
 dotnet build src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj
 ```
+
 Esperado: `Build succeeded, 0 errors`.
 
 ---
@@ -994,6 +1001,7 @@ Esperado: `Build succeeded, 0 errors`.
 ### Task 5: Criar Catalogo.API
 
 **Files:**
+
 - Create: `src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs`
 - Create: `src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs`
 - Create: `src/Catalogo/Catalogo.API/Extensions/CatalogoServiceExtensions.cs`
@@ -1261,6 +1269,7 @@ public static class CatalogoServiceExtensions
 ```bash
 dotnet build src/Catalogo/Catalogo.API/Catalogo.API.csproj
 ```
+
 Esperado: `Build succeeded, 0 errors`.
 
 ---
@@ -1268,11 +1277,12 @@ Esperado: `Build succeeded, 0 errors`.
 ### Task 6: Atualizar AppDbContext, Program.cs, csproj e slnx
 
 **Files:**
+
 - Modify: `src/Shared/Data/AppDbContext.cs`
 - Modify: `src/Shared/Common/PaginatedResponse.cs` (ou criar se não existir)
 - Modify: `Program.cs`
 - Modify: `ProdutosAPI.csproj`
-- Modify: `ProdutosAPI.slnx`
+- Modify: `FacShopAPI.slnx`
 
 - [ ] **Step 1: Verificar se PaginatedResponse existe em Shared**
 
@@ -1406,11 +1416,13 @@ using ProdutosAPI.Catalogo.Domain.ValueObjects;
 ```
 
 Declaração da classe:
+
 ```csharp
 public class AppDbContext : DbContext, ICatalogoContext
 ```
 
 Propriedades:
+
 ```csharp
 public DbSet<Produto> Produtos => Set<Produto>();
 IQueryable<Produto> ICatalogoContext.Produtos => Set<Produto>();
@@ -1441,6 +1453,7 @@ using ProdutosAPI.Catalogo.Infrastructure.Data;
 ```
 
 Substituir no DI (após `builder.Services.AddDbContext`):
+
 ```csharp
 // Remover:
 builder.Services.AddScoped<IProdutoContext>(sp => sp.GetRequiredService<AppDbContext>());
@@ -1452,6 +1465,7 @@ builder.Services.AddCatalogo();
 ```
 
 Substituir no AutoMapper:
+
 ```csharp
 // Remover:
 builder.Services.AddAutoMapper(_ => { }, typeof(ProdutoMappingProfile).Assembly);
@@ -1461,6 +1475,7 @@ builder.Services.AddAutoMapper(_ => { }, typeof(ProdutosAPI.Catalogo.Application
 ```
 
 Substituir no seed:
+
 ```csharp
 // Remover:
 DbSeeder.Seed(dbContext);
@@ -1470,6 +1485,7 @@ ProdutosAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
 ```
 
 Substituir mapeamento de endpoints:
+
 ```csharp
 // Remover:
 app.MapAuthEndpoints();
@@ -1511,7 +1527,7 @@ Substitua as ProjectReferences de Produtos pelas de Catalogo:
 <ProjectReference Include="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
 ```
 
-- [ ] **Step 5: Atualizar ProdutosAPI.slnx**
+- [ ] **Step 5: Atualizar FacShopAPI.slnx**
 
 ```xml
 <Solution>
@@ -1543,6 +1559,7 @@ Substitua as ProjectReferences de Produtos pelas de Catalogo:
 ```bash
 dotnet build ProdutosAPI.csproj
 ```
+
 Esperado: `Build succeeded, 0 errors`.
 
 ---
@@ -1550,6 +1567,7 @@ Esperado: `Build succeeded, 0 errors`.
 ### Task 7: Atualizar testes para novos namespaces e rotas
 
 **Files:**
+
 - Modify: `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs`
 - Modify: `tests/ProdutosAPI.Tests/Endpoints/ProdutoEndpointsTests.cs`
 - Modify: `tests/ProdutosAPI.Tests/Services/ProdutoServiceTests.cs`
@@ -1567,6 +1585,7 @@ using ProdutosAPI.Catalogo.Infrastructure.Data;  // era Produtos.Infrastructure.
 - [ ] **Step 2: Atualizar usando em ProdutoEndpointsTests.cs**
 
 Substituir em todos os arquivos de teste:
+
 ```csharp
 // Remover:
 using ProdutosAPI.Produtos.Application.DTOs;
@@ -1581,12 +1600,14 @@ using ProdutosAPI.Catalogo.Domain.Common;
 ```
 
 Substituir todas as rotas nos testes:
+
 ```csharp
 // Padrão de busca e substituição:
 "/api/v1/produtos"  →  "/api/v1/catalogo/produtos"
 ```
 
 Execute em bash para confirmar quais arquivos têm a rota antiga:
+
 ```bash
 grep -rn "/api/v1/produtos" tests/ProdutosAPI.Tests/
 ```
@@ -1616,6 +1637,7 @@ Mesmo padrão: substituir `ProdutosAPI.Produtos.*` por `ProdutosAPI.Catalogo.*` 
 ```bash
 dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj --no-build
 ```
+
 Esperado: todos os testes passando (mesmo número de antes).
 
 ---
@@ -1625,9 +1647,10 @@ Esperado: todos os testes passando (mesmo número de antes).
 - [ ] **Step 1: Confirmar que build e testes passam**
 
 ```bash
-dotnet build ProdutosAPI.slnx
-dotnet test ProdutosAPI.slnx
+dotnet build FacShopAPI.slnx
+dotnet test FacShopAPI.slnx
 ```
+
 Esperado: 0 erros de build, todos os testes passando.
 
 - [ ] **Step 2: Deletar src/Produtos/**
@@ -1639,9 +1662,10 @@ rm -rf src/Produtos/
 - [ ] **Step 3: Build novamente para confirmar que nada quebrou**
 
 ```bash
-dotnet build ProdutosAPI.slnx
+dotnet build FacShopAPI.slnx
 dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj
 ```
+
 Esperado: 0 erros, todos os testes passando.
 
 - [ ] **Step 4: Commit**

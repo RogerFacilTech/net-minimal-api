@@ -32,11 +32,11 @@ Swagger disponível em: http://localhost:5000
 
 ## Bounded Contexts
 
-| Contexto | Padrão | Rotas base | Descrição |
-|----------|--------|------------|-----------|
-| Catálogo | Clean Architecture híbrida | `/api/v1/catalogo/*` | 5 recursos com CRUD completo, rate limiting e soft delete |
-| Pedidos | Vertical Slice + Domínio Rico | `/api/v1/pedidos/*` | Agregado rico, Result pattern, auth obrigatório |
-| Pix | Mock Server + HTTP Client | `/pix/v1/*` (mock) | mTLS, OAuth2, idempotência, resiliência |
+| Contexto | Padrão                        | Rotas base           | Descrição                                                 |
+| -------- | ----------------------------- | -------------------- | --------------------------------------------------------- |
+| Catálogo | Clean Architecture híbrida    | `/api/v1/catalogo/*` | 5 recursos com CRUD completo, rate limiting e soft delete |
+| Pedidos  | Vertical Slice + Domínio Rico | `/api/v1/pedidos/*`  | Agregado rico, Result pattern, auth obrigatório           |
+| Pix      | Mock Server + HTTP Client     | `/pix/v1/*` (mock)   | mTLS, OAuth2, idempotência, resiliência                   |
 
 ---
 
@@ -46,7 +46,7 @@ Swagger disponível em: http://localhost:5000
 net-minimal-api/
 ├── Program.cs
 ├── ProdutosAPI.csproj
-├── ProdutosAPI.slnx
+├── FacShopAPI.slnx
 │
 ├── src/
 │   ├── Catalogo/
@@ -81,59 +81,59 @@ net-minimal-api/
 
 ### Autenticação
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
+| Método | Rota                 | Descrição                                                                |
+| ------ | -------------------- | ------------------------------------------------------------------------ |
 | `POST` | `/api/v1/auth/login` | Retorna JWT. Body: `{"email": "admin@example.com", "senha": "senha123"}` |
 
 ### Catálogo
 
-| Método | Rota | Auth | Observações |
-|--------|------|------|-------------|
-| `GET` | `/api/v1/catalogo/produtos` | — | Paginado; filtros: `categoria`, `search` |
-| `GET` | `/api/v1/catalogo/produtos/{id}` | — | |
-| `POST` | `/api/v1/catalogo/produtos` | JWT | Rate limit: `criacao-produto` |
-| `PUT` | `/api/v1/catalogo/produtos/{id}` | JWT | |
-| `PATCH` | `/api/v1/catalogo/produtos/{id}` | JWT | |
-| `DELETE` | `/api/v1/catalogo/produtos/{id}` | JWT | Soft delete (seta `Ativo = false`) |
-| `GET` | `/api/v1/catalogo/categorias` | — | |
-| `GET` | `/api/v1/catalogo/categorias/{id}` | — | |
-| `POST` | `/api/v1/catalogo/categorias` | JWT | |
-| `PUT` | `/api/v1/catalogo/categorias/{id}` | JWT | |
-| `DELETE` | `/api/v1/catalogo/categorias/{id}` | JWT | |
-| `GET` | `/api/v1/catalogo/variantes` | — | Query: `?produtoId={id}` |
-| `GET` | `/api/v1/catalogo/variantes/{id}` | — | |
-| `POST` | `/api/v1/catalogo/variantes` | JWT | |
-| `PUT` | `/api/v1/catalogo/variantes/{id}` | JWT | |
-| `PATCH` | `/api/v1/catalogo/variantes/{id}/estoque` | JWT | |
-| `DELETE` | `/api/v1/catalogo/variantes/{id}` | JWT | |
-| `GET` | `/api/v1/catalogo/atributos` | — | Query: `?produtoId={id}` |
-| `POST` | `/api/v1/catalogo/atributos` | JWT | |
-| `PUT` | `/api/v1/catalogo/atributos/{id}` | JWT | |
-| `DELETE` | `/api/v1/catalogo/atributos/{id}` | JWT | |
-| `GET` | `/api/v1/catalogo/midias` | — | Query: `?produtoId={id}` |
-| `POST` | `/api/v1/catalogo/midias` | JWT | |
-| `PATCH` | `/api/v1/catalogo/midias/{id}/ordem` | JWT | |
-| `DELETE` | `/api/v1/catalogo/midias/{id}` | JWT | |
+| Método   | Rota                                      | Auth | Observações                              |
+| -------- | ----------------------------------------- | ---- | ---------------------------------------- |
+| `GET`    | `/api/v1/catalogo/produtos`               | —    | Paginado; filtros: `categoria`, `search` |
+| `GET`    | `/api/v1/catalogo/produtos/{id}`          | —    |                                          |
+| `POST`   | `/api/v1/catalogo/produtos`               | JWT  | Rate limit: `criacao-produto`            |
+| `PUT`    | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
+| `PATCH`  | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
+| `DELETE` | `/api/v1/catalogo/produtos/{id}`          | JWT  | Soft delete (seta `Ativo = false`)       |
+| `GET`    | `/api/v1/catalogo/categorias`             | —    |                                          |
+| `GET`    | `/api/v1/catalogo/categorias/{id}`        | —    |                                          |
+| `POST`   | `/api/v1/catalogo/categorias`             | JWT  |                                          |
+| `PUT`    | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
+| `DELETE` | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
+| `GET`    | `/api/v1/catalogo/variantes`              | —    | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/variantes/{id}`         | —    |                                          |
+| `POST`   | `/api/v1/catalogo/variantes`              | JWT  |                                          |
+| `PUT`    | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
+| `PATCH`  | `/api/v1/catalogo/variantes/{id}/estoque` | JWT  |                                          |
+| `DELETE` | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
+| `GET`    | `/api/v1/catalogo/atributos`              | —    | Query: `?produtoId={id}`                 |
+| `POST`   | `/api/v1/catalogo/atributos`              | JWT  |                                          |
+| `PUT`    | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
+| `DELETE` | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
+| `GET`    | `/api/v1/catalogo/midias`                 | —    | Query: `?produtoId={id}`                 |
+| `POST`   | `/api/v1/catalogo/midias`                 | JWT  |                                          |
+| `PATCH`  | `/api/v1/catalogo/midias/{id}/ordem`      | JWT  |                                          |
+| `DELETE` | `/api/v1/catalogo/midias/{id}`            | JWT  |                                          |
 
 ### Pedidos
 
-| Método | Rota | Auth |
-|--------|------|------|
-| `POST` | `/api/v1/pedidos` | JWT |
-| `GET` | `/api/v1/pedidos` | JWT |
-| `GET` | `/api/v1/pedidos/{id}` | JWT |
-| `POST` | `/api/v1/pedidos/{id}/itens` | JWT |
-| `POST` | `/api/v1/pedidos/{id}/cancelar` | JWT |
+| Método | Rota                            | Auth |
+| ------ | ------------------------------- | ---- |
+| `POST` | `/api/v1/pedidos`               | JWT  |
+| `GET`  | `/api/v1/pedidos`               | JWT  |
+| `GET`  | `/api/v1/pedidos/{id}`          | JWT  |
+| `POST` | `/api/v1/pedidos/{id}/itens`    | JWT  |
+| `POST` | `/api/v1/pedidos/{id}/cancelar` | JWT  |
 
 ---
 
 ## Testes
 
-| Projeto | Testes |
-|---------|--------|
-| `ProdutosAPI.Tests` | 143 |
-| `Pix.MockServer.Tests` | 7 |
-| **Total** | **150** |
+| Projeto                | Testes  |
+| ---------------------- | ------- |
+| `ProdutosAPI.Tests`    | 143     |
+| `Pix.MockServer.Tests` | 7       |
+| **Total**              | **150** |
 
 ```bash
 # Projeto principal
@@ -143,19 +143,19 @@ dotnet test tests/ProdutosAPI.Tests/
 dotnet test tests/Pix.MockServer.Tests/
 
 # Solução completa
-dotnet test ProdutosAPI.slnx
+dotnet test FacShopAPI.slnx
 ```
 
 ---
 
 ## Documentação
 
-| Arquivo | Conteúdo |
-|---------|----------|
-| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | Visão geral e orientação de leitura |
-| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisões arquiteturais |
-| [docs/02-CATALOGO.md](docs/02-CATALOGO.md) | Catálogo: Clean Architecture híbrida, recursos, rate limiting |
-| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md) | Pedidos: Vertical Slice, domínio rico, Result pattern |
-| [docs/04-PIX.md](docs/04-PIX.md) | Pix: Mock Server, mTLS, OAuth2, cliente HTTP |
-| [docs/05-TESTES.md](docs/05-TESTES.md) | Estratégia de testes, factories, helpers |
-| [docs/ADRs/](docs/ADRs/) | 15 ADRs no formato MADR 3.x |
+| Arquivo                                          | Conteúdo                                                      |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | Visão geral e orientação de leitura                           |
+| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisões arquiteturais                            |
+| [docs/02-CATALOGO.md](docs/02-CATALOGO.md)       | Catálogo: Clean Architecture híbrida, recursos, rate limiting |
+| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domínio rico, Result pattern         |
+| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                  |
+| [docs/05-TESTES.md](docs/05-TESTES.md)           | Estratégia de testes, factories, helpers                      |
+| [docs/ADRs/](docs/ADRs/)                         | 15 ADRs no formato MADR 3.x                                   |

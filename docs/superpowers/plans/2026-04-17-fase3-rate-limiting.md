@@ -83,11 +83,13 @@ public static class RateLimitingExtensions
 ### 1.3 — `Program.cs` — registrar middleware e serviço
 
 No bloco de serviços (após `builder.Services.AddCatalogo()`):
+
 ```csharp
 builder.Services.AddCatalogoRateLimiting();
 ```
 
 No pipeline de middleware, antes de `app.UseAuthentication()`:
+
 ```csharp
 app.UseRateLimiter();
 ```
@@ -181,7 +183,8 @@ group.MapDelete("/{id:int}", Delete)   .RequireAuthorization().RequireRateLimiti
 </Project>
 ```
 
-Adicionar ao `ProdutosAPI.slnx`:
+Adicionar ao `FacShopAPI.slnx`:
+
 ```xml
 <Project Path="src/Catalogo/Catalogo.ClientDemo/Catalogo.ClientDemo.csproj" />
 ```
@@ -374,7 +377,7 @@ public class RateLimitingTests : IClassFixture<ApiFactory>
     {
         // Arrange: ApiFactory deve configurar PermitLimit=3 para "leitura" em Testing
         // (ver seção 4.2)
-        
+
         // Act: disparar 4 requisições
         HttpResponseMessage? lastResponse = null;
         for (int i = 0; i < 4; i++)
@@ -415,7 +418,7 @@ public class RateLimitingTests : IClassFixture<ApiFactory>
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
         var payload = new { nome = "P", preco = 1.0, estoque = 1, categoria = "Eletrônicos", descricao = "d" };
-        
+
         // Act: 2 POSTs (limit=2 para "criacao-produto" em Testing) + 1 extra
         int okCount = 0, tooManyCount = 0;
         for (int i = 0; i < 3; i++)
@@ -444,7 +447,7 @@ builder.ConfigureServices(services =>
     services.Configure<RateLimiterOptions>(options =>
     {
         options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-        
+
         options.OnRejected = async (context, ct) =>
         {
             context.HttpContext.Response.Headers.RetryAfter = "1";

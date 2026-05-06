@@ -12,15 +12,15 @@
 
 ## Mapa de Mudanças de Namespace
 
-| Antes | Depois |
-|---|---|
-| `ProdutosAPI.Produtos.Models.Produto` | `ProdutosAPI.Produtos.Domain.Produto` |
-| `ProdutosAPI.Shared.Common.MappingProfile` | `ProdutosAPI.Produtos.Application.Mappings.ProdutoMappingProfile` |
-| `ProdutosAPI.Produtos.DTOs.*` | `ProdutosAPI.Produtos.Application.DTOs.*` (mesmos nomes de classe) |
-| `ProdutosAPI.Produtos.Services.*` | `ProdutosAPI.Produtos.Application.Services.*` (mesmos nomes) |
-| `ProdutosAPI.Produtos.Validators.*` | `ProdutosAPI.Produtos.Application.Validators.*` |
-| `ProdutosAPI.Produtos.Endpoints.*` | `ProdutosAPI.Produtos.API.Endpoints.*` |
-| `ProdutosAPI.Shared.Data.DbSeeder` | `ProdutosAPI.Produtos.Infrastructure.Data.DbSeeder` |
+| Antes                                      | Depois                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------ |
+| `ProdutosAPI.Produtos.Models.Produto`      | `ProdutosAPI.Produtos.Domain.Produto`                              |
+| `ProdutosAPI.Shared.Common.MappingProfile` | `ProdutosAPI.Produtos.Application.Mappings.ProdutoMappingProfile`  |
+| `ProdutosAPI.Produtos.DTOs.*`              | `ProdutosAPI.Produtos.Application.DTOs.*` (mesmos nomes de classe) |
+| `ProdutosAPI.Produtos.Services.*`          | `ProdutosAPI.Produtos.Application.Services.*` (mesmos nomes)       |
+| `ProdutosAPI.Produtos.Validators.*`        | `ProdutosAPI.Produtos.Application.Validators.*`                    |
+| `ProdutosAPI.Produtos.Endpoints.*`         | `ProdutosAPI.Produtos.API.Endpoints.*`                             |
+| `ProdutosAPI.Shared.Data.DbSeeder`         | `ProdutosAPI.Produtos.Infrastructure.Data.DbSeeder`                |
 
 ---
 
@@ -68,6 +68,7 @@ src/Produtos/
 ## Task 1: Criar estrutura de diretórios e arquivos de projeto (.csproj)
 
 **Files:**
+
 - Create: `src/Produtos/Produtos.Domain/Produtos.Domain.csproj`
 - Create: `src/Produtos/Produtos.Application/Produtos.Application.csproj`
 - Create: `src/Produtos/Produtos.Infrastructure/Produtos.Infrastructure.csproj`
@@ -204,6 +205,7 @@ Esperado: cada diretório deve conter o `.csproj` e subdiretórios.
 ## Task 2: Criar Produtos.Domain — Produto.cs e Result.cs
 
 **Files:**
+
 - Create: `src/Produtos/Produtos.Domain/Common/Result.cs`
 - Create: `src/Produtos/Produtos.Domain/Produto.cs`
 - Source: `src/Produtos/Models/Produto.cs` (referência — não apagar ainda)
@@ -241,6 +243,7 @@ public record Result<T>(bool IsSuccess, T? Value, string? Error = null)
 **Step 3: Criar Produto.cs em Domain**
 
 Crie `src/Produtos/Produtos.Domain/Produto.cs`. Copie o conteúdo de `src/Produtos/Models/Produto.cs` e ajuste:
+
 - Namespace: `ProdutosAPI.Produtos.Domain`
 - Using: troque `using ProdutosAPI.Shared.Common;` por `using ProdutosAPI.Produtos.Domain.Common;`
 - Torne `AjustarEstoque` `public` (não mais `internal`, pois será chamada de Application)
@@ -388,6 +391,7 @@ Esperado: Build succeeded, 0 erros.
 ## Task 3: Criar Produtos.Application — DTOs, interfaces, repositório, serviço, validadores e mapeamento
 
 **Files:**
+
 - Create: `src/Produtos/Produtos.Application/DTOs/ProdutoDTO.cs`
 - Create: `src/Produtos/Produtos.Application/Interfaces/IProdutoContext.cs`
 - Create: `src/Produtos/Produtos.Application/Repositories/IProdutoRepository.cs`
@@ -658,6 +662,7 @@ Esperado: Build succeeded, 0 erros.
 ## Task 4: Criar Produtos.Infrastructure — EfProdutoRepository e DbSeeder
 
 **Files:**
+
 - Create: `src/Produtos/Produtos.Infrastructure/Repositories/EfProdutoRepository.cs`
 - Create: `src/Produtos/Produtos.Infrastructure/Data/DbSeeder.cs`
 
@@ -805,6 +810,7 @@ Esperado: Build succeeded, 0 erros.
 ## Task 5: Criar Produtos.API — Endpoints e extensão de DI
 
 **Files:**
+
 - Create: `src/Produtos/Produtos.API/Endpoints/ProdutoEndpoints.cs`
 - Create: `src/Produtos/Produtos.API/Endpoints/AuthEndpoints.cs`
 - Create: `src/Produtos/Produtos.API/Extensions/ProdutosServiceExtensions.cs`
@@ -891,9 +897,11 @@ Esperado: Build succeeded, 0 erros.
 ## Task 6: Atualizar AppDbContext para implementar IProdutoContext
 
 **Files:**
+
 - Modify: `src/Shared/Data/AppDbContext.cs`
 
 O `AppDbContext` precisa:
+
 1. Adicionar `using ProdutosAPI.Produtos.Application.Interfaces;`
 2. Implementar `IProdutoContext` na declaração da classe
 3. Adicionar o método `AddProduto`
@@ -943,6 +951,7 @@ Esperado: warning sobre using duplicado (já existente), mas 0 erros.
 ## Task 7: Atualizar ProdutosAPI.csproj e Program.cs
 
 **Files:**
+
 - Modify: `ProdutosAPI.csproj`
 - Modify: `Program.cs`
 
@@ -958,12 +967,14 @@ Adicione as referências aos sub-projetos no `ProdutosAPI.csproj`:
 ```
 
 Remova os pacotes NuGet que foram movidos para os sub-projetos (AutoMapper, FluentValidation permanecerão se ainda usados por Pedidos; inspecionar antes de remover):
+
 - `AutoMapper` → mover para Application (já está)
 - `FluentValidation` e `FluentValidation.DependencyInjectionExtensions` → manter no projeto principal se Pedidos usa
 
 **Step 2: Atualizar Program.cs**
 
 Principais mudanças:
+
 1. Trocar `using` de namespaces antigos pelos novos
 2. Trocar `typeof(MappingProfile)` por `typeof(ProdutoMappingProfile)`
 3. Substituir registro manual de `IProdutoService` e validators por `builder.Services.AddProdutos()`
@@ -1017,13 +1028,14 @@ Esperado: 0 erros. Pode haver warnings sobre `using` duplicados ou obsoletos —
 ## Task 8: Atualizar solução e projetos de teste
 
 **Files:**
-- Modify: `ProdutosAPI.slnx`
+
+- Modify: `FacShopAPI.slnx`
 - Modify: `ProdutosAPI.Tests/ProdutosAPI.Tests.csproj`
 - Modify: `ProdutosAPI.Tests/Builders/ProdutoBuilder.cs`
 - Modify: `ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs`
 - Modify: `ProdutosAPI.Tests/Services/ProdutoServiceTests.cs`
 
-**Step 1: Adicionar sub-projetos ao ProdutosAPI.slnx**
+**Step 1: Adicionar sub-projetos ao FacShopAPI.slnx**
 
 ```xml
 <Solution>
@@ -1053,6 +1065,7 @@ Adicionar referências diretas para acessar tipos internos dos sub-projetos:
 **Step 3: Atualizar ProdutoBuilder.cs**
 
 Altere o `using`:
+
 ```csharp
 // Antes:
 using ProdutosAPI.Produtos.Models;
@@ -1063,6 +1076,7 @@ using ProdutosAPI.Produtos.Domain;
 **Step 4: Atualizar ProdutoTests.cs**
 
 Altere o `using`:
+
 ```csharp
 // Antes:
 using ProdutosAPI.Produtos.Models;
@@ -1086,6 +1100,7 @@ Os testes do serviço atualmente mockam `AppDbContext` e `IMapper`. Com a nova a
 ```
 
 Adicione usings:
+
 ```csharp
 using ProdutosAPI.Produtos.Application.Repositories;
 using ProdutosAPI.Produtos.Application.Services;
@@ -1096,6 +1111,7 @@ using ProdutosAPI.Produtos.Domain;
 **Step 6: Atualizar ProdutoValidatorTests.cs e ProdutoEndpointsTests.cs**
 
 Atualizar os `using` de DTOs:
+
 ```csharp
 // Antes: using ProdutosAPI.Produtos.DTOs;
 // Depois: using ProdutosAPI.Produtos.Application.DTOs;
@@ -1108,7 +1124,7 @@ Atualizar os `using` de DTOs:
 **Step 1: Build da solução completa**
 
 ```bash
-dotnet build ProdutosAPI.slnx
+dotnet build FacShopAPI.slnx
 ```
 
 Esperado: 0 erros em todos os projetos.
@@ -1140,6 +1156,7 @@ Esperado: `Now listening on: http://localhost:5000`. Abra http://localhost:5000 
 ## Task 10: Remover código antigo e commit
 
 **Files:**
+
 - Delete: `src/Produtos/DTOs/` (conteúdo migrado para Produtos.Application)
 - Delete: `src/Produtos/Models/` (migrado para Produtos.Domain)
 - Delete: `src/Produtos/Services/` (migrado para Produtos.Application)
@@ -1164,7 +1181,7 @@ rm src/Shared/Common/MappingProfile.cs
 **Step 2: Rodar todos os testes novamente para confirmar**
 
 ```bash
-dotnet test ProdutosAPI.slnx
+dotnet test FacShopAPI.slnx
 ```
 
 Esperado: todos os testes passando.
@@ -1208,6 +1225,7 @@ ProdutosAPI.csproj (host)
 ```
 
 **Fluxo de uma requisição `POST /api/v1/produtos`:**
+
 ```
 HTTP → ProdutoEndpoints.cs (Produtos.API)
      → CriarProdutoValidator (Produtos.Application)

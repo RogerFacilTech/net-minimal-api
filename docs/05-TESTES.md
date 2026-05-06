@@ -2,11 +2,11 @@
 
 ## 1. Projetos de Teste
 
-| Projeto | Testes | Escopo |
-|---|---|---|
-| `ProdutosAPI.Tests` | 143 | Catálogo (integração + unitários) |
-| `Pix.MockServer.Tests` | 7 | Integração HTTP PIX |
-| **Total** | **150** | |
+| Projeto                | Testes  | Escopo                            |
+| ---------------------- | ------- | --------------------------------- |
+| `ProdutosAPI.Tests`    | 143     | Catálogo (integração + unitários) |
+| `Pix.MockServer.Tests` | 7       | Integração HTTP PIX               |
+| **Total**              | **150** |                                   |
 
 > `Pedidos.Tests` existe no repositório mas tem uma dependência pendente de correção — não está incluído na contagem acima.
 
@@ -14,12 +14,12 @@
 
 ## 2. Distribuição por Tipo — ProdutosAPI.Tests
 
-| Tipo | Escopo | Aprox. |
-|---|---|---|
-| Integração (Catálogo) | Endpoints HTTP completos via `HttpClient` | ~80 |
-| Rate limiting | Políticas de throttling via `RateLimitingApiFactory` | 3 |
-| Unitários (domínio) | Entidades, value objects, invariantes | ~30 |
-| Validators | Regras FluentValidation | ~30 |
+| Tipo                  | Escopo                                               | Aprox. |
+| --------------------- | ---------------------------------------------------- | ------ |
+| Integração (Catálogo) | Endpoints HTTP completos via `HttpClient`            | ~80    |
+| Rate limiting         | Políticas de throttling via `RateLimitingApiFactory` | 3      |
+| Unitários (domínio)   | Entidades, value objects, invariantes                | ~30    |
+| Validators            | Regras FluentValidation                              | ~30    |
 
 ---
 
@@ -35,10 +35,10 @@ Factory base para todos os testes funcionais. Configura `Environment = "Testing"
 
 Estende `ApiFactory` e sobrescreve o registro de `AddRateLimiting()`, aplicando limites baixos propositalmente:
 
-| Política | Limite |
-|---|---|
-| `leitura` | 3 req/janela |
-| `escrita` | 3 req/janela |
+| Política          | Limite       |
+| ----------------- | ------------ |
+| `leitura`         | 3 req/janela |
+| `escrita`         | 3 req/janela |
 | `criacao-produto` | 2 req/janela |
 
 O objetivo é permitir que os testes atinjam o limite `429` com poucas requisições, sem depender de timing real.
@@ -98,13 +98,13 @@ dotnet test tests/Pix.MockServer.Tests/
 
 ## 6. Diretrizes para Novos Testes
 
-| Situação | Diretriz |
-|---|---|
-| Novo endpoint | Cobrir: resposta `2xx` com sucesso, `4xx` de validação, `404` quando aplicável |
-| Nova regra de domínio | Escrever teste unitário no agregado **antes** do teste de integração |
+| Situação                        | Diretriz                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| Novo endpoint                   | Cobrir: resposta `2xx` com sucesso, `4xx` de validação, `404` quando aplicável  |
+| Nova regra de domínio           | Escrever teste unitário no agregado **antes** do teste de integração            |
 | Endpoint de escrita no Catálogo | Obter token com `AuthHelper.ObterTokenAsync(client)` antes de chamar o endpoint |
-| Asserção de rate limiting | Usar `RateLimitingApiFactory`, nunca `ApiFactory` |
-| Novos produtos criados em teste | IDs começam a partir de 9 (DbSeeder reserva 1–8) |
+| Asserção de rate limiting       | Usar `RateLimitingApiFactory`, nunca `ApiFactory`                               |
+| Novos produtos criados em teste | IDs começam a partir de 9 (DbSeeder reserva 1–8)                                |
 
 ---
 
@@ -112,7 +112,7 @@ dotnet test tests/Pix.MockServer.Tests/
 
 ```bash
 # Executar toda a suíte
-dotnet test ProdutosAPI.slnx -v minimal
+dotnet test FacShopAPI.slnx -v minimal
 
 # Por projeto
 dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
@@ -133,7 +133,7 @@ dotnet test tests/ProdutosAPI.Tests/ \
   --filter "FullyQualifiedName~RateLimitingTests" -v detailed
 
 # Com cobertura (requer dotnet-coverage ou coverlet)
-dotnet test ProdutosAPI.slnx --collect:"XPlat Code Coverage"
+dotnet test FacShopAPI.slnx --collect:"XPlat Code Coverage"
 ```
 
 ---
@@ -283,17 +283,17 @@ public class PedidoTests
 
 ## 9. Distribuição de Testes por Arquivo
 
-| Arquivo | Tipo | Aprox. |
-|---------|------|--------|
-| `Unit/Domain/ProdutoTests.cs` | Unitário — domínio | ~15 |
-| `Unit/Domain/CategoriaTests.cs` | Unitário — domínio | ~10 |
-| `Unit/Domain/PedidoTests.cs` | Unitário — domínio | ~8 |
-| `Unit/Common/ResultTests.cs` | Unitário — tipos comuns | ~5 |
-| `Services/ProdutoServiceTests.cs` | Unitário — serviço | ~15 |
-| `Endpoints/ProdutoEndpointsTests.cs` | Integração HTTP | ~25 |
-| `Integration/Catalogo/CategoriaEndpointsTests.cs` | Integração HTTP | ~20 |
-| `Integration/Pedidos/*.cs` (5 arquivos) | Integração HTTP | ~40 |
-| `Integration/RateLimitingTests.cs` | Integração rate limiting | 3 |
-| `Validators/*.cs` | Validação FluentValidation | ~24 |
-| `Pix.MockServer.Tests/*.cs` | Integração HTTP (PIX) | 7 |
-| **Total** | | **~150+7** |
+| Arquivo                                           | Tipo                       | Aprox.     |
+| ------------------------------------------------- | -------------------------- | ---------- |
+| `Unit/Domain/ProdutoTests.cs`                     | Unitário — domínio         | ~15        |
+| `Unit/Domain/CategoriaTests.cs`                   | Unitário — domínio         | ~10        |
+| `Unit/Domain/PedidoTests.cs`                      | Unitário — domínio         | ~8         |
+| `Unit/Common/ResultTests.cs`                      | Unitário — tipos comuns    | ~5         |
+| `Services/ProdutoServiceTests.cs`                 | Unitário — serviço         | ~15        |
+| `Endpoints/ProdutoEndpointsTests.cs`              | Integração HTTP            | ~25        |
+| `Integration/Catalogo/CategoriaEndpointsTests.cs` | Integração HTTP            | ~20        |
+| `Integration/Pedidos/*.cs` (5 arquivos)           | Integração HTTP            | ~40        |
+| `Integration/RateLimitingTests.cs`                | Integração rate limiting   | 3          |
+| `Validators/*.cs`                                 | Validação FluentValidation | ~24        |
+| `Pix.MockServer.Tests/*.cs`                       | Integração HTTP (PIX)      | 7          |
+| **Total**                                         |                            | **~150+7** |

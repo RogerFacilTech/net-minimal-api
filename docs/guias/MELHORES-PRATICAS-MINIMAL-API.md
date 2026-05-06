@@ -12,6 +12,7 @@ Este documento explica como as melhores práticas de API REST apresentadas em `M
 ### Por que Minimal API?
 
 A Minimal API é ideal para:
+
 - ✅ APIs simples e diretas
 - ✅ Microserviços
 - ✅ APIs com poucos endpoints
@@ -76,12 +77,14 @@ net-minimal-api/
 ### Boas práticas de cliente HTTP (integrações externas)
 
 Além dos endpoints internos, o projeto também demonstra consumo de API externa simulada:
+
 - `HttpClientFactory` com cliente tipado (`PixProcessingClient`);
 - `AddStandardResilienceHandler` para retry e timeout;
 - `DelegatingHandler` para `X-Correlation-Id`, `Idempotency-Key` e logging;
 - `AuthTokenProvider` com cache de token OAuth2 mock.
 
 Referências:
+
 - [src/Pix/Pix.ClientDemo/Program.cs](../src/Pix/Pix.ClientDemo/Program.cs)
 - [src/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs](../src/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs)
 - [src/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs](../src/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs)
@@ -194,7 +197,7 @@ private static async Task<IResult> ListarProdutos(
     // Toda informação está na requisição
     var resultado = await produtoService.ListarProdutosAsync(
         page, pageSize, categoria, search);
-    
+
     return Results.Ok(resultado);
 }
 ```
@@ -216,7 +219,7 @@ GET /api/v1/catalogo/produtos
 // ✅ CORRETO: Minúsculas
 GET /api/v1/catalogo/produtos/123
 
-// ✅ CORRETO: Hífens para separar palavras  
+// ✅ CORRETO: Hífens para separar palavras
 GET /api/v1/catalogo/produtos?status=produto-ativo
 
 // ❌ EVITAR: Verbos nas URLs
@@ -303,7 +306,7 @@ if (!string.IsNullOrEmpty(categoria))
 
 if (!string.IsNullOrEmpty(search))
 {
-    query = query.Where(p => p.Nome.Contains(search) || 
+    query = query.Where(p => p.Nome.Contains(search) ||
                              p.Descricao.Contains(search));
 }
 ```
@@ -390,7 +393,7 @@ private static async Task<IResult> CriarProduto(
     {
         throw new ValidationException(resultado.Errors);
     }
-    
+
     var produto = await produtoService.CriarProdutoAsync(request);
     return Results.Created($"/api/v1/catalogo/produtos/{produto.Id}", produto);
 }
@@ -546,15 +549,15 @@ public class ErrorResponse
 
 ```json
 {
-  "type": "https://example.com/errors/validation-error",
-  "title": "Validation Failed",
-  "status": 422,
-  "detail": "One or more validation errors occurred.",
-  "instance": "/api/v1/catalogo/produtos",
-  "errors": {
-    "nome": ["Campo obrigatório"],
-    "preco": ["Deve ser maior que 0"]
-  }
+    "type": "https://example.com/errors/validation-error",
+    "title": "Validation Failed",
+    "status": 422,
+    "detail": "One or more validation errors occurred.",
+    "instance": "/api/v1/catalogo/produtos",
+    "errors": {
+        "nome": ["Campo obrigatório"],
+        "preco": ["Deve ser maior que 0"]
+    }
 }
 ```
 
@@ -728,7 +731,7 @@ Log.Logger = new LoggerConfiguration()
 
 ```csharp
 // src/Catalogo/Catalogo.Application/Services/ProdutoService.cs
-_logger.LogInformation("Listando produtos - Page: {Page}, PageSize: {PageSize}", 
+_logger.LogInformation("Listando produtos - Page: {Page}, PageSize: {PageSize}",
     page, pageSize);
 
 _logger.LogWarning("Produto com ID {ProductId} não encontrado", id);
@@ -776,12 +779,12 @@ public async Task ListarProdutos_DeveRetornarPaginado()
     var mockContext = new Mock<AppDbContext>();
     var mockLogger = new Mock<ILogger<ProdutoService>>();
     var mockMapper = new Mock<IMapper>();
-    
+
     var service = new ProdutoService(mockContext.Object, mockMapper.Object, mockLogger.Object);
-    
+
     // Act
     var resultado = await service.ListarProdutosAsync(1, 20);
-    
+
     // Assert
     resultado.Pagination.Page.Should().Be(1);
     resultado.Pagination.PageSize.Should().Be(20);
@@ -859,7 +862,7 @@ dotnet run --project src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ### Rodar testes
 
 ```bash
-dotnet test ProdutosAPI.slnx -v minimal            # todos os 150 testes
+dotnet test FacShopAPI.slnx -v minimal            # todos os 150 testes
 dotnet test tests/ProdutosAPI.Tests/ \
   --filter "FullyQualifiedName~RateLimitingTests"  # só rate limiting
 ```
@@ -910,19 +913,19 @@ src/Catalogo/
 
 ## Referências Cruzadas
 
-| Aspecto | Guia teórico | Implementação |
-|---------|--------------|---------------|
-| RESTful Design | [Seção 2 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) |
-| HTTP Verbs + Rate Limiting | [Seções 3 e 8](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
-| Paginação | [Seção 2](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs) |
-| Versionamento | [Seção 6](MELHORES-PRATICAS-API.md) | `/api/v1/catalogo/` prefix em todos os endpoints |
-| Segurança JWT | [Seção 4](MELHORES-PRATICAS-API.md) | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs) |
-| Validação FluentValidation | [Seção 7](MELHORES-PRATICAS-API.md) | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs) |
-| Tratamento de Erros | [Seção 5](MELHORES-PRATICAS-API.md) | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs) |
-| Idempotência | [Seção 3](MELHORES-PRATICAS-API.md) | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs) |
-| Logging | [Seção 9 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs) |
-| Rate Limiting | [Seção 8](MELHORES-PRATICAS-API.md) | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
-| Domínio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md) | [Pedidos/Domain/](../src/Pedidos/Domain/) |
+| Aspecto                       | Guia teórico                                                   | Implementação                                                                                                                                                                               |
+| ----------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RESTful Design                | [Seção 2 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)                                                                                                  |
+| HTTP Verbs + Rate Limiting    | [Seções 3 e 8](MELHORES-PRATICAS-API.md)                       | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
+| Paginação                     | [Seção 2](MELHORES-PRATICAS-API.md)                            | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Versionamento                 | [Seção 6](MELHORES-PRATICAS-API.md)                            | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
+| Segurança JWT                 | [Seção 4](MELHORES-PRATICAS-API.md)                            | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
+| Validação FluentValidation    | [Seção 7](MELHORES-PRATICAS-API.md)                            | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
+| Tratamento de Erros           | [Seção 5](MELHORES-PRATICAS-API.md)                            | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
+| Idempotência                  | [Seção 3](MELHORES-PRATICAS-API.md)                            | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
+| Logging                       | [Seção 9 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Rate Limiting                 | [Seção 8](MELHORES-PRATICAS-API.md)                            | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
+| Domínio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                    | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
 
 ---
 
@@ -1081,6 +1084,7 @@ src/Pedidos/CreatePedido/
 ```
 
 Os endpoints são registrados automaticamente por scan de `IEndpoint` no startup:
+
 ```csharp
 builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 ```
@@ -1096,7 +1100,7 @@ public sealed class Pedido
     public Result AddItem(PedidoItem novo)
     {
         if (novo.Preco <= 0) return Result.Fail("Preço inválido");
-        if (_itens.Sum(i => i.Total) + novo.Total > Limite) 
+        if (_itens.Sum(i => i.Total) + novo.Total > Limite)
             return Result.Fail("Total excede limite");
         _itens.Add(novo);
         return Result.Ok();

@@ -52,5 +52,5 @@ dotnet test tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
 Executar todos os testes da solucao:
 
 ```bash
-dotnet test ProdutosAPI.slnx
+dotnet test FacShopAPI.slnx
 ```
