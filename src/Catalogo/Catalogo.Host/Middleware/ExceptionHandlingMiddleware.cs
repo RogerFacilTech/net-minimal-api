@@ -9,17 +9,29 @@ namespace ProdutosAPI.Shared.Middleware;
 /// Referência: Melhores-Praticas-API.md - Seção "Tratamento de Erros"
 /// Captura todas as exceções não tratadas e retorna respostas padronizadas
 /// </summary>
+/// <summary>
+/// Middleware global para tratamento de exceções.
+/// </summary>
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
+    /// <summary>
+    /// Inicializa uma nova instância de <see cref="ExceptionHandlingMiddleware"/>.
+    /// </summary>
+    /// <param name="next">Delegate da próxima etapa do pipeline.</param>
+    /// <param name="logger">Logger para registrar exceções.</param>
     public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
     }
 
+    /// <summary>
+    /// Executa o middleware para capturar exceções não tratadas.
+    /// </summary>
+    /// <param name="context">Contexto HTTP da requisição.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -33,6 +45,12 @@ public class ExceptionHandlingMiddleware
         }
     }
 
+    /// <summary>
+    /// Manipula exceções e retorna resposta padronizada.
+    /// </summary>
+    /// <param name="context">Contexto HTTP.</param>
+    /// <param name="exception">Exceção capturada.</param>
+    /// <returns>Tarefa assíncrona de escrita da resposta.</returns>
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
@@ -107,8 +125,16 @@ public class ExceptionHandlingMiddleware
 /// <summary>
 /// Extensão para registrar o middleware
 /// </summary>
+/// <summary>
+/// Métodos de extensão para registrar o ExceptionHandlingMiddleware.
+/// </summary>
 public static class ExceptionHandlingMiddlewareExtensions
 {
+    /// <summary>
+    /// Adiciona o ExceptionHandlingMiddleware ao pipeline.
+    /// </summary>
+    /// <param name="app">Builder da aplicação.</param>
+    /// <returns>Builder da aplicação.</returns>
     public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app)
     {
         return app.UseMiddleware<ExceptionHandlingMiddleware>();

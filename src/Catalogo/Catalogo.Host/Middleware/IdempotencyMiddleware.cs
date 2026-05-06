@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ProdutosAPI.Shared.Middleware;
 
@@ -11,25 +11,40 @@ namespace ProdutosAPI.Shared.Middleware;
 /// Evita que a mesma ação não-segura seja processada duas vezes em caso de tentar novamente
 /// uma requisição por falhas na rede.
 /// </summary>
+/// <summary>
+/// Middleware para garantir idempotência em requisições críticas (POST, PUT, PATCH).
+/// </summary>
 public class IdempotencyMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IMemoryCache _cache;
     private const string IdempotencyHeader = "Idempotency-Key";
 
+    /// <summary>
+    /// Inicializa uma nova instância de <see cref="IdempotencyMiddleware"/>.
+    /// </summary>
+    /// <param name="next">Delegate da próxima etapa do pipeline.</param>
+    /// <param name="cache">Cache de memória para armazenar respostas idempotentes.</param>
     public IdempotencyMiddleware(RequestDelegate next, IMemoryCache cache)
     {
         _next = next;
         _cache = cache;
     }
 
+    /// <summary>
+    /// Executa o middleware para garantir idempotência.
+    /// </summary>
+    /// <param name="context">Contexto HTTP da requisição.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         // Se a requisição já é idempotente por natureza (GET, HEAD, OPTIONS)
         // Ignoramos a checagem de chave.
-        if (HttpMethods.IsGet(context.Request.Method) || 
-            HttpMethods.IsHead(context.Request.Method) || 
-            HttpMethods.IsOptions(context.Request.Method) || 
+        if (HttpMethods.IsGet(context.Request.Method) ||
+
+            HttpMethods.IsHead(context.Request.Method) ||
+
+            HttpMethods.IsOptions(context.Request.Method) ||
+
             HttpMethods.IsDelete(context.Request.Method))
         {
             await _next(context);
@@ -37,7 +52,8 @@ public class IdempotencyMiddleware
         }
 
         // Tenta obter a chave de idempotência do cabeçalho
-        if (!context.Request.Headers.TryGetValue(IdempotencyHeader, out var idempotencyKey) || 
+        if (!context.Request.Headers.TryGetValue(IdempotencyHeader, out var idempotencyKey) ||
+
             string.IsNullOrWhiteSpace(idempotencyKey))
         {
             // Se o header é obrigatório, poderíamos retornar 400 Bad Request aqui.
@@ -55,7 +71,8 @@ public class IdempotencyMiddleware
             // Se já processamos, apenas devolvemos a mesma resposta do cache (curto-circuito)
             context.Response.StatusCode = cachedResponse!.StatusCode;
             context.Response.ContentType = cachedResponse.ContentType;
-            
+
+
             if (cachedResponse.Body != null)
             {
                 await context.Response.WriteAsync(cachedResponse.Body);
@@ -102,16 +119,36 @@ public class IdempotencyMiddleware
 }
 
 // Classe auxiliar para armazenar respostas em cache
+/// <summary>
+/// Classe auxiliar para armazenar respostas em cache.
+/// </summary>
 public class CachedResponse
 {
+    /// <summary>
+    /// Código de status HTTP da resposta.
+    /// </summary>
     public int StatusCode { get; set; }
+    /// <summary>
+    /// Tipo de conteúdo da resposta.
+    /// </summary>
     public string ContentType { get; set; } = string.Empty;
+    /// <summary>
+    /// Corpo da resposta serializado.
+    /// </summary>
     public string Body { get; set; } = string.Empty;
 }
 
 // Extension Method para injetar no Program.cs
+/// <summary>
+/// Métodos de extensão para registrar o IdempotencyMiddleware.
+/// </summary>
 public static class IdempotencyMiddlewareExtensions
 {
+    /// <summary>
+    /// Adiciona o IdempotencyMiddleware ao pipeline.
+    /// </summary>
+    /// <param name="builder">Builder da aplicação.</param>
+    /// <returns>Builder da aplicação.</returns>
     public static IApplicationBuilder UseIdempotency(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<IdempotencyMiddleware>();

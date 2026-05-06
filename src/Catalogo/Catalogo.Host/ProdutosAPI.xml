@@ -10,11 +10,45 @@
             Referência: Melhores-Praticas-API.md - Seção "Tratamento de Erros"
             Captura todas as exceções não tratadas e retorna respostas padronizadas
             </summary>
+            <summary>
+            Middleware global para tratamento de exceções.
+            </summary>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddleware})">
+            <summary>
+            Inicializa uma nova instância de <see cref="T:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddleware"/>.
+            </summary>
+            <param name="next">Delegate da próxima etapa do pipeline.</param>
+            <param name="logger">Logger para registrar exceções.</param>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Executa o middleware para capturar exceções não tratadas.
+            </summary>
+            <param name="context">Contexto HTTP da requisição.</param>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddleware.HandleExceptionAsync(Microsoft.AspNetCore.Http.HttpContext,System.Exception)">
+            <summary>
+            Manipula exceções e retorna resposta padronizada.
+            </summary>
+            <param name="context">Contexto HTTP.</param>
+            <param name="exception">Exceção capturada.</param>
+            <returns>Tarefa assíncrona de escrita da resposta.</returns>
         </member>
         <member name="T:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddlewareExtensions">
             <summary>
             Extensão para registrar o middleware
             </summary>
+            <summary>
+            Métodos de extensão para registrar o ExceptionHandlingMiddleware.
+            </summary>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.ExceptionHandlingMiddlewareExtensions.UseExceptionHandling(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adiciona o ExceptionHandlingMiddleware ao pipeline.
+            </summary>
+            <param name="app">Builder da aplicação.</param>
+            <returns>Builder da aplicação.</returns>
         </member>
         <member name="T:ProdutosAPI.Shared.Middleware.IdempotencyMiddleware">
             <summary>
@@ -22,6 +56,54 @@
             Evita que a mesma ação não-segura seja processada duas vezes em caso de tentar novamente
             uma requisição por falhas na rede.
             </summary>
+            <summary>
+            Middleware para garantir idempotência em requisições críticas (POST, PUT, PATCH).
+            </summary>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.IdempotencyMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
+            <summary>
+            Inicializa uma nova instância de <see cref="T:ProdutosAPI.Shared.Middleware.IdempotencyMiddleware"/>.
+            </summary>
+            <param name="next">Delegate da próxima etapa do pipeline.</param>
+            <param name="cache">Cache de memória para armazenar respostas idempotentes.</param>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.IdempotencyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Executa o middleware para garantir idempotência.
+            </summary>
+            <param name="context">Contexto HTTP da requisição.</param>
+        </member>
+        <member name="T:ProdutosAPI.Shared.Middleware.CachedResponse">
+            <summary>
+            Classe auxiliar para armazenar respostas em cache.
+            </summary>
+        </member>
+        <member name="P:ProdutosAPI.Shared.Middleware.CachedResponse.StatusCode">
+            <summary>
+            Código de status HTTP da resposta.
+            </summary>
+        </member>
+        <member name="P:ProdutosAPI.Shared.Middleware.CachedResponse.ContentType">
+            <summary>
+            Tipo de conteúdo da resposta.
+            </summary>
+        </member>
+        <member name="P:ProdutosAPI.Shared.Middleware.CachedResponse.Body">
+            <summary>
+            Corpo da resposta serializado.
+            </summary>
+        </member>
+        <member name="T:ProdutosAPI.Shared.Middleware.IdempotencyMiddlewareExtensions">
+            <summary>
+            Métodos de extensão para registrar o IdempotencyMiddleware.
+            </summary>
+        </member>
+        <member name="M:ProdutosAPI.Shared.Middleware.IdempotencyMiddlewareExtensions.UseIdempotency(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adiciona o IdempotencyMiddleware ao pipeline.
+            </summary>
+            <param name="builder">Builder da aplicação.</param>
+            <returns>Builder da aplicação.</returns>
         </member>
         <member name="T:Program">
             <summary>
