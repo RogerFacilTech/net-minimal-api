@@ -1,5 +1,17 @@
 # Estrutura da Solucao
 
+## Resumo da Arquitetura de Microserviços
+
+Os projetos **Catálogo** e **Pedidos** podem ser classificados como **microserviços** porque:
+
+- **Isolamento de Contextos**: Cada domínio (Catálogo e Pedidos) possui seu próprio conjunto de projetos, regras de negócio, endpoints e infraestrutura, permitindo evolução e manutenção independentes.
+- **Deploy Independente**: Os hosts (`Catalogo.Host` e `Pedidos.Host`) permitem que cada serviço seja executado, escalado e publicado separadamente, sem dependências de ciclo de vida entre si.
+- **Persistência Compartilhada, Lógica Separada**: Apesar de compartilharem o mesmo `AppDbContext` (por simplicidade educacional), a lógica de domínio, casos de uso e endpoints são totalmente isolados, respeitando os limites de contexto.
+- **Contratos e Integrações**: A comunicação entre contextos ocorre apenas por contratos bem definidos (em `Shared.Common`), evitando acoplamento direto entre domínios.
+- **Padrões Arquiteturais Distintos**: Cada microserviço pode adotar padrões próprios (ex: Clean Architecture no Catálogo, Vertical Slice em Pedidos), reforçando autonomia tecnológica.
+
+Esses fatores permitem classificar Catálogo e Pedidos como microserviços, mesmo coexistindo na mesma solução para fins didáticos.
+
 ## Visao Geral
 
 A solucao foi reorganizada para separar claramente:
