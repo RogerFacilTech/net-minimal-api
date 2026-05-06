@@ -1,4 +1,4 @@
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 
 namespace Catalogo.Domain;
 

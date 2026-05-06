@@ -1,4 +1,4 @@
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 using Catalogo.Domain.ValueObjects;
 
 namespace Catalogo.Domain;

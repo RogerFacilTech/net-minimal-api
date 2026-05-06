@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 
 namespace Catalogo.Domain.ValueObjects;
 

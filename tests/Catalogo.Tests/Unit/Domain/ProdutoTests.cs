@@ -1,7 +1,7 @@
 using Catalogo.Domain;
-using Catalogo.Domain.Common;
-using FluentAssertions;
 using Catalogo.Tests.Builders;
+using FluentAssertions;
+using ProdutosAPI.Shared.Common;
 using Xunit;
 
 namespace Catalogo.Tests.Unit.Domain;

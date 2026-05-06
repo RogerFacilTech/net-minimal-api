@@ -1,4 +1,4 @@
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
 
 namespace ProdutosAPI.Catalogo.Application.Services;

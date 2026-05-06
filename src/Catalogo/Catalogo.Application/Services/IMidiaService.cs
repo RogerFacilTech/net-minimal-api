@@ -1,4 +1,4 @@
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Midia;
 
 namespace ProdutosAPI.Catalogo.Application.Services;

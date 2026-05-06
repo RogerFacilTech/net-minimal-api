@@ -7,6 +7,9 @@
     <AssemblyName>Catalogo.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>ProdutosAPI.Tests</_Parameter1>
     </AssemblyAttribute>

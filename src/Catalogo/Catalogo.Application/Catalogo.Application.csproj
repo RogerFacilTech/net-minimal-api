@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Catalogo.Domain/Catalogo.Domain.csproj" />
+    <ProjectReference Include="../../Shared/Common/Shared.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />

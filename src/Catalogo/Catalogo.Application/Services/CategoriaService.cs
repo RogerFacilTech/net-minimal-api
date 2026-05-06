@@ -1,5 +1,5 @@
 using Catalogo.Domain;
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 using Microsoft.Extensions.Logging;
 using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
 using ProdutosAPI.Catalogo.Application.Repositories;

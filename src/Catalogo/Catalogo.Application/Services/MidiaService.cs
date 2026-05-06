@@ -1,5 +1,5 @@
 using Catalogo.Domain;
-using Catalogo.Domain.Common;
+using ProdutosAPI.Shared.Common;
 using ProdutosAPI.Catalogo.Application.DTOs.Midia;
 using ProdutosAPI.Catalogo.Application.Repositories;
 
