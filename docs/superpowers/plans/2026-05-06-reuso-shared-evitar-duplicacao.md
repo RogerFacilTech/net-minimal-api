@@ -197,20 +197,184 @@ Lote 4 - Limpeza controlada de Shared.Common:
 - [x] Build final verde.
 - [x] Testes finais de Catalogo + Pedidos verdes.
 
-### Fase 3 - Revisao de Shared.Data (medio/longo prazo)
+### Fase 3 - Separacao de contextos mantendo banco compartilhado (medio prazo)
 
-1. Confirmar decisao arquitetural: manter AppDbContext integrado entre Catalogo e Pedidos ou separar contextos.
-2. Se mantido integrado:
+Decisao arquitetural desta fase:
 
-- Documentar explicitamente que Shared.Data e uma camada de integracao entre bounded contexts.
+- Manter o mesmo banco fisico por enquanto.
+- Separar ownership de contexto e ownership de migrations por modulo (Catalogo e Pedidos).
+- Remover o acoplamento de Shared.Data com entidades e projetos especificos de dominio.
 
-3. Se separado:
+Objetivo da fase:
 
-- Planejar extracao de contextos por modulo e estrategia de migracoes.
+- Cada modulo aplica e evolui suas proprias migrations, mesmo com string de conexao compartilhada.
+
+Diretrizes tecnicas:
+
+1. Um DbContext por modulo:
+
+- CatalogoDbContext para entidades de Catalogo.
+- PedidosDbContext para entidades de Pedidos.
+
+2. Migrations separadas por modulo:
+
+- Assembly/pasta de migrations de Catalogo isolada.
+- Assembly/pasta de migrations de Pedidos isolada.
+
+3. Historico de migration isolado por contexto:
+
+- Usar tabela de historico distinta por contexto para evitar colisao de \_\_EFMigrationsHistory.
+
+4. Banco fisico compartilhado, ownership logico separado:
+
+- Mesmo Data Source, mas fronteiras de mapeamento e evolucao controladas por contexto.
+
+#### Sub-plano detalhado da Fase 3
+
+Pre-condicoes:
+
+- Build baseline verde antes da extracao.
+- Testes de Catalogo e Pedidos verdes.
+- Branch dedicada para a fase.
+
+Lote 1 - Estrutura de contextos separados (sem remover AppDbContext ainda):
+
+1. Criar projeto/area de infraestrutura de dados de Catalogo (ex.: Catalogo.Data).
+2. Criar projeto/area de infraestrutura de dados de Pedidos (ex.: Pedidos.Data).
+3. Introduzir CatalogoDbContext com apenas DbSets e mapeamentos de Catalogo.
+4. Introduzir PedidosDbContext com apenas DbSets e mapeamentos de Pedidos.
+5. Manter AppDbContext temporariamente para compatibilidade.
+
+Criterio de saida:
+
+- Solution compila com os 3 contextos coexistindo temporariamente.
+
+Lote 2 - Migracao de injecao e repositorios de Catalogo:
+
+1. Migrar DI de Catalogo.Host para usar CatalogoDbContext.
+2. Ajustar repositorios/servicos de Catalogo para depender de CatalogoDbContext/abstracao equivalente.
+3. Garantir que Pedidos nao seja carregado no pipeline de Catalogo.
+4. Build + testes de Catalogo.
+
+Criterio de saida:
+
+- Catalogo funcional sem dependencia de AppDbContext.
+
+Lote 3 - Migracao de injecao e repositorios de Pedidos:
+
+1. Migrar DI de Pedidos.Host para usar PedidosDbContext.
+2. Ajustar repositorios/handlers de Pedidos para depender de PedidosDbContext.
+3. Garantir que Catalogo nao seja carregado no pipeline de Pedidos.
+4. Build + testes de Pedidos.
+
+Criterio de saida:
+
+- Pedidos funcional sem dependencia de AppDbContext.
+
+Lote 4 - Separacao de migrations por modulo:
+
+1. Criar configuracao de migrations para CatalogoDbContext (assembly/pasta propria).
+2. Criar configuracao de migrations para PedidosDbContext (assembly/pasta propria).
+3. Configurar tabela de historico de migration distinta por contexto.
+4. Definir estrategia de bootstrap:
+
+- Catalogo.Host aplica apenas migrations de Catalogo.
+- Pedidos.Host aplica apenas migrations de Pedidos (ou pipeline externo por servico).
+
+5. Rodar validacao em banco novo e banco ja existente.
+
+Criterio de saida:
+
+- Cada host evolui apenas seu proprio schema logico.
+
+Lote 5 - Descomissionamento de Shared.Data acoplado:
+
+1. Remover referencias de Shared.Data para projetos de dominio/aplicacao especificos.
+2. Remover AppDbContext quando nao houver mais consumidores.
+3. Manter em Shared apenas utilitarios neutros (se houver necessidade real).
+4. Build final + testes Catalogo e Pedidos.
+
+Criterio de saida:
+
+- Nao existe mais contexto unificado acoplado entre Catalogo e Pedidos.
+
+#### Estrategia de migrations (detalhe operacional)
+
+1. Nao recriar historico do zero em ambiente existente.
+2. Criar migration baseline por contexto refletindo estado atual.
+3. Validar script idempotente por contexto antes de aplicar em ambiente compartilhado.
+4. Definir ordem de rollout:
+
+- Primeiro scripts de Catalogo.
+- Depois scripts de Pedidos.
+
+5. Em caso de conflito de objeto no banco compartilhado, bloquear rollout e corrigir naming/mapeamento antes de seguir.
+
+#### Riscos especificos e mitigacoes
+
+1. Conflito de nomes de tabelas/indices entre contextos.
+
+- Mitigacao: padronizar naming por contexto e revisar scripts antes de aplicar.
+
+2. Divergencia entre snapshot atual e baseline novo.
+
+- Mitigacao: homologar em copia de banco real e revisar diff SQL gerado.
+
+3. Um host aplicar migration de outro contexto por engano.
+
+- Mitigacao: separar explicitamente startup de migration por host e por contexto.
+
+4. Quebra de testes de integracao por mudanca de contexto.
+
+- Mitigacao: migracao em lotes com build/teste ao final de cada lote.
+
+#### Checklist operacional da Fase 3
+
+Checklist geral:
+
+- [ ] Branch dedicada da Fase 3 criada.
+- [ ] Build baseline verde registrado.
+- [ ] Testes baseline de Catalogo e Pedidos verdes registrados.
+
+Lote 1:
+
+- [ ] CatalogoDbContext criado.
+- [ ] PedidosDbContext criado.
+- [ ] AppDbContext mantido apenas para compatibilidade temporaria.
+- [ ] Build verde.
+
+Lote 2:
+
+- [ ] DI de Catalogo migrada para CatalogoDbContext.
+- [ ] Repositorios de Catalogo migrados.
+- [ ] Build verde.
+- [ ] Testes Catalogo verdes.
+
+Lote 3:
+
+- [ ] DI de Pedidos migrada para PedidosDbContext.
+- [ ] Repositorios/handlers de Pedidos migrados.
+- [ ] Build verde.
+- [ ] Testes Pedidos verdes.
+
+Lote 4:
+
+- [ ] Migrations de Catalogo separadas.
+- [ ] Migrations de Pedidos separadas.
+- [ ] Tabela de historico de migration separada por contexto.
+- [ ] Validacao em banco novo concluida.
+- [ ] Validacao em banco existente concluida.
+
+Lote 5:
+
+- [ ] Shared.Data desacoplado de projetos especificos.
+- [ ] AppDbContext removido (quando sem consumidores).
+- [ ] Build final verde.
+- [ ] Testes finais Catalogo e Pedidos verdes.
 
 Entregavel da fase:
 
-- Diretriz arquitetural oficial para persistencia compartilhada.
+- Contextos segregados por modulo, com banco compartilhado e ownership de migrations independente por servico.
 
 ## Validacao e Criterios de Conclusao
 
