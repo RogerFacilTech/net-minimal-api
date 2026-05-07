@@ -1,5 +1,6 @@
 using System.Text;
 using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Data;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Atributos;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Auth;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Categorias;
@@ -7,7 +8,6 @@ using FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
 using FacShopAPI.Catalogo.Endpoints.Extensions;
-using FacShopAPI.Shared.Data;
 using FacShopAPI.Shared.Middleware;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,7 +43,7 @@ if (builder.Environment.IsEnvironment("Testing"))
 {
     var testDbName = $"TestDb_{Guid.NewGuid():N}.db";
     var testDbPath = Path.Combine(Path.GetTempPath(), testDbName);
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<CatalogoDbContext>(options =>
         options.UseSqlite($"Data Source={testDbPath}"));
 }
 else
@@ -51,7 +51,7 @@ else
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=produtos-api.db";
 
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<CatalogoDbContext>(options =>
         options.UseSqlite(connectionString));
 }
 
@@ -59,8 +59,8 @@ else
 // CONFIGURAÇÃO DE DEPENDENCY INJECTION
 // ==========================================
 
-// Conectar AppDbContext → ICatalogoContext para injeção de dependência do repositório
-builder.Services.AddScoped<ICatalogoContext>(sp => sp.GetRequiredService<AppDbContext>());
+// Conectar CatalogoDbContext → ICatalogoContext para injeção de dependência do repositório
+builder.Services.AddScoped<ICatalogoContext>(sp => sp.GetRequiredService<CatalogoDbContext>());
 
 // Registrar todos os serviços do bounded context Catálogo
 builder.Services.AddCatalogo();
@@ -188,7 +188,7 @@ var app = builder.Build();
 if (!app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<CatalogoDbContext>();
     dbContext.Database.Migrate();
     FacShopAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
 }

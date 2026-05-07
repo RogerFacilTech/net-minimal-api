@@ -14,6 +14,7 @@
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
     <ProjectReference Include="../Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <ProjectReference Include="../Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
+    <ProjectReference Include="../Catalogo.Data/Catalogo.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <!-- OpenAPI/Swagger -->

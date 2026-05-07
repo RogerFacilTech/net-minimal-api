@@ -11,6 +11,7 @@
     <ProjectReference Include="../Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
     <ProjectReference Include="../../Shared/Web/Shared.Web.csproj" />
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
+    <ProjectReference Include="../Pedidos.Data/Pedidos.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />

@@ -6,7 +6,6 @@ using FacShopAPI.Pedidos.Infrastructure;
 using FacShopAPI.Pedidos.ListPedidos;
 using FacShopAPI.Pedidos.Repositories;
 using FacShopAPI.Shared.Web;
-using FacShopAPI.Shared.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -35,18 +34,20 @@ builder.Host.UseSerilog();
 // CONFIGURAÇÃO DE BANCO DE DADOS
 // ==========================================
 
+using FacShopAPI.Pedidos.Data;
+
 if (builder.Environment.IsEnvironment("Testing"))
 {
     var testDbName = $"TestDb_{Guid.NewGuid():N}.db";
     var testDbPath = Path.Combine(Path.GetTempPath(), testDbName);
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<PedidosDbContext>(options =>
         options.UseSqlite($"Data Source={testDbPath}"));
 }
 else
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=../../../data/facshop.db";
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<PedidosDbContext>(options =>
         options.UseSqlite(connectionString));
 }
 

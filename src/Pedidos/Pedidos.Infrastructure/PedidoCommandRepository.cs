@@ -1,11 +1,11 @@
+using FacShopAPI.Pedidos.Data;
 using FacShopAPI.Pedidos.Domain;
 using FacShopAPI.Pedidos.Repositories;
-using FacShopAPI.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacShopAPI.Pedidos.Infrastructure;
 
-public class PedidoCommandRepository(AppDbContext db) : IPedidoCommandRepository
+public class PedidoCommandRepository(PedidosDbContext db) : IPedidoCommandRepository
 {
 
     public Task<Pedido?> ObterPorIdAsync(int id, CancellationToken ct = default) =>

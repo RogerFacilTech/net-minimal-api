@@ -1,5 +1,5 @@
+using FacShopAPI.Pedidos.Domain;
 using Microsoft.EntityFrameworkCore;
-using Pedidos.Domain;
 
 namespace FacShopAPI.Pedidos.Data;
 
