@@ -27,66 +27,74 @@ A solucao foi reorganizada para separar claramente:
 ```text
 src/
   Catalogo/
-    Catalogo.Application/        -> Casos de uso do Catalogo
-    Catalogo.Common/             -> Contratos e utilitarios especificos do Catalogo
-    Catalogo.Domain/             -> Dominio do Catalogo
-    Catalogo.Endpoints/          -> Endpoints, DTOs, extensoes HTTP
-    Catalogo.Host/               -> Entry point especifico do Catalogo
-    Catalogo.Infrastructure/     -> EF Core, Dapper, DbSeeder
+    Catalogo.Application/        -> Casos de uso do Catálogo
+    Catalogo.Common/             -> Contratos e utilitários específicos do Catálogo
+    Catalogo.Data/               -> DbContext e migrations do Catálogo
+    Catalogo.Domain/             -> Domínio do Catálogo
+    Catalogo.Endpoints/          -> Endpoints, DTOs, extensões HTTP
+    Catalogo.Host/               -> Entry point específico do Catálogo
+    Catalogo.Infrastructure/     -> Implementações de repositório, queries, DbSeeder
   Pedidos/
     Pedidos.Application/         -> Casos de uso de Pedidos
-    Pedidos.Common/              -> Contratos e utilitarios especificos de Pedidos
-    Pedidos.Domain/              -> Dominio rico de Pedidos
+    Pedidos.Common/              -> Contratos e utilitários específicos de Pedidos
+    Pedidos.Data/                -> DbContext e migrations de Pedidos
+    Pedidos.Domain/              -> Domínio rico de Pedidos
     Pedidos.Endpoints/           -> Endpoints, DTOs, validadores
-    Pedidos.Host/                -> Entry point especifico de Pedidos
-    Pedidos.Infrastructure/      -> Implementacoes de persistencia e integracoes
+    Pedidos.Host/                -> Entry point específico de Pedidos
+    Pedidos.Infrastructure/      -> Implementações de persistência e integrações
   Shared/
-    Common/                      -> Contratos e utilitarios transversais
-    Data/                        -> Persistencia compartilhada
+    Data/                        -> Extensões de inicialização de banco compartilhadas
+    Http/                        -> Utilitários HTTP, handlers, idempotência
+    Kernel/                      -> Result<T> e utilitários de domínio
+    Web/                         -> IEndpoint, extensões de endpoint
 samples/
-  Catalogo.HttpClientDemo/       -> Demo de resiliencia HTTP do Catalogo
+  Catalogo.HttpClientDemo/       -> Demo de resiliência HTTP do Catálogo
   Pix.ClientDemo/                -> Console app cliente Pix
   Pix.MockServer/                -> Servidor mock Pix (mTLS + OAuth2)
 tests/
-  Catalogo.Tests/                -> Testes de Catalogo
+  Catalogo.Tests/                -> Testes de Catálogo
   Pedidos.Tests/                 -> Testes de Pedidos
   Pix.MockServer.Tests/          -> Testes do mock Pix
 ```
 
-## Funcao de Cada Projeto
+## Função de Cada Projeto
 
-| Projeto                 | Responsabilidade                                                                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Catalogo.Application    | Interfaces de repositorio, servicos de aplicacao, DTOs internos. Orquestra o dominio.                                                 |
-| Catalogo.Common         | Contratos e utilitarios especificos do Catalogo.                                                                                      |
-| Catalogo.Domain         | Entidades, value objects e regras de negocio do Catalogo. Sem dependencia de framework.                                               |
-| Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensoes de rate limiting.                                             |
-| Catalogo.Host           | Entry point especifico do Catalogo.                                                                                                   |
-| Catalogo.Infrastructure | Implementacoes de repositorio (EF Core + Dapper), DbSeeder, extensoes de DI.                                                          |
-| Pedidos.Application     | Interfaces de repositorio, servicos de aplicacao, DTOs internos. Orquestra o dominio.                                                 |
-| Pedidos.Common          | Contratos e utilitarios especificos de Pedidos.                                                                                       |
-| Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negocio.                                                             |
-| Pedidos.Endpoints       | Endpoints Minimal API, validadores, DTOs de request/response.                                                                         |
-| Pedidos.Host            | Entry point especifico de Pedidos.                                                                                                    |
-| Pedidos.Infrastructure  | Implementacoes de persistencia e integracoes.                                                                                         |
-| Shared.Common           | IEndpoint, Result<T>, EndpointExtensions - contratos usados por todos os bounded contexts.                                            |
-| Shared.Data             | AppDbContext e migrations - unico DbContext da solucao, cobrindo Catalogo e Pedidos.                                                  |
-| Catalogo.HttpClientDemo | Console app demonstrando resiliencia HTTP (retry + circuit breaker) contra a API do Catalogo. Nao e parte da arquitetura de producao. |
-| Pix.ClientDemo          | Console app cliente Pix.                                                                                                              |
-| Pix.MockServer          | Servidor mock Pix (mTLS + OAuth2).                                                                                                    |
+| Projeto                 | Responsabilidade                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| Catalogo.Application    | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
+| Catalogo.Common         | Contratos e utilitários específicos do Catálogo.                                              |
+| Catalogo.Data           | DbContext e migrations do Catálogo.                                                           |
+| Catalogo.Domain         | Entidades, value objects e regras de negócio do Catálogo. Sem dependência de framework.       |
+| Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensões de rate limiting.     |
+| Catalogo.Host           | Entry point específico do Catálogo.                                                           |
+| Catalogo.Infrastructure | Implementações de repositório (EF Core + Dapper), queries, DbSeeder, extensões de DI.         |
+| Pedidos.Application     | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
+| Pedidos.Common          | Contratos e utilitários específicos de Pedidos.                                               |
+| Pedidos.Data            | DbContext e migrations de Pedidos.                                                            |
+| Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negócio.                     |
+| Pedidos.Endpoints       | Endpoints Minimal API, validadores, DTOs de request/response.                                 |
+| Pedidos.Host            | Entry point específico de Pedidos.                                                            |
+| Pedidos.Infrastructure  | Implementações de persistência e integrações.                                                 |
+| Shared.Data             | Extensões de inicialização de banco e utilitários de persistência compartilhada.              |
+| Shared.Http             | Handlers HTTP, idempotência, correlation ID, logging de request.                              |
+| Shared.Kernel           | Result<T>, utilitários de domínio e contratos transversais.                                   |
+| Shared.Web              | IEndpoint, EndpointExtensions, utilitários para endpoints Minimal API.                        |
+| Catalogo.HttpClientDemo | Console app demonstrando resiliência HTTP (retry + circuit breaker) contra a API do Catálogo. |
+| Pix.ClientDemo          | Console app cliente Pix.                                                                      |
+| Pix.MockServer          | Servidor mock Pix (mTLS + OAuth2).                                                            |
 
-## Grafo de Dependencias
+## Grafo de Dependências (Simplificado)
 
 ```text
-Shared.Common
-    ^
-Catalogo.Domain   Pedidos.Domain (-> Shared.Common + Catalogo.Domain)
-    ^                   ^
-Catalogo.Application    |
-    ^               Shared.Data (-> Pedidos.Domain + Catalogo.Application)
-Catalogo.Infrastructure     ^
-    ^               Pedidos (-> Pedidos.Domain + Shared.Data + Shared.Common)
-Catalogo.Endpoints          ^
-         \                  |
-              Host <--------+
+Shared.Kernel, Shared.Web, Shared.Http, Shared.Data
+  ^
+Catalogo.Domain   Pedidos.Domain
+  ^                   ^
+Catalogo.Application    Pedidos.Application
+  ^                   ^
+Catalogo.Infrastructure Pedidos.Infrastructure
+  ^                   ^
+Catalogo.Endpoints      Pedidos.Endpoints
+  ^                   ^
+Catalogo.Host           Pedidos.Host
 ```
