@@ -48,15 +48,15 @@ Caminhos relevantes:
 |               |                                           |
 | ------------- | ----------------------------------------- |
 | **Padrão**    | Mock Server + HTTP Client com resiliência |
-| **Diretório** | `src/Pix/`                                |
+| **Diretório** | `samples/Pix/`                            |
 | **Rotas**     | — (integração externa)                    |
 
 Demonstra como integrar com APIs externas usando mTLS, OAuth2 e pipelines de resiliência (Polly via `Microsoft.Extensions.Http.Resilience`). Inclui um servidor mock que simula a API Pix do BCB e um console app que o consome.
 
 Caminhos relevantes:
 
-- `src/Pix/Pix.MockServer/` — Minimal API simulando BCB Pix
-- `src/Pix/Pix.ClientDemo/` — console app com HttpClient tipado e resiliência
+- `samples/Pix/Pix.MockServer/` — Minimal API simulando BCB Pix
+- `samples/Pix/Pix.ClientDemo/` — console app com HttpClient tipado e resiliência
 
 ---
 
@@ -93,7 +93,7 @@ Estudo completo incluindo integração externa, estratégia de testes e decisõe
   → docs/04-PIX.md            (mTLS, OAuth2, resiliência)
   → docs/05-TESTES.md         (estratégia e execução)
   → docs/ADRs/                (15 ADRs no formato MADR 3.x)
-  → src/Pix/Pix.ClientDemo/   (resiliência com Polly/Http.Resilience)
+   → samples/Pix/Pix.ClientDemo/   (resiliência com Polly/Http.Resilience)
 ```
 
 ---
@@ -199,13 +199,13 @@ Foco: decisões arquiteturais registradas, integração externa, resiliência e 
 
 2. Estudar integração PIX
    docs/04-PIX.md (completo — snippets de HttpClient, OAuth2, idempotência)
-   → src/Pix/Pix.MockServer/Program.cs     (mock server)
-   → src/Pix/Pix.ClientDemo/Program.cs     (pipeline de handlers)
+   → samples/Pix/Pix.MockServer/Program.cs     (mock server)
+   → samples/Pix/Pix.ClientDemo/Program.cs     (pipeline de handlers)
 
 3. Executar e observar a trilha PIX
-   Terminal 1: dotnet run --project src/Pix/Pix.MockServer/Pix.MockServer.csproj
-   Terminal 2: dotnet run --project src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
-   Testes:     dotnet test tests/Pix.MockServer.Tests/
+   Terminal 1: dotnet run --project samples/Pix/Pix.MockServer/Pix.MockServer.csproj
+   Terminal 2: dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
+   Testes:     dotnet test samples/Pix/Pix.MockServer.Tests/
 
 4. Estudar rate limiting avançado
    docs/02-CATALOGO.md → seção "Rate Limiting" e "Exemplos de Código"

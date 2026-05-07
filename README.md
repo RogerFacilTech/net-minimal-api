@@ -140,7 +140,7 @@ net-minimal-api/
 dotnet test tests/ProdutosAPI.Tests/
 
 # Mock server PIX
-dotnet test tests/Pix.MockServer.Tests/
+dotnet test samples/Pix/Pix.MockServer.Tests/
 
 # Solução completa
 dotnet test FacShopAPI.slnx

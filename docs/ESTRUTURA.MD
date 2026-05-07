@@ -49,12 +49,13 @@ src/
     Web/                         -> IEndpoint, extensões de endpoint
 samples/
   Catalogo.HttpClientDemo/       -> Demo de resiliência HTTP do Catálogo
-  Pix.ClientDemo/                -> Console app cliente Pix
-  Pix.MockServer/                -> Servidor mock Pix (mTLS + OAuth2)
+  Pix/
+    Pix.ClientDemo/              -> Console app cliente Pix
+    Pix.MockServer/              -> Servidor mock Pix (mTLS + OAuth2)
+    Pix.MockServer.Tests/        -> Testes do mock Pix
 tests/
   Catalogo.Tests/                -> Testes de Catálogo
   Pedidos.Tests/                 -> Testes de Pedidos
-  Pix.MockServer.Tests/          -> Testes do mock Pix
 ```
 
 ## Função de Cada Projeto

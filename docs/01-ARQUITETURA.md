@@ -14,12 +14,12 @@ O Catálogo usa Clean Architecture nas camadas internas e Vertical Slice na cama
 
 ### Sub-projetos
 
-| Sub-projeto | Responsabilidade |
-|---|---|
-| `Catalogo.Domain` | Entidades, value objects, interfaces de repositório |
-| `Catalogo.Application` | Serviços, DTOs, validadores FluentValidation |
+| Sub-projeto               | Responsabilidade                                            |
+| ------------------------- | ----------------------------------------------------------- |
+| `Catalogo.Domain`         | Entidades, value objects, interfaces de repositório         |
+| `Catalogo.Application`    | Serviços, DTOs, validadores FluentValidation                |
 | `Catalogo.Infrastructure` | Repositórios EF Core, DbSeeder, configurações de mapeamento |
-| `Catalogo.API` | Endpoints Minimal API, políticas de rate limiting |
+| `Catalogo.API`            | Endpoints Minimal API, políticas de rate limiting           |
 
 ### Domain
 
@@ -89,16 +89,17 @@ HTTP → CreatePedidoEndpoint (IEndpoint, auto-discovered) → CreatePedidoValid
 
 Minimal API autocontida que simula a API Pix do Banco Central do Brasil. Implementa OAuth2 para emissão de tokens e mTLS para autenticação mútua. Persiste dados em memória (sem banco de dados). Seu propósito é permitir desenvolvimento e testes da integração sem dependência de ambiente externo.
 
-Localização: `src/Pix/Pix.MockServer/`
+Localização: `samples/Pix/Pix.MockServer/`
 
 ### Pix.ClientDemo
 
 Console app que consome o `Pix.MockServer` via `HttpClient` tipado. Demonstra:
+
 - Configuração de mTLS com certificado de cliente
 - Fluxo OAuth2 (client credentials)
 - Pipeline de resiliência com `AddStandardResilienceHandler` (retry + circuit breaker via `Microsoft.Extensions.Http.Resilience`)
 
-Localização: `src/Pix/Pix.ClientDemo/`
+Localização: `samples/Pix/Pix.ClientDemo/`
 
 ### Catalogo.ClientDemo
 
@@ -110,15 +111,15 @@ Console app que demonstra retry e circuit breaker consumindo a API do Catálogo.
 
 Componentes em `src/Shared/` utilizados por todos os bounded contexts:
 
-| Componente | Descrição |
-|---|---|
-| `IdempotencyMiddleware` | Intercepta POST/PUT/PATCH com header `Idempotency-Key`. Evita reprocessamento de requisições duplicadas. |
-| Global exception handling | Captura exceções não tratadas e retorna respostas padronizadas (RFC 7807 Problem Details). |
-| JWT Bearer auth | Configurado globalmente. Pedidos exigem `RequireAuthorization()`. GET do Catálogo é anônimo; escrita exige token. |
-| Rate limiting | 3 políticas: `leitura`, `escrita`, `criacao-produto`. Registradas no `Program.cs`. Desativadas quando `Environment = "Testing"`. |
-| `AppDbContext` | Único contexto EF Core, compartilhado pelos três bounded contexts. |
-| `IEndpoint` | Interface com método `Map(IEndpointRouteBuilder)`. Implementações são descobertas por reflection. |
-| `Result<T>` | Tipo discriminado que representa sucesso ou falha sem lançar exceções. Usado exclusivamente no bounded context de Pedidos. |
+| Componente                | Descrição                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `IdempotencyMiddleware`   | Intercepta POST/PUT/PATCH com header `Idempotency-Key`. Evita reprocessamento de requisições duplicadas.                         |
+| Global exception handling | Captura exceções não tratadas e retorna respostas padronizadas (RFC 7807 Problem Details).                                       |
+| JWT Bearer auth           | Configurado globalmente. Pedidos exigem `RequireAuthorization()`. GET do Catálogo é anônimo; escrita exige token.                |
+| Rate limiting             | 3 políticas: `leitura`, `escrita`, `criacao-produto`. Registradas no `Program.cs`. Desativadas quando `Environment = "Testing"`. |
+| `AppDbContext`            | Único contexto EF Core, compartilhado pelos três bounded contexts.                                                               |
+| `IEndpoint`               | Interface com método `Map(IEndpointRouteBuilder)`. Implementações são descobertas por reflection.                                |
+| `Result<T>`               | Tipo discriminado que representa sucesso ou falha sem lançar exceções. Usado exclusivamente no bounded context de Pedidos.       |
 
 ---
 
@@ -150,20 +151,22 @@ net-minimal-api/
 │   │   │   └── CancelPedido/
 │   │   └── Common/                         # DTOs e tipos compartilhados entre slices
 │   │
-│   ├── Pix/                                # Bounded Context 3 — Integração Externa
-│   │   ├── Pix.MockServer/                 # Minimal API simulando BCB Pix
-│   │   │   ├── Contracts/                  # Requests e responses complexos
-│   │   │   ├── Application/                # Regras de negócio e validações
-│   │   │   ├── Infrastructure/InMemory/    # Repositórios thread-safe
-│   │   │   └── Security/                   # Bearer + mTLS real
-│   │   └── Pix.ClientDemo/                 # Console app — HttpClient tipado + resiliência
-│   │       ├── Client/Handlers/            # CorrelationId, IdempotencyKey, Logging
-│   │       └── Scenarios/                  # Fluxo fim-a-fim didático
-│   │
 │   └── Shared/                             # Compartilhado por todos os bounded contexts
 │       ├── Common/                         # IEndpoint, Result<T>, EndpointExtensions
 │       ├── Data/                           # AppDbContext + Migrations + DbSeeder
 │       └── Middleware/                     # ExceptionHandling, IdempotencyMiddleware
+│
+├── samples/
+│   └── Pix/                                # Trilha de integração externa (educacional)
+│       ├── Pix.MockServer/                 # Minimal API simulando BCB Pix
+│       │   ├── Contracts/                  # Requests e responses complexos
+│       │   ├── Application/                # Regras de negócio e validações
+│       │   ├── Infrastructure/InMemory/    # Repositórios thread-safe
+│       │   └── Security/                   # Bearer + mTLS real
+│       ├── Pix.ClientDemo/                 # Console app — HttpClient tipado + resiliência
+│       │   ├── Client/Handlers/            # CorrelationId, IdempotencyKey, Logging
+│       │   └── Scenarios/                  # Fluxo fim-a-fim didático
+│       └── Pix.MockServer.Tests/           # Testes de integração HTTP da trilha PIX
 │
 └── tests/
     ├── ProdutosAPI.Tests/                  # Testes do Catálogo e Pedidos (150 testes)
@@ -173,7 +176,7 @@ net-minimal-api/
     │   ├── Endpoints/                      # Testes de contrato HTTP
     │   ├── Services/                       # Testes de serviços de aplicação
     │   └── Validators/                     # Testes FluentValidation
-    └── Pix.MockServer.Tests/               # Testes de integração HTTP da trilha PIX (7 testes)
+    └── (sem projeto PIX nesta raiz)        # Testes PIX agora em samples/Pix/Pix.MockServer.Tests/
 ```
 
 ---
@@ -259,19 +262,19 @@ Pix.ClientDemo                          Pix.MockServer
 
 ## Comparativo: Clean Architecture vs Vertical Slice
 
-| Dimensão | Catálogo (Clean Architecture) | Pedidos (Vertical Slice) |
-|----------|-------------------------------|--------------------------|
-| **Organização do código** | Por camada técnica (Domain, Application, Infrastructure, API) | Por caso de uso (CreatePedido, GetPedido, etc.) |
-| **Localização de um novo endpoint** | 4 sub-projetos diferentes | Uma pasta isolada |
-| **Coesão** | Baixa — lógica de um recurso dispersa entre camadas | Alta — tudo para um caso de uso na mesma pasta |
-| **Acoplamento entre features** | Alto via serviços compartilhados | Baixo — slices independentes |
-| **Modelo de domínio** | Híbrido (rico em Produto/Categoria/Variante, anêmico em Atributo/Mídia) | Rico (aggregate Pedido com invariantes encapsuladas) |
-| **Tratamento de erro** | Exceção + middleware global | Result pattern — sem exceptions para erros de negócio |
-| **Quando adicionar campo** | Toca Domain, Application (DTO + Validator + Service), Infrastructure, API | Toca Domain + slice específica |
-| **Teste unitário** | Testa serviço via mock de repositório | Testa aggregate direto sem dependência de infraestrutura |
-| **Escalabilidade** | Boa até ~50 endpoints por recurso | Excelente — cada feature cresce isolada |
-| **Overhead inicial** | Alto (4 projetos, interfaces, repositórios) | Baixo (uma pasta por feature) |
-| **Indicado para** | Times grandes, domínio rico mas previsível, CRUD com regras | Domínio complexo com muitas invariantes, features independentes |
+| Dimensão                            | Catálogo (Clean Architecture)                                             | Pedidos (Vertical Slice)                                        |
+| ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Organização do código**           | Por camada técnica (Domain, Application, Infrastructure, API)             | Por caso de uso (CreatePedido, GetPedido, etc.)                 |
+| **Localização de um novo endpoint** | 4 sub-projetos diferentes                                                 | Uma pasta isolada                                               |
+| **Coesão**                          | Baixa — lógica de um recurso dispersa entre camadas                       | Alta — tudo para um caso de uso na mesma pasta                  |
+| **Acoplamento entre features**      | Alto via serviços compartilhados                                          | Baixo — slices independentes                                    |
+| **Modelo de domínio**               | Híbrido (rico em Produto/Categoria/Variante, anêmico em Atributo/Mídia)   | Rico (aggregate Pedido com invariantes encapsuladas)            |
+| **Tratamento de erro**              | Exceção + middleware global                                               | Result pattern — sem exceptions para erros de negócio           |
+| **Quando adicionar campo**          | Toca Domain, Application (DTO + Validator + Service), Infrastructure, API | Toca Domain + slice específica                                  |
+| **Teste unitário**                  | Testa serviço via mock de repositório                                     | Testa aggregate direto sem dependência de infraestrutura        |
+| **Escalabilidade**                  | Boa até ~50 endpoints por recurso                                         | Excelente — cada feature cresce isolada                         |
+| **Overhead inicial**                | Alto (4 projetos, interfaces, repositórios)                               | Baixo (uma pasta por feature)                                   |
+| **Indicado para**                   | Times grandes, domínio rico mas previsível, CRUD com regras               | Domínio complexo com muitas invariantes, features independentes |
 
 ### Qual escolher no mundo real?
 

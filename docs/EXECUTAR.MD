@@ -19,7 +19,7 @@ dotnet run --project src/Pedidos/Pedidos.Host/Pedidos.Host.csproj
 Rodar o mock server Pix:
 
 ```bash
-dotnet run --project samples/Pix.MockServer/Pix.MockServer.csproj
+dotnet run --project samples/Pix/Pix.MockServer/Pix.MockServer.csproj
 ```
 
 Rodar o cliente demo do Catalogo:
@@ -32,7 +32,7 @@ dotnet run --project samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csp
 Rodar o cliente demo do Pix:
 
 ```bash
-dotnet run --project samples/Pix.ClientDemo/Pix.ClientDemo.csproj
+dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ```
 
 ## Testes
@@ -52,7 +52,7 @@ dotnet test tests/Pedidos.Tests/Pedidos.Tests.csproj
 Executar testes de Pix MockServer:
 
 ```bash
-dotnet test tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
+dotnet test samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
 ```
 
 Executar todos os testes da solucao:

@@ -3,6 +3,7 @@
     <Project Path="src/Shared/Kernel/Shared.Kernel.csproj" />
     <Project Path="src/Shared/Web/Shared.Web.csproj" />
     <Project Path="src/Shared/Data/Shared.Data.csproj" />
+    <Project Path="src/Shared/Http/Shared.Http.csproj" />
   </Folder>
   <Folder Name="/Catalogo/">
     <Project Path="src/Catalogo/Catalogo.Common/Catalogo.Common.csproj" />
@@ -26,13 +27,8 @@
   </Folder>
   <Folder Name="/Samples/">
     <Project Path="samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csproj" />
-    <Project Path="samples/Pix.MockServer/Pix.MockServer.csproj" />
-    <Project Path="samples/Pix.ClientDemo/Pix.ClientDemo.csproj" />
-    <Project Path="samples/Pix.MockServer/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
-  </Folder>
-  <Folder Name="/src/" />
-  <Folder Name="/src/Shared/" />
-  <Folder Name="/src/Shared/Http/">
-    <Project Path="src/Shared/Http/Shared.Http.csproj" />
+    <Project Path="samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj" />
+    <Project Path="samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
+    <Project Path="samples/Pix/Pix.MockServer/Pix.MockServer.csproj" />
   </Folder>
 </Solution>

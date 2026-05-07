@@ -85,9 +85,9 @@ Além dos endpoints internos, o projeto também demonstra consumo de API externa
 
 Referências:
 
-- [src/Pix/Pix.ClientDemo/Program.cs](../src/Pix/Pix.ClientDemo/Program.cs)
-- [src/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs](../src/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs)
-- [src/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs](../src/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs)
+- [samples/Pix/Pix.ClientDemo/Program.cs](../samples/Pix/Pix.ClientDemo/Program.cs)
+- [samples/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs](../samples/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs)
+- [samples/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs](../samples/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs)
 
 ### 1. RESTful Design
 
@@ -853,10 +853,10 @@ done
 
 ```bash
 # Terminal 1 — servidor mock
-dotnet run --project src/Pix/Pix.MockServer/Pix.MockServer.csproj
+dotnet run --project samples/Pix/Pix.MockServer/Pix.MockServer.csproj
 
 # Terminal 2 — cliente didático
-dotnet run --project src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
+dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ```
 
 ### Rodar testes

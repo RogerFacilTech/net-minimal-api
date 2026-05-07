@@ -15,6 +15,7 @@ Este documento descreve as melhorias implementadas no projeto **ProdutosAPI** pa
 ### 1. **Typed Results para Type-Safety**
 
 #### ❌ Antes (IResult não tipado)
+
 ```csharp
 private static async Task<IResult> ObterProduto(int id, IProdutoService service)
 {
@@ -24,9 +25,10 @@ private static async Task<IResult> ObterProduto(int id, IProdutoService service)
 ```
 
 #### ✅ Depois (.NET 10 - Typed Results)
+
 ```csharp
 private static async Task<Results<Ok<ProdutoResponse>, NotFound<ErrorResponse>>> ObterProduto(
-    int id, 
+    int id,
     IProdutoService service)
 {
     try
@@ -42,6 +44,7 @@ private static async Task<Results<Ok<ProdutoResponse>, NotFound<ErrorResponse>>>
 ```
 
 **Benefícios**:
+
 - ✅ Verificação de tipo em compile-time
 - ✅ IntelliSense melhorado em IDEs
 - ✅ Documentação automática mais precisa
@@ -60,8 +63,8 @@ O .NET 10 introduz tipos discriminados para representar múltiplos resultados po
 // - 404 NotFound com ErrorResponse
 // - 422 UnprocessableEntity com ErrorResponse
 private static async Task<Results<
-    Ok<ProdutoResponse>, 
-    NotFound<ErrorResponse>, 
+    Ok<ProdutoResponse>,
+    NotFound<ErrorResponse>,
     UnprocessableEntity<ErrorResponse>>> AtualizarProduto(...)
 {
     // Agora o compilador força tratamento de todos os casos
@@ -70,6 +73,7 @@ private static async Task<Results<
 ```
 
 **Vantagens**:
+
 - ✅ Força tratamento de todos os cenários de erro possíveis
 - ✅ OpenAPI gerado automaticamente com todos os status codes
 - ✅ Type-safe routing baseado em resultado
@@ -80,6 +84,7 @@ private static async Task<Results<
 ### 3. **MapGroup com Prefix - DRY Principle**
 
 #### ❌ Antes (Duplicação de rota)
+
 ```csharp
 app.MapGet("/api/v1/produtos", Handler1).WithName("...").WithOpenApi();
 app.MapGet("/api/v1/produtos/{id}", Handler2).WithName("...").WithOpenApi();
@@ -87,6 +92,7 @@ app.MapPost("/api/v1/produtos", Handler3).WithName("...").WithOpenApi();
 ```
 
 #### ✅ Depois (.NET 10 MapGroup)
+
 ```csharp
 var group = app.MapGroup("/api/v1/produtos")
     .WithName("Produtos")
@@ -100,6 +106,7 @@ group.MapPost("/", Handler3);
 ```
 
 **Benefícios**:
+
 - ✅ Reduz duplicação de configuração
 - ✅ Facilita manutenção (mudança de versão de API em um lugar)
 - ✅ Melhor organização visual do código
@@ -111,7 +118,7 @@ group.MapPost("/", Handler3);
 
 O .NET 10 introduz `TypedResults` factory methods:
 
-```csharp
+````csharp
 // ✅ .NET 10 - Type-safe factories
 return TypedResults.Ok(produto);           // Results<Ok<T>>
 return TypedResults.Created(uri, produto); // Results<Created<T>>
@@ -128,14 +135,15 @@ A trilha PIX aplica os recursos modernos de cliente HTTP do ecossistema .NET:
 ```csharp
 builder.Services.AddHttpClient<PixProcessingClient>(...)
     .AddStandardResilienceHandler();
-```
+````
 
 **Benefícios**:
+
 - ✅ Retry e timeout padronizados sem código repetido
 - ✅ Menor risco de chamadas frágeis em integrações externas
 - ✅ Configuração centralizada por cliente tipado
 
-**Implementação**: `src/Pix/Pix.ClientDemo/Program.cs`
+**Implementação**: `samples/Pix/Pix.ClientDemo/Program.cs`
 
 ---
 
@@ -151,16 +159,18 @@ internal partial class JsonContext : JsonSerializerContext
 ```
 
 **Benefícios**:
+
 - ✅ Menor custo de reflexão em serialização
 - ✅ Contratos JSON mais explícitos
 - ✅ Performance e previsibilidade em payloads complexos
 
-**Implementação**: `src/Pix/Pix.MockServer/Application/JsonContext.cs`
-return TypedResults.UnprocessableEntity(error);  // Results<UnprocessableEntity<T>>
+**Implementação**: `samples/Pix/Pix.MockServer/Application/JsonContext.cs`
+return TypedResults.UnprocessableEntity(error); // Results<UnprocessableEntity<T>>
 
 // vs. IResult genérico (não tipado)
 return Results.Ok(produto);
-```
+
+````
 
 ---
 
@@ -171,9 +181,10 @@ return Results.Ok(produto);
 group.MapGet("/{id}", Handler)
     .Produces<ProdutoResponse>(200)
     .Produces<ErrorResponse>(404);
-```
+````
 
 #### Depois (.NET 10 - Automático)
+
 ```csharp
 group.MapGet("/{id}", Handler)
     .WithOpenApi()
@@ -210,27 +221,29 @@ group.MapGet("/", ListarProdutos)
 ### Arquivo: `src/Produtos/Produtos.API/Endpoints/ProdutoEndpoints.cs`
 
 #### **Assinatura de Método - Antes**
+
 ```csharp
 private static async Task<IResult> ListarProdutos(
     IProdutoService service, ...)
 ```
 
 #### **Assinatura de Método - Depois**
+
 ```csharp
-private static async Task<Results<Ok<PaginatedResponse<ProdutoResponse>>, BadRequest<ErrorResponse>>> 
+private static async Task<Results<Ok<PaginatedResponse<ProdutoResponse>>, BadRequest<ErrorResponse>>>
 ListarProdutos(IProdutoService service, ...)
 ```
 
 **Mudanças em cada endpoint**:
 
-| Endpoint | Antes | Depois | Benefício |
-|----------|-------|--------|-----------|
-| GET / | Task<IResult> | Task<Results<Ok<...>, BadRequest<...>>> | Type-safe, múltiplos return types |
-| GET /{id} | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>> | Força tratamento de 404 |
-| POST / | Task<IResult> | Task<Results<Created<...>, BadRequest<...>, Unprocessable<...>>> | Previne erros |
-| PUT /{id} | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>> | Exaustivo |
-| PATCH /{id} | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>> | Exaustivo |
-| DELETE /{id} | Task<IResult> | Task<Results<NoContent, NotFound<...>>> | Simples, direto |
+| Endpoint     | Antes         | Depois                                                           | Benefício                         |
+| ------------ | ------------- | ---------------------------------------------------------------- | --------------------------------- |
+| GET /        | Task<IResult> | Task<Results<Ok<...>, BadRequest<...>>>                          | Type-safe, múltiplos return types |
+| GET /{id}    | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Força tratamento de 404           |
+| POST /       | Task<IResult> | Task<Results<Created<...>, BadRequest<...>, Unprocessable<...>>> | Previne erros                     |
+| PUT /{id}    | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Exaustivo                         |
+| PATCH /{id}  | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Exaustivo                         |
+| DELETE /{id} | Task<IResult> | Task<Results<NoContent, NotFound<...>>>                          | Simples, direto                   |
 
 ---
 
@@ -254,11 +267,13 @@ group.MapGet("/", ListarProdutos)
 A nova arquitetura de **Vertical Slice** utilizada em `src/Pedidos/` se beneficia das melhorias do .NET 10:
 
 - **IEndpoint scan automático**: o método de extensão `AddEndpointsFromAssembly()` elimina a necessidade de registrar cada rota manualmente, permitindo que slices sejam registrados somente por estarem na assembly.
+
     ```csharp
     builder.Services.AddEndpointsFromAssembly(typeof(CreatePedidoEndpoint).Assembly);
     ```
 
 - **Primary constructors para handlers**: handlers de comandos podem declarar dependências diretamente no construtor de registro conciso.
+
     ```csharp
     public sealed class CreatePedidoHandler(IAppDbContext db, ILogger<CreatePedidoHandler> log)
     {
@@ -281,6 +296,7 @@ Estas facilidades tornam o desenvolvimento de cada slice extremamente leve e eli
 ### Handlers HTTP
 
 **Antes - IResult genérico**
+
 ```csharp
 private static async Task<IResult> CriarProduto(CriarProdutoRequest req, ...)
 {
@@ -292,8 +308,9 @@ private static async Task<IResult> CriarProduto(CriarProdutoRequest req, ...)
 ```
 
 **Depois - Typed Results Union**
+
 ```csharp
-private static async Task<Results<Created<ProdutoResponse>, BadRequest<ErrorResponse>, UnprocessableEntity<ErrorResponse>>> 
+private static async Task<Results<Created<ProdutoResponse>, BadRequest<ErrorResponse>, UnprocessableEntity<ErrorResponse>>>
 CriarProduto(CriarProdutoRequest req, ...)
 {
     try
@@ -314,42 +331,44 @@ CriarProduto(CriarProdutoRequest req, ...)
 ## 🛡️ Benefícios de Type-Safety
 
 ### Antes: Swagger impreciso
+
 ```json
 {
-  "responses": {
-    "200": {
-      "description": "Success",
-      "content": {
-        "application/json": {
-          "schema": {}  // ❌ Schema vazio, tipo desconhecido
+    "responses": {
+        "200": {
+            "description": "Success",
+            "content": {
+                "application/json": {
+                    "schema": {} // ❌ Schema vazio, tipo desconhecido
+                }
+            }
         }
-      }
     }
-  }
 }
 ```
 
 ### Depois: Swagger preciso
+
 ```json
 {
-  "responses": {
-    "200": {
-      "description": "Success",
-      "content": {
-        "application/json": {
-          "schema": { "$ref": "#/components/schemas/ProdutoResponse" }  // ✅ Schema completo
+    "responses": {
+        "200": {
+            "description": "Success",
+            "content": {
+                "application/json": {
+                    "schema": { "$ref": "#/components/schemas/ProdutoResponse" } // ✅ Schema completo
+                }
+            }
+        },
+        "404": {
+            "description": "Not Found",
+            "content": {
+                "application/json": {
+                    "schema": { "$ref": "#/components/schemas/ErrorResponse" } // ✅ Listado
+                }
+            }
         }
-      }
-    },
-    "404": {
-      "description": "Not Found",
-      "content": {
-        "application/json": {
-          "schema": { "$ref": "#/components/schemas/ErrorResponse" }  // ✅ Listado
-        }
-      }
     }
-  }
 }
 ```
 
@@ -360,15 +379,18 @@ CriarProduto(CriarProdutoRequest req, ...)
 O projeto inclui testes abrangentes validando:
 
 ✅ **Unit Tests** (ProdutoServiceTests.cs)
+
 - Testes de service com mocking
 - 16+ cases cobrindo todos os cenários
 
 ✅ **Integration Tests** (ProdutoEndpointsTests.cs)
+
 - Testes de HTTP status codes
 - Testes de validação
 - 18+ cases
 
 ✅ **Validator Tests** (ProdutoValidatorTests.cs)
+
 - Testes de regras de negócio
 - 20+ cases
 
@@ -377,23 +399,27 @@ O projeto inclui testes abrangentes validando:
 ## 🚀 Como Executar e Testar
 
 ### Build the Project
+
 ```bash
 cd net-minimal-api
 dotnet build -c Release
 ```
 
 ### Run All Tests
+
 ```bash
 dotnet test
 ```
 
 ### Run Specific Test Category
+
 ```bash
 dotnet test --filter "FullyQualifiedName~ProdutosAPI.Tests.Services"
 dotnet test --filter "FullyQualifiedName~ProdutosAPI.Tests.Endpoints"
 ```
 
 ### Run Application
+
 ```bash
 dotnet run --project ProdutosAPI.csproj
 # Acesse: http://localhost:5000
@@ -429,11 +455,13 @@ dotnet run --project ProdutosAPI.csproj
 ## 🎓 Recursos de Aprendizado
 
 ### Documentação Oficial
+
 - [.NET 10 Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis)
 - [Typed Results in .NET 10](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses)
 - [OpenAPI with Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi)
 
 ### Referências do Projeto
+
 - [Melhores Praticas API](./MELHORES-PRATICAS-API.md)
 - [Estratégia de Testes](./ESTRATEGIA-DE-TESTES.md)
 - [Code Structure](./ESTRUTURA-DO-CODIGO.md)
@@ -443,24 +471,24 @@ dotnet run --project ProdutosAPI.csproj
 ## 🔄 Próximos Passos Opcionais
 
 1. **API Versioning**
-   - Implementar header-based versioning
-   - URL-path versioning com MapGroup
+    - Implementar header-based versioning
+    - URL-path versioning com MapGroup
 
 2. **Rate Limiting**
-   - .NET 10 built-in rate limiting middleware
-   - Per-endpoint ou global policies
+    - .NET 10 built-in rate limiting middleware
+    - Per-endpoint ou global policies
 
 3. **Advanced OpenAPI**
-   - Custom operation filters
-   - Security schemes (OAuth2, API Key)
+    - Custom operation filters
+    - Security schemes (OAuth2, API Key)
 
 4. **Performance**
-   - Output caching
-   - Compression middleware
+    - Output caching
+    - Compression middleware
 
 5. **Globalization (i18n)**
-   - Multi-language error messages
-   - Content negotiation by culture
+    - Multi-language error messages
+    - Content negotiation by culture
 
 ---
 
@@ -475,7 +503,7 @@ dotnet run --project ProdutosAPI.csproj
 ✅ Testes unitários criados (xUnit, Moq)  
 ✅ Testes de integração criados  
 ✅ Documentação atualizada  
-✅ Versionamento de projeto: 1.0.0 → 3.1.0  
+✅ Versionamento de projeto: 1.0.0 → 3.1.0
 
 ---
 
@@ -487,7 +515,7 @@ O projeto **ProdutosAPI v3.1.0** agora demonstra as melhores práticas modernas 
 🎯 **Documentação Precisa** com OpenAPI automático  
 🎯 **Code Organization** com MapGroup  
 🎯 **Comprehensive Testing** com xUnit e Moq  
-🎯 **Production-Ready** patterns e practices  
+🎯 **Production-Ready** patterns e practices
 
 É um recurso educacional excelente para aprender Minimal API no .NET 10!
 

@@ -21,6 +21,7 @@ Pix.MockServer
 ```
 
 ## Endpoints
+
 - `POST /oauth/token`
 - `POST /pix/v1/cobrancas`
 - `GET /pix/v1/cobrancas/{txid}`
@@ -33,63 +34,64 @@ Pix.MockServer
 
 ```json
 {
-  "calendario": {
-    "expiracao": 3600
-  },
-  "devedor": {
-    "nome": "Cliente de Teste",
-    "cpfCnpj": "12345678901",
-    "endereco": {
-      "logradouro": "Rua das Flores",
-      "numero": "100",
-      "cidade": "Sao Paulo",
-      "uf": "SP",
-      "cep": "01001000"
-    }
-  },
-  "recebedor": {
-    "nome": "Empresa Demo",
-    "ispb": "12345678",
-    "agencia": "0001",
-    "conta": "123456",
-    "tipoConta": "CACC"
-  },
-  "valor": {
-    "original": 150.75,
-    "abatimento": 0,
-    "desconto": 5,
-    "juros": 0,
-    "multa": 0
-  },
-  "chavePix": "chave-pix-demo-123",
-  "solicitacaoPagador": "Pagamento referente ao pedido #12345",
-  "split": [
-    {
-      "favorecido": "Parceiro A",
-      "documento": "98765432100",
-      "valor": 30,
-      "percentual": 20
+    "calendario": {
+        "expiracao": 3600
     },
-    {
-      "favorecido": "Parceiro B",
-      "documento": "11222333000181",
-      "valor": 15,
-      "percentual": 10
+    "devedor": {
+        "nome": "Cliente de Teste",
+        "cpfCnpj": "12345678901",
+        "endereco": {
+            "logradouro": "Rua das Flores",
+            "numero": "100",
+            "cidade": "Sao Paulo",
+            "uf": "SP",
+            "cep": "01001000"
+        }
+    },
+    "recebedor": {
+        "nome": "Empresa Demo",
+        "ispb": "12345678",
+        "agencia": "0001",
+        "conta": "123456",
+        "tipoConta": "CACC"
+    },
+    "valor": {
+        "original": 150.75,
+        "abatimento": 0,
+        "desconto": 5,
+        "juros": 0,
+        "multa": 0
+    },
+    "chavePix": "chave-pix-demo-123",
+    "solicitacaoPagador": "Pagamento referente ao pedido #12345",
+    "split": [
+        {
+            "favorecido": "Parceiro A",
+            "documento": "98765432100",
+            "valor": 30,
+            "percentual": 20
+        },
+        {
+            "favorecido": "Parceiro B",
+            "documento": "11222333000181",
+            "valor": 15,
+            "percentual": 10
+        }
+    ],
+    "infoAdicionais": [
+        { "nome": "pedido", "valor": "12345" },
+        { "nome": "canal", "valor": "mobile" }
+    ],
+    "metadata": {
+        "origemSistema": "erp",
+        "prioridade": "alta",
+        "tags": ["pix", "educacional"]
     }
-  ],
-  "infoAdicionais": [
-    { "nome": "pedido", "valor": "12345" },
-    { "nome": "canal", "valor": "mobile" }
-  ],
-  "metadata": {
-    "origemSistema": "erp",
-    "prioridade": "alta",
-    "tags": ["pix", "educacional"]
-  }
 }
 ```
 
 Exemplos completos versionados no repositório:
+
 - [oauth-token-request.json](examples/pix-json/oauth-token-request.json)
 - [oauth-token-response.json](examples/pix-json/oauth-token-response.json)
 - [cobranca-create-request.json](examples/pix-json/cobranca-create-request.json)
@@ -100,9 +102,11 @@ Exemplos completos versionados no repositório:
 - [problem-idempotency-conflict-response.json](examples/pix-json/problem-idempotency-conflict-response.json)
 
 Guia complementar:
+
 - [guias/JSON-COMPLEXO-E-BOAS-PRATICAS.md](guias/JSON-COMPLEXO-E-BOAS-PRATICAS.md)
 
 ## Anti-padrões comuns vs boa prática
+
 - Anti-padrão: objeto JSON monolítico sem subestruturas semânticas.
 - Boa prática: quebrar em blocos (`devedor`, `recebedor`, `valor`, `split`, `metadata`) e validar cada bloco.
 
@@ -118,18 +122,21 @@ Guia complementar:
 ## Como executar (2 terminais)
 
 ### Terminal 1: subir mock server
+
 ```bash
-dotnet run --project src/Pix/Pix.MockServer/Pix.MockServer.csproj
+dotnet run --project samples/Pix/Pix.MockServer/Pix.MockServer.csproj
 ```
 
 ### Terminal 2: rodar cliente didático
+
 ```bash
-dotnet run --project src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
+dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ```
 
 ### Executar testes da demo
+
 ```bash
-dotnet test tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
+dotnet test samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
 ```
 
 Persistência é em memória (objetivo didático). Segurança usa mTLS real + Bearer token. Em ambiente `Testing`, existe fallback de validação por header apenas para testes automatizados (`WebApplicationFactory`). Não há webhook nesta primeira versão.
@@ -139,7 +146,7 @@ Persistência é em memória (objetivo didático). Segurança usa mTLS real + Be
 ## Pipeline de HttpClient — registro completo
 
 ```csharp
-// src/Pix/Pix.ClientDemo/Program.cs
+// samples/Pix/Pix.ClientDemo/Program.cs
 builder.Services.AddTransient<CorrelationIdHandler>();   // injeta X-Correlation-Id em toda requisição
 builder.Services.AddTransient<IdempotencyKeyHandler>();  // injeta Idempotency-Key em POST/PUT/PATCH
 builder.Services.AddTransient<RequestLoggingHandler>();  // loga request/response para debug
@@ -172,12 +179,12 @@ Resposta:
 
 O pacote `Microsoft.Extensions.Http.Resilience` configura automaticamente uma pipeline Polly com:
 
-| Camada | Comportamento padrão |
-|--------|---------------------|
-| Timeout por tentativa | 10s por tentativa individual |
-| Retry | 3 tentativas, backoff exponencial com jitter |
-| Circuit Breaker | Abre após 50% de falhas em 30s; mantém aberto por 30s |
-| Timeout total | 30s para toda a operação (incluindo retentativas) |
+| Camada                | Comportamento padrão                                  |
+| --------------------- | ----------------------------------------------------- |
+| Timeout por tentativa | 10s por tentativa individual                          |
+| Retry                 | 3 tentativas, backoff exponencial com jitter          |
+| Circuit Breaker       | Abre após 50% de falhas em 30s; mantém aberto por 30s |
+| Timeout total         | 30s para toda a operação (incluindo retentativas)     |
 
 Para personalizar, troque por `AddResilienceHandler("nome", pipeline => ...)`.
 
@@ -186,7 +193,7 @@ Para personalizar, troque por `AddResilienceHandler("nome", pipeline => ...)`.
 ## Fluxo OAuth2 — obtenção e uso de token
 
 ```csharp
-// src/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs (simplificado)
+// samples/Pix/Pix.ClientDemo/Client/AuthTokenProvider.cs (simplificado)
 public async Task<string> ObterTokenAsync()
 {
     var request = new HttpRequestMessage(HttpMethod.Post, "/oauth/token");
@@ -210,7 +217,7 @@ public async Task<string> ObterTokenAsync()
 O `IdempotencyKeyHandler` injeta um UUID v4 por requisição em todos os métodos não-idempotentes:
 
 ```csharp
-// src/Pix/Pix.ClientDemo/Client/Handlers/IdempotencyKeyHandler.cs (simplificado)
+// samples/Pix/Pix.ClientDemo/Client/Handlers/IdempotencyKeyHandler.cs (simplificado)
 protected override async Task<HttpResponseMessage> SendAsync(
     HttpRequestMessage request, CancellationToken cancellationToken)
 {
@@ -228,7 +235,7 @@ O servidor mock armazena a resposta associada à chave. Um segundo POST com a me
 ## Teste de integração — exemplo de cenário
 
 ```csharp
-// tests/Pix.MockServer.Tests/PixMockServerTests.cs
+// samples/Pix/Pix.MockServer.Tests/PixMockServerTests.cs
 [Fact]
 public async Task Cobranca_MesmaChave_PayloadDivergente_Retorna409()
 {

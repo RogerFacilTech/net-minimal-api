@@ -63,7 +63,7 @@ dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj
 dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~RateLimitingTests"
 
 # Testes PIX
-dotnet test tests/Pix.MockServer.Tests/
+dotnet test samples/Pix/Pix.MockServer.Tests/
 ```
 
 ---
@@ -116,7 +116,7 @@ dotnet test FacShopAPI.slnx -v minimal
 
 # Por projeto
 dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
-dotnet test tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj -v minimal
+dotnet test samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj -v minimal
 
 # Por categoria — filtros de namespace
 dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Unit.Domain"
