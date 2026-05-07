@@ -8,7 +8,8 @@ namespace FacShopAPI.Pedidos.Data
         public PedidosDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<PedidosDbContext>();
-            optionsBuilder.UseSqlite("Data Source=Pedidos.db");
+            optionsBuilder.UseSqlite("Data Source=Pedidos.db",
+                o => o.MigrationsHistoryTable("__EFMigrationsHistory_Pedidos"));
             return new PedidosDbContext(optionsBuilder.Options);
         }
     }

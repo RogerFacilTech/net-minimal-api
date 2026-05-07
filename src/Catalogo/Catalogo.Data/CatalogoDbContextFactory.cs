@@ -8,7 +8,8 @@ namespace FacShopAPI.Catalogo.Data
         public CatalogoDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CatalogoDbContext>();
-            optionsBuilder.UseSqlite("Data Source=Catalogo.db");
+            optionsBuilder.UseSqlite("Data Source=Catalogo.db",
+                o => o.MigrationsHistoryTable("__EFMigrationsHistory_Catalogo"));
 
             return new CatalogoDbContext(optionsBuilder.Options);
         }

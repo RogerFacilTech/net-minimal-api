@@ -1,7 +1,7 @@
 # Plano de Acao - Reuso de Shared para Evitar Duplicacao
 
 Data: 2026-05-06
-Status: Proposto
+Status: Concluido
 Escopo: Catalogo e Pedidos (impacto principal), Shared.Common e Shared.Data
 
 ## Contexto
@@ -332,45 +332,45 @@ Criterio de saida:
 
 Checklist geral:
 
-- [ ] Branch dedicada da Fase 3 criada.
-- [ ] Build baseline verde registrado.
-- [ ] Testes baseline de Catalogo e Pedidos verdes registrados.
+- [x] Branch dedicada da Fase 3 criada.
+- [x] Build baseline verde registrado.
+- [x] Testes baseline de Catalogo e Pedidos verdes registrados.
 
 Lote 1:
 
-- [ ] CatalogoDbContext criado.
-- [ ] PedidosDbContext criado.
-- [ ] AppDbContext mantido apenas para compatibilidade temporaria.
-- [ ] Build verde.
+- [x] CatalogoDbContext criado.
+- [x] PedidosDbContext criado.
+- [x] AppDbContext mantido apenas para compatibilidade temporaria.
+- [x] Build verde.
 
 Lote 2:
 
-- [ ] DI de Catalogo migrada para CatalogoDbContext.
-- [ ] Repositorios de Catalogo migrados.
-- [ ] Build verde.
-- [ ] Testes Catalogo verdes.
+- [x] DI de Catalogo migrada para CatalogoDbContext.
+- [x] Repositorios de Catalogo migrados.
+- [x] Build verde.
+- [x] Testes Catalogo verdes.
 
 Lote 3:
 
-- [ ] DI de Pedidos migrada para PedidosDbContext.
-- [ ] Repositorios/handlers de Pedidos migrados.
-- [ ] Build verde.
-- [ ] Testes Pedidos verdes.
+- [x] DI de Pedidos migrada para PedidosDbContext.
+- [x] Repositorios/handlers de Pedidos migrados.
+- [x] Build verde.
+- [x] Testes Pedidos verdes.
 
 Lote 4:
 
-- [ ] Migrations de Catalogo separadas.
-- [ ] Migrations de Pedidos separadas.
-- [ ] Tabela de historico de migration separada por contexto.
-- [ ] Validacao em banco novo concluida.
-- [ ] Validacao em banco existente concluida.
+- [x] Migrations de Catalogo separadas.
+- [x] Migrations de Pedidos separadas.
+- [x] Tabela de historico de migration separada por contexto.
+- [x] Validacao em banco novo concluida.
+- [x] Validacao em banco existente concluida.
 
 Lote 5:
 
-- [ ] Shared.Data desacoplado de projetos especificos.
-- [ ] AppDbContext removido (quando sem consumidores).
-- [ ] Build final verde.
-- [ ] Testes finais Catalogo e Pedidos verdes.
+- [x] Shared.Data desacoplado de projetos especificos.
+- [x] AppDbContext removido (quando sem consumidores).
+- [x] Build final verde.
+- [x] Testes finais Catalogo e Pedidos verdes.
 
 Entregavel da fase:
 

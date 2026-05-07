@@ -45,14 +45,16 @@ if (builder.Environment.IsEnvironment("Testing"))
     var testDbName = $"TestDb_{Guid.NewGuid():N}.db";
     var testDbPath = Path.Combine(Path.GetTempPath(), testDbName);
     builder.Services.AddDbContext<PedidosDbContext>(options =>
-        options.UseSqlite($"Data Source={testDbPath}"));
+        options.UseSqlite($"Data Source={testDbPath}",
+            o => o.MigrationsHistoryTable("__EFMigrationsHistory_Pedidos")));
 }
 else
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=../../../data/facshop.db";
     builder.Services.AddDbContext<PedidosDbContext>(options =>
-        options.UseSqlite(connectionString));
+        options.UseSqlite(connectionString,
+            o => o.MigrationsHistoryTable("__EFMigrationsHistory_Pedidos")));
 }
 
 // ==========================================
