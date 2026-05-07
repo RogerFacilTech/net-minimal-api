@@ -11,6 +11,7 @@
     <Project Path="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
     <Project Path="src/Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <Project Path="src/Catalogo/Catalogo.Host/Catalogo.Host.csproj" />
+    <Project Path="src/Catalogo/Catalogo.Data/Catalogo.Data.csproj" />
   </Folder>
   <Folder Name="/Pedidos/">
     <Project Path="src/Pedidos/Pedidos.Host/Pedidos.Host.csproj" />
@@ -19,6 +20,7 @@
     <Project Path="src/Pedidos/Pedidos.Application/Pedidos.Application.csproj" />
     <Project Path="src/Pedidos/Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
     <Project Path="src/Pedidos/Pedidos.Endpoints/Pedidos.Endpoints.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Data/Pedidos.Data.csproj" />
   </Folder>
   <Folder Name="/Samples/">
     <Project Path="samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csproj" />
