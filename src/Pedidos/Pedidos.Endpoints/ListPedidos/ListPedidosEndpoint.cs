@@ -24,6 +24,6 @@ public class ListPedidosEndpoint : IEndpoint
         .WithTags("Pedidos")
         .WithSummary("Listar pedidos com paginação")
         .Produces<ListPedidosResponse>(StatusCodes.Status200OK)
-        .RequireAuthorization();
+        .AllowAnonymous();
     }
 }

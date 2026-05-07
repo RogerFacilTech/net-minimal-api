@@ -32,6 +32,6 @@ public class CreatePedidoEndpoint : IEndpoint
         .Produces<PedidoResponse>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status422UnprocessableEntity)
-        .RequireAuthorization();
+        .AllowAnonymous();
     }
 }

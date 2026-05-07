@@ -23,6 +23,6 @@ public class GetPedidoEndpoint : IEndpoint
         .WithSummary("Obter pedido por ID")
         .Produces<PedidoResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
-        .RequireAuthorization();
+        .AllowAnonymous();
     }
 }

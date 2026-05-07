@@ -38,6 +38,6 @@ public class AddItemEndpoint : IEndpoint
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status422UnprocessableEntity)
-        .RequireAuthorization();
+        .AllowAnonymous();
     }
 }
