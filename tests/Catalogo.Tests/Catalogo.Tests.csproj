@@ -33,7 +33,6 @@
     <ProjectReference Include="../../src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
     <ProjectReference Include="../../src/Catalogo/Catalogo.Common/Catalogo.Common.csproj" />
     <ProjectReference Include="../../src/Shared/Kernel/Shared.Kernel.csproj" />
-    <ProjectReference Include="../../src/Shared/Data/Shared.Data.csproj" />
   </ItemGroup>
 
 </Project>

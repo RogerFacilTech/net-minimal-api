@@ -1,10 +1,10 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using FacShopAPI.Shared.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pix.ClientDemo.Client;
-using Pix.ClientDemo.Client.Handlers;
 using Pix.ClientDemo.Scenarios;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -18,9 +18,10 @@ builder.Services.AddSingleton(new JsonSerializerOptions
     WriteIndented = true
 });
 
-builder.Services.AddTransient<CorrelationIdHandler>();
-builder.Services.AddTransient<IdempotencyKeyHandler>();
-builder.Services.AddTransient<RequestLoggingHandler>();
+builder.Services.AddSharedHttpInfrastructure(options =>
+{
+    options.PathContains = ["/pix/v1/cobrancas"];
+});
 
 builder.Services.AddHttpClient("PixServerRaw", (sp, client) =>
 {
@@ -29,7 +30,7 @@ builder.Services.AddHttpClient("PixServerRaw", (sp, client) =>
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 })
 .ConfigurePrimaryHttpMessageHandler(MutualTlsHttpHandlerFactory.Create)
-.AddStandardResilienceHandler();
+.AddDefaultApiResiliencePipeline("pix-raw", new ApiClientOptionsBase());
 
 builder.Services.AddHttpClient<PixProcessingClient>((sp, client) =>
 {
@@ -41,7 +42,7 @@ builder.Services.AddHttpClient<PixProcessingClient>((sp, client) =>
 .AddHttpMessageHandler<CorrelationIdHandler>()
 .AddHttpMessageHandler<IdempotencyKeyHandler>()
 .AddHttpMessageHandler<RequestLoggingHandler>()
-.AddStandardResilienceHandler();
+.AddDefaultApiResiliencePipeline("pix", new ApiClientOptionsBase());
 
 builder.Services.AddSingleton<IAuthTokenProvider, AuthTokenProvider>();
 builder.Services.AddTransient<PixScenarioRunner>();

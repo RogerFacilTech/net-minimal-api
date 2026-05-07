@@ -1,10 +1,13 @@
 using FacShopAPI.Pedidos.AddItemPedido;
 using FacShopAPI.Pedidos.CancelPedido;
 using FacShopAPI.Pedidos.CreatePedido;
+using FacShopAPI.Pedidos.Data;
 using FacShopAPI.Pedidos.GetPedido;
 using FacShopAPI.Pedidos.Infrastructure;
 using FacShopAPI.Pedidos.ListPedidos;
 using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Shared.Data;
+using FacShopAPI.Shared.Http;
 using FacShopAPI.Shared.Web;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -34,8 +37,6 @@ builder.Host.UseSerilog();
 // CONFIGURAÇÃO DE BANCO DE DADOS
 // ==========================================
 
-using FacShopAPI.Pedidos.Data;
-
 if (builder.Environment.IsEnvironment("Testing"))
 {
     var testDbName = $"TestDb_{Guid.NewGuid():N}.db";
@@ -54,6 +55,25 @@ else
 // ==========================================
 // CONFIGURAÇÃO DE DEPENDENCY INJECTION
 // ==========================================
+
+var catalogoApiBaseUrl = builder.Configuration["CatalogoApi:BaseUrl"] ?? "https://localhost:5001";
+
+builder.Services.AddApiClientWithResilience<CatalogoApiClient>(
+    clientName: "catalogo-api",
+    configureOptions: options =>
+    {
+        options.BaseUrl = catalogoApiBaseUrl;
+        options.AttemptTimeoutSeconds = 5;
+        options.TotalRequestTimeoutSeconds = 30;
+        options.MaxRetryAttempts = 3;
+        options.BaseRetryDelaySeconds = 1;
+        options.CircuitSamplingWindowSeconds = 30;
+        options.CircuitMinimumThroughput = 5;
+        options.CircuitFailureRatio = 0.5;
+        options.CircuitBreakDurationSeconds = 15;
+    });
+
+builder.Services.AddScoped<ICatalogoApiClient>(sp => sp.GetRequiredService<CatalogoApiClient>());
 builder.Services.AddEndpointsFromAssembly(typeof(AddItemEndpoint).Assembly);
 builder.Services.AddScoped<IPedidoCommandRepository, PedidoCommandRepository>();
 builder.Services.AddScoped<IPedidoQueryRepository, PedidoQueryRepository>();
@@ -88,6 +108,12 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pedidos API v1");
         c.RoutePrefix = string.Empty;
     });
+}
+
+// Skip DB initialization in test environment
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.MigrateDatabase<PedidosDbContext>();
 }
 
 app.MapRegisteredEndpoints();

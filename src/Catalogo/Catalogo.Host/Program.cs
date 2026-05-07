@@ -8,6 +8,7 @@ using FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
 using FacShopAPI.Catalogo.Endpoints.Extensions;
+using FacShopAPI.Shared.Data;
 using FacShopAPI.Shared.Middleware;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -49,7 +50,7 @@ if (builder.Environment.IsEnvironment("Testing"))
 else
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? "Data Source=produtos-api.db";
+        ?? "Data Source=../../../data/facshop.db";
 
     builder.Services.AddDbContext<CatalogoDbContext>(options =>
         options.UseSqlite(connectionString));
@@ -187,10 +188,8 @@ var app = builder.Build();
 // Skip DB initialization in test environment — ApiFactory handles seeding
 if (!app.Environment.IsEnvironment("Testing"))
 {
-    using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<CatalogoDbContext>();
-    dbContext.Database.Migrate();
-    FacShopAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
+    app.MigrateDatabase<CatalogoDbContext>(db =>
+        FacShopAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(db));
 }
 
 // ==========================================

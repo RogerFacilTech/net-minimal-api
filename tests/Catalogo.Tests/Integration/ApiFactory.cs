@@ -1,6 +1,6 @@
+using FacShopAPI.Catalogo.Data;
 using FacShopAPI.Catalogo.Endpoints.Extensions;
 using FacShopAPI.Catalogo.Infrastructure.Data;
-using FacShopAPI.Shared.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +26,8 @@ public class ApiFactory : WebApplicationFactory<Program>
     {
         var host = base.CreateHost(builder);
         using var scope = host.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.EnsureCreated();
+        var db = scope.ServiceProvider.GetRequiredService<CatalogoDbContext>();
+        db.Database.Migrate();
         DbSeeder.Seed(db);
         return host;
     }

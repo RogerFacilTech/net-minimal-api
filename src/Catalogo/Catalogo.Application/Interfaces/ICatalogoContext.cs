@@ -1,4 +1,5 @@
 using Catalogo.Domain;
+using Catalogo.Domain.ValueObjects;
 
 namespace FacShopAPI.Catalogo.Application.Interfaces;
 

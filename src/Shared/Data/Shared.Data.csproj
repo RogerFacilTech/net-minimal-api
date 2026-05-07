@@ -3,21 +3,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Shared.Data</RootNamespace>
+    <RootNamespace>FacShopAPI.Shared.Data</RootNamespace>
     <AssemblyName>Shared.Data</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Kernel/Shared.Kernel.csproj" />
-    <ProjectReference Include="../../Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
-    <ProjectReference Include="../../Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
-    <ProjectReference Include="../../Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="10.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
   </ItemGroup>
 </Project>

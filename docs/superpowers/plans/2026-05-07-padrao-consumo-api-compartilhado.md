@@ -188,14 +188,14 @@ Criterio de saida:
 
 ## Checklist Operacional
 
-- [ ] Criado projeto Shared.Http e adicionado a solution.
-- [ ] Implementadas extensoes de DI para registro padronizado de clientes.
-- [ ] Implementados handlers compartilhados (correlation, idempotencia, logging).
-- [ ] Implementada politica de resiliencia default com suporte explicito a 429.
+- [x] Criado projeto Shared.Http e adicionado a solution.
+- [x] Implementadas extensoes de DI para registro padronizado de clientes.
+- [x] Implementados handlers compartilhados (correlation, idempotencia, logging).
+- [x] Implementada politica de resiliencia default com suporte explicito a 429.
 - [ ] Testes do Shared.Http verdes.
-- [ ] Catalogo.HttpClientDemo migrado para Shared.Http.
-- [ ] Pix.ClientDemo migrado para Shared.Http (mantendo mTLS/OAuth especificos).
-- [ ] Primeiro consumidor real (Pedidos -> Catalogo API) implementado via Shared.Http.
+- [x] Catalogo.HttpClientDemo migrado para Shared.Http.
+- [x] Pix.ClientDemo migrado para Shared.Http (mantendo mTLS/OAuth especificos).
+- [x] Primeiro consumidor real (Pedidos -> Catalogo API) implementado via Shared.Http.
 - [ ] Guia de uso publicado em docs/guias.
 
 ## Ordem Recomendada de Implementacao
