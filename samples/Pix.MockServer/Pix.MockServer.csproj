@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pix.MockServer.Tests\**\*.cs" />
+    <None Remove="Pix.MockServer.Tests\**\*" />
+    <EmbeddedResource Remove="Pix.MockServer.Tests\**\*" />
+  </ItemGroup>
 </Project>
