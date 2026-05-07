@@ -12,6 +12,7 @@
     <Project Path="src/Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <Project Path="src/Catalogo/Catalogo.Host/Catalogo.Host.csproj" />
     <Project Path="src/Catalogo/Catalogo.Data/Catalogo.Data.csproj" />
+    <Project Path="src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj" />
   </Folder>
   <Folder Name="/Pedidos/">
     <Project Path="src/Pedidos/Pedidos.Host/Pedidos.Host.csproj" />
@@ -21,20 +22,17 @@
     <Project Path="src/Pedidos/Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
     <Project Path="src/Pedidos/Pedidos.Endpoints/Pedidos.Endpoints.csproj" />
     <Project Path="src/Pedidos/Pedidos.Data/Pedidos.Data.csproj" />
+    <Project Path="src/Pedidos/Pedidos.Tests/Pedidos.Tests.csproj" />
   </Folder>
   <Folder Name="/Samples/">
     <Project Path="samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csproj" />
     <Project Path="samples/Pix.MockServer/Pix.MockServer.csproj" />
     <Project Path="samples/Pix.ClientDemo/Pix.ClientDemo.csproj" />
+    <Project Path="samples/Pix.MockServer/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/Shared/" />
   <Folder Name="/src/Shared/Http/">
     <Project Path="src/Shared/Http/Shared.Http.csproj" />
-  </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="tests/Catalogo.Tests/Catalogo.Tests.csproj" />
-    <Project Path="tests/Pedidos.Tests/Pedidos.Tests.csproj" />
-    <Project Path="tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
   </Folder>
 </Solution>

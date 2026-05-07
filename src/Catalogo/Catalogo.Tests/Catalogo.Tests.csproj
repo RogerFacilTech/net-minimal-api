@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.0.0</Version>
+    <Description>Unit and Integration Tests for Catalogo</Description>
+    <RootNamespace>Catalogo.Tests</RootNamespace>
+    <AssemblyName>Catalogo.Tests</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Catalogo.Host/Catalogo.Host.csproj" />
+    <ProjectReference Include="../Catalogo.Domain/Catalogo.Domain.csproj" />
+    <ProjectReference Include="../Catalogo.Application/Catalogo.Application.csproj" />
+    <ProjectReference Include="../Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
+    <ProjectReference Include="../Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
+    <ProjectReference Include="../Catalogo.Common/Catalogo.Common.csproj" />
+    <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
+  </ItemGroup>
+
+</Project>
