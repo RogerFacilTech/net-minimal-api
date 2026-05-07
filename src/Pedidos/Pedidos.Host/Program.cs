@@ -1,3 +1,4 @@
+using System.Text;
 using FacShopAPI.Pedidos.AddItemPedido;
 using FacShopAPI.Pedidos.CancelPedido;
 using FacShopAPI.Pedidos.CreatePedido;
@@ -10,7 +11,9 @@ using FacShopAPI.Shared.Data;
 using FacShopAPI.Shared.Http;
 using FacShopAPI.Shared.Web;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -86,6 +89,28 @@ builder.Services.AddScoped<CancelPedidoHandler>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<AddItemValidator>();
 
+// ==========================================
+// CONFIGURAÇÃO DE SEGURANÇA (JWT)
+// ==========================================
+
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "MinhaChaveSuperSecretaDePeloMenos32BytesAki123!";
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "ProdutosAPI",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "TodosOsClientes",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 // SWAGGER
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -115,6 +140,9 @@ if (!app.Environment.IsEnvironment("Testing"))
 {
     app.MigrateDatabase<PedidosDbContext>();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRegisteredEndpoints();
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FacShopAPI.Catalogo.Data.Migrations
 {
     [DbContext(typeof(CatalogoDbContext))]
-    [Migration("20260507165641_CorrigirHashModelo")]
-    partial class CorrigirHashModelo
+    [Migration("20260507170238_InitialCatalogo")]
+    partial class InitialCatalogo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

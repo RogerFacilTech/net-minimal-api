@@ -3,12 +3,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI</RootNamespace>
-    <AssemblyName>ProdutosAPI</AssemblyName>
+    <RootNamespace>Catalogo.Host</RootNamespace>
+    <AssemblyName>Catalogo.Host</AssemblyName>
     <Version>2.0.0</Version>
     <Description>API REST de Produtos com Minimal API e .NET 10</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>ProdutosAPI.xml</DocumentationFile>
+    <DocumentationFile>Catalogo.Host.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
