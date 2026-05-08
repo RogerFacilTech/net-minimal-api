@@ -6,13 +6,33 @@ Este Ã© um projeto educacional em **.NET 10 Minimal API** que demonstra trÃª
 
 ## Os TrÃªs Bounded Contexts
 
+## Autenticacao centralizada (Auth)
+
+A emissao de JWT da solution foi centralizada no microservico `Auth`.
+
+- Emissor de token: `src/Auth/Auth.Host/` + `src/Auth/Auth.Endpoints/`
+- Endpoint de login: `POST /api/v1/auth/login` (Auth)
+- Resource servers: `Catalogo` e `Pedidos` apenas validam JWT
+
+Diagrama simplificado do fluxo:
+
+```mermaid
+flowchart LR
+   Cliente[Cliente / Swagger / Testes] -->|POST /api/v1/auth/login| Auth[Auth.Host]
+   Auth -->|JWT assinado| Cliente
+   Cliente -->|Bearer token| Catalogo[Catalogo.Host]
+   Cliente -->|Bearer token| Pedidos[Pedidos.Host]
+   Catalogo -->|valida assinatura, issuer, audience| JWT[(JWT)]
+   Pedidos -->|valida assinatura, issuer, audience| JWT
+```
+
 ### CatÃ¡logo
 
-|               |                                                         |
-| ------------- | ------------------------------------------------------- |
+|                |                                                          |
+| -------------- | -------------------------------------------------------- |
 | **PadrÃ£o**    | Clean Architecture hÃ­brida (CA nas camadas, VSA na API) |
-| **DiretÃ³rio** | `src/Catalogo/`                                         |
-| **Rotas**     | `/api/v1/catalogo/*`                                    |
+| **DiretÃ³rio** | `src/Catalogo/`                                          |
+| **Rotas**      | `/api/v1/catalogo/*`                                     |
 
 Demonstra separaÃ§Ã£o em sub-projetos (Domain, Application, Infrastructure, API), entidades com domÃ­nio rico, value objects, repositÃ³rios abstraÃ­dos por interfaces e rate limiting por polÃ­tica de rota. ContÃ©m 5 recursos: Produto, Categoria, Variante, Atributo e MÃ­dia.
 
@@ -27,11 +47,11 @@ Caminhos relevantes:
 
 ### Pedidos
 
-|               |                                            |
-| ------------- | ------------------------------------------ |
+|                |                                             |
+| -------------- | ------------------------------------------- |
 | **PadrÃ£o**    | Vertical Slice Architecture + DomÃ­nio Rico |
-| **DiretÃ³rio** | `src/Pedidos/`                             |
-| **Rotas**     | `/api/v1/pedidos/*`                        |
+| **DiretÃ³rio** | `src/Pedidos/`                              |
+| **Rotas**      | `/api/v1/pedidos/*`                         |
 
 Demonstra organizaÃ§Ã£o por caso de uso (cada operaÃ§Ã£o Ã© uma pasta isolada), aggregate com regras de negÃ³cio encapsuladas, o padrÃ£o `Result<T>` em vez de exceÃ§Ãµes, e auto-descoberta de endpoints via reflection. AutenticaÃ§Ã£o JWT obrigatÃ³ria.
 
@@ -45,11 +65,11 @@ Caminhos relevantes:
 
 ### Pix
 
-|               |                                           |
-| ------------- | ----------------------------------------- |
+|                |                                            |
+| -------------- | ------------------------------------------ |
 | **PadrÃ£o**    | Mock Server + HTTP Client com resiliÃªncia |
-| **DiretÃ³rio** | `samples/Pix/`                            |
-| **Rotas**     | â€” (integraÃ§Ã£o externa)                    |
+| **DiretÃ³rio** | `samples/Pix/`                             |
+| **Rotas**      | â€” (integraÃ§Ã£o externa)                 |
 
 Demonstra como integrar com APIs externas usando mTLS, OAuth2 e pipelines de resiliÃªncia (Polly via `Microsoft.Extensions.Http.Resilience`). Inclui um servidor mock que simula a API Pix do BCB e um console app que o consome.
 
@@ -100,34 +120,34 @@ Estudo completo incluindo integraÃ§Ã£o externa, estratÃ©gia de testes e de
 
 ## Mapa da DocumentaÃ§Ã£o
 
-| Arquivo                  | Objetivo                           | PÃºblico                   |
-| ------------------------ | ---------------------------------- | ------------------------- |
-| `README.md`              | VisÃ£o geral e inÃ­cio rÃ¡pido        | Todos                     |
+| Arquivo                  | Objetivo                            | PÃºblico                   |
+| ------------------------ | ----------------------------------- | -------------------------- |
+| `README.md`              | VisÃ£o geral e inÃ­cio rÃ¡pido      | Todos                      |
 | `docs/01-ARQUITETURA.md` | PadrÃµes e fluxo de dados           | IntermediÃ¡rio / Arquiteto |
 | `docs/02-CATALOGO.md`    | Deep-dive do CatÃ¡logo              | IntermediÃ¡rio             |
 | `docs/03-PEDIDOS.md`     | Vertical Slice e domÃ­nio rico      | IntermediÃ¡rio / Arquiteto |
-| `docs/04-PIX.md`         | IntegraÃ§Ã£o externa e resiliÃªncia   | IntermediÃ¡rio             |
-| `docs/05-TESTES.md`      | EstratÃ©gia e execuÃ§Ã£o de testes    | Todos                     |
-| `docs/guias/`            | Guias conceituais de REST e .NET   | Iniciante / IntermediÃ¡rio |
-| `docs/ADRs/`             | DecisÃµes arquiteturais registradas | Arquiteto                 |
+| `docs/04-PIX.md`         | IntegraÃ§Ã£o externa e resiliÃªncia | IntermediÃ¡rio             |
+| `docs/05-TESTES.md`      | EstratÃ©gia e execuÃ§Ã£o de testes  | Todos                      |
+| `docs/guias/`            | Guias conceituais de REST e .NET    | Iniciante / IntermediÃ¡rio |
+| `docs/ADRs/`             | DecisÃµes arquiteturais registradas | Arquiteto                  |
 
 ---
 
 ## Tecnologias
 
-| Tecnologia              | VersÃ£o | Papel                         |
-| ----------------------- | ------ | ----------------------------- |
-| .NET                    | 10 LTS | Runtime e SDK                 |
-| EF Core                 | 10     | ORM e migraÃ§Ãµes               |
-| SQLite                  | â€”      | Banco de dados (dev/testes)   |
-| FluentValidation        | 11     | ValidaÃ§Ã£o de entrada          |
-| Polly / Http.Resilience | v8     | Retry, circuit breaker        |
-| JWT Bearer              | â€”      | AutenticaÃ§Ã£o em Pedidos       |
-| xUnit                   | â€”      | Framework de testes           |
-| FluentAssertions        | 6      | Assertivas legÃ­veis em testes |
-| AutoMapper              | 13     | Mapeamento DTO â†” entidade     |
-| Serilog                 | 4      | Logging estruturado           |
-| Swagger / OpenAPI       | â€”      | DocumentaÃ§Ã£o interativa       |
+| Tecnologia              | VersÃ£o | Papel                          |
+| ----------------------- | ------- | ------------------------------ |
+| .NET                    | 10 LTS  | Runtime e SDK                  |
+| EF Core                 | 10      | ORM e migraÃ§Ãµes              |
+| SQLite                  | â€”     | Banco de dados (dev/testes)    |
+| FluentValidation        | 11      | ValidaÃ§Ã£o de entrada         |
+| Polly / Http.Resilience | v8      | Retry, circuit breaker         |
+| JWT Bearer              | â€”     | AutenticaÃ§Ã£o em Pedidos      |
+| xUnit                   | â€”     | Framework de testes            |
+| FluentAssertions        | 6       | Assertivas legÃ­veis em testes |
+| AutoMapper              | 13      | Mapeamento DTO â†” entidade    |
+| Serilog                 | 4       | Logging estruturado            |
+| Swagger / OpenAPI       | â€”     | DocumentaÃ§Ã£o interativa      |
 
 ---
 

@@ -1,5 +1,14 @@
 ﻿# Pedidos â€” Vertical Slice e DomÃ­nio Rico
 
+## Autenticacao no contexto da solution
+
+O servico de `Pedidos` e um resource server.
+
+- Nao emite token JWT.
+- Exige token JWT nos endpoints protegidos.
+- Valida token com `JwtBearer` (assinatura, issuer, audience, exp).
+- O emissor oficial de token e o microservico `Auth` (`POST /api/v1/auth/login`).
+
 > Complemento didÃ¡tico: para integraÃ§Ã£o externa com APIs e JSON complexo, veja [04-PIX.md](04-PIX.md), que cobre `HttpClientFactory`, idempotÃªncia e servidor mock auto-contido.
 
 Para entender a arquitetura do CatÃ¡logo (CA hÃ­brida em camadas), explore `src/Catalogo/Catalogo.API/Endpoints/`.
@@ -11,6 +20,7 @@ Para entender a arquitetura do CatÃ¡logo (CA hÃ­brida em camadas), explore `
 Arquiteturas tradicionais em camadas (Endpoints â†’ Services â†’ Data) funcionam bem atÃ© um ponto. Uma mudanÃ§a no domÃ­nio exige ediÃ§Ãµes em mÃºltiplos lugares:
 
 > **Exemplo:** Adicionar um novo campo `Desconto` ao CatÃ¡logo exigiria tocar em:
+>
 > 1. `Produto.cs` â€” adicionar propriedade
 > 2. `CriarProdutoValidator.cs` â€” adicionar regra
 > 3. `AtualizarProdutoValidator.cs` â€” idem
@@ -41,13 +51,13 @@ Cada slice Ã© **independente**: alterar o comportamento de criaÃ§Ã£o de pe
 
 ### BenefÃ­cios
 
-| BenefÃ­cio | DescriÃ§Ã£o |
-|-----------|-----------|
-| **CoesÃ£o Alta** | Tudo para fazer uma tarefa estÃ¡ num lugar |
-| **IndependÃªncia** | Cada slice pode evoluir isoladamente |
-| **Escalabilidade** | FÃ¡cil adicionar novos casos de uso |
-| **Onboarding** | Novo dev consegue entender um caso de uso completo rÃ¡pido |
-| **Low Coupling** | Mexer em uma slice nÃ£o quebra outras |
+| BenefÃ­cio         | DescriÃ§Ã£o                                                |
+| ------------------ | ---------------------------------------------------------- |
+| **CoesÃ£o Alta**   | Tudo para fazer uma tarefa estÃ¡ num lugar                 |
+| **IndependÃªncia** | Cada slice pode evoluir isoladamente                       |
+| **Escalabilidade** | FÃ¡cil adicionar novos casos de uso                        |
+| **Onboarding**     | Novo dev consegue entender um caso de uso completo rÃ¡pido |
+| **Low Coupling**   | Mexer em uma slice nÃ£o quebra outras                      |
 
 ### Anatomia de um Slice (exemplo: CreatePedido)
 
@@ -165,6 +175,7 @@ public interface IEndpoint
 ```
 
 No `Program.cs`:
+
 ```csharp
 builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 ```
@@ -192,12 +203,14 @@ public class Produto
 ```
 
 **CaracterÃ­sticas:**
+
 - Apenas propriedades (get/set)
 - Sem mÃ©todos de negÃ³cio
 - ValidaÃ§Ãµes em `ProdutoValidator`
 - LÃ³gica em `ProdutoService`
 
 **Onde as regras vivem:**
+
 - "PreÃ§o nÃ£o pode ser negativo" â†’ `ProdutoValidator`
 - "NÃ£o pode vender fora do estoque" â†’ `ProdutoService`
 - "Ativo garante disponibilidade" â†’ `ProdutoService`
@@ -261,20 +274,21 @@ public sealed class Pedido
 ```
 
 **CaracterÃ­sticas:**
+
 - Propriedades + mÃ©todos
 - MÃ©todos retornam `Result<T>` para sucesso/falha
 - Identidade prÃ³pria (invariantes)
 - ValidaÃ§Ãµes integradas
 
-| Aspecto | Produto (AnÃªmico) | Pedido (Rico) |
-|---------|-------------------|---------------|
-| **Define-se em** | Apenas propriedades | Propriedades + mÃ©todos |
-| **ValidaÃ§Ã£o "PreÃ§o > 0"** | Em `ProdutoValidator` | Em `Pedido.Create()` |
-| **"NÃ£o vender sem estoque"** | Em `ProdutoService` | Em `Pedido.AddItem()` |
-| **Quem orquestra?** | `ProdutoService` | `Pedido.Create()`, `Pedido.AddItem()` |
-| **Total de Pedido** | Calculado em `Service` | Propriedade `Total` do prÃ³prio agregado |
-| **Teste** | Testa `Service.CancelarAsync()` | Testa `Pedido.Cancel()` direto |
-| **Classe tem identidade?** | NÃ£o, Ã© apenas storage | Sim, entidade com regras |
+| Aspecto                       | Produto (AnÃªmico)              | Pedido (Rico)                            |
+| ----------------------------- | ------------------------------- | ---------------------------------------- |
+| **Define-se em**              | Apenas propriedades             | Propriedades + mÃ©todos                  |
+| **ValidaÃ§Ã£o "PreÃ§o > 0"**  | Em `ProdutoValidator`           | Em `Pedido.Create()`                     |
+| **"NÃ£o vender sem estoque"** | Em `ProdutoService`             | Em `Pedido.AddItem()`                    |
+| **Quem orquestra?**           | `ProdutoService`                | `Pedido.Create()`, `Pedido.AddItem()`    |
+| **Total de Pedido**           | Calculado em `Service`          | Propriedade `Total` do prÃ³prio agregado |
+| **Teste**                     | Testa `Service.CancelarAsync()` | Testa `Pedido.Cancel()` direto           |
+| **Classe tem identidade?**    | NÃ£o, Ã© apenas storage         | Sim, entidade com regras                 |
 
 ---
 
@@ -303,6 +317,7 @@ public abstract record Result<T>(bool IsSuccess, T? Value, string? Error)
 ```
 
 **Vantagens:**
+
 - Sem overhead de exception handling
 - Erros de negÃ³cio sÃ£o esperados
 - Code flow Ã© linear e legÃ­vel
@@ -313,6 +328,7 @@ public abstract record Result<T>(bool IsSuccess, T? Value, string? Error)
 ## 6. Quando Usar Cada PadrÃ£o
 
 ### Use Clean Architecture (Camadas) quando:
+
 - DomÃ­nio Ã© simples (poucos agregados, poucas regras)
 - Muitos endpoints genÃ©ricos (CRUD tradicional)
 - Equipe pequena / projeto pequeno
@@ -321,6 +337,7 @@ public abstract record Result<T>(bool IsSuccess, T? Value, string? Error)
 **Exemplo:** CatÃ¡logo â€” `Atributo` e `MÃ­dia` (CRUD simples, sem invariantes de negÃ³cio)
 
 ### Use Vertical Slice (Feature Folders) quando:
+
 - DomÃ­nio Ã© complexo (muitos agregados, invariantes)
 - Cada feature tem lÃ³gica especÃ­fica
 - Equipe mÃ©dia/grande
@@ -395,11 +412,13 @@ Quando for adicionar um novo slice de Pedidos:
 ## 9. ReferÃªncias no CÃ³digo
 
 ### CatÃ¡logo (CA HÃ­brida)
+
 - Endpoints: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)
 - Service: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)
 - Testes: [tests/FacShopAPI.Tests/Integration/](../tests/FacShopAPI.Tests/Integration/)
 
 ### Vertical Slice (Pedidos)
+
 - Domain: [src/Pedidos/Domain/](../src/Pedidos/Domain/)
 - CreatePedido: [src/Pedidos/CreatePedido/](../src/Pedidos/CreatePedido/)
 - Result Pattern: [src/Shared/Common/Result.cs](../src/Shared/Common/Result.cs)
@@ -409,15 +428,15 @@ Quando for adicionar um novo slice de Pedidos:
 
 ## 10. Comparativo Final
 
-| DimensÃ£o | CatÃ¡logo (Produto) | Vertical Slice (Pedidos) |
-|----------|--------------------|--------------------------|
-| **OrganizaÃ§Ã£o** | Por camada | Por feature |
-| **DiretÃ³rio** | `src/Catalogo/Catalogo.*` | `src/Pedidos/` |
-| **IndependÃªncia** | Fraca (mudanÃ§as globais) | Forte (slice isolada) |
-| **Modelo** | AnÃªmico / hÃ­brido | Rico |
-| **ValidaÃ§Ã£o** | Em Validator + Service | No agregado + Validator |
-| **Erro** | Exception | Result pattern |
-| **CoesÃ£o** | Baixa (espalhada) | Alta (tudo junto) |
-| **Teste** | Testa serviÃ§o isolado | Testa agregado direto |
-| **Escalabilidade** | AtÃ© ~50 endpoints | 100+ features |
-| **Quando usar** | DomÃ­nio simples | DomÃ­nio complexo |
+| DimensÃ£o          | CatÃ¡logo (Produto)       | Vertical Slice (Pedidos) |
+| ------------------ | ------------------------- | ------------------------ |
+| **OrganizaÃ§Ã£o**  | Por camada                | Por feature              |
+| **DiretÃ³rio**     | `src/Catalogo/Catalogo.*` | `src/Pedidos/`           |
+| **IndependÃªncia** | Fraca (mudanÃ§as globais) | Forte (slice isolada)    |
+| **Modelo**         | AnÃªmico / hÃ­brido       | Rico                     |
+| **ValidaÃ§Ã£o**    | Em Validator + Service    | No agregado + Validator  |
+| **Erro**           | Exception                 | Result pattern           |
+| **CoesÃ£o**        | Baixa (espalhada)         | Alta (tudo junto)        |
+| **Teste**          | Testa serviÃ§o isolado    | Testa agregado direto    |
+| **Escalabilidade** | AtÃ© ~50 endpoints        | 100+ features            |
+| **Quando usar**    | DomÃ­nio simples          | DomÃ­nio complexo        |

@@ -1,7 +1,7 @@
 # Plano Incremental: Separar Autenticacao em Microservico Dedicado
 
 Data: 2026-05-08
-Status: Proposto
+Status: Concluido
 Escopo: Catalogo + Pedidos + testes + documentacao
 
 ## Objetivo
@@ -227,6 +227,15 @@ Implementar:
 - Login removido do Catalogo (ou legado explicitamente desativado por padrao).
 - Testes e docs atualizados para o novo fluxo.
 - Build dos hosts principais sem regressao.
+
+## Status final de execucao
+
+- Fase 0: concluida
+- Fase 1: concluida
+- Fase 2: concluida
+- Fase 3: concluida
+- Fase 4: concluida
+- Fase 5: concluida
 
 ## Plano de Rollback
 

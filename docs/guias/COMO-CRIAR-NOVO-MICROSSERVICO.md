@@ -15,6 +15,16 @@ Foco do documento:
 
 Nao entra em detalhes de modelagem de entidades de negocio.
 
+## Regra de autenticacao da solution
+
+Padrao atual para novos microservicos:
+
+- Apenas o microservico `Auth` emite JWT.
+- Microservicos de dominio (Catalogo, Pedidos e novos servicos) apenas validam JWT.
+- Nao criar endpoint de login em servicos de dominio.
+
+Quando criar um novo servico, configure somente validacao JWT (`AddJwtBearer`) e `RequireAuthorization()` nos endpoints protegidos.
+
 ---
 
 ## 1. Entenda os dois estilos usados no repositorio
