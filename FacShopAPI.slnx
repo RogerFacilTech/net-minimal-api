@@ -31,8 +31,7 @@
     <Project Path="samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
     <Project Path="samples/Pix/Pix.MockServer/Pix.MockServer.csproj" />
   </Folder>
-  <Folder Name="/src/" />
-  <Folder Name="/src/Auth/">
+  <Folder Name="/Auth/">
     <Project Path="src/Auth/Auth.Endpoints/Auth.Endpoints.csproj" />
     <Project Path="src/Auth/Auth.Host/Auth.Host.csproj" />
   </Folder>
