@@ -10,6 +10,12 @@ Rodar o host principal do Catalogo:
 dotnet run --project src/Catalogo/Catalogo.Host/Catalogo.Host.csproj
 ```
 
+Rodar o host de Auth (emissor JWT):
+
+```bash
+dotnet run --project src/Auth/Auth.Host/Auth.Host.csproj
+```
+
 Rodar o host principal de Pedidos:
 
 ```bash
@@ -40,13 +46,13 @@ dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 Executar testes de Catalogo:
 
 ```bash
-
+dotnet test src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj
 ```
 
 Executar testes de Pedidos:
 
 ```bash
-dotnet test tests/Pedidos.Tests/Pedidos.Tests.csproj
+dotnet test src/Pedidos/Pedidos.Tests/Pedidos.Tests.csproj
 ```
 
 Executar testes de Pix MockServer:

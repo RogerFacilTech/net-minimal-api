@@ -147,9 +147,12 @@ Persistência é em memória (objetivo didático). Segurança usa mTLS real + Be
 
 ```csharp
 // samples/Pix/Pix.ClientDemo/Program.cs
-builder.Services.AddTransient<CorrelationIdHandler>();   // injeta X-Correlation-Id em toda requisição
-builder.Services.AddTransient<IdempotencyKeyHandler>();  // injeta Idempotency-Key em POST/PUT/PATCH
-builder.Services.AddTransient<RequestLoggingHandler>();  // loga request/response para debug
+builder.Services.AddSharedHttpInfrastructure(options =>
+{
+    options.PathContains = ["/pix/v1/cobrancas"];
+});
+// Registra CorrelationIdHandler, IdempotencyKeyHandler e RequestLoggingHandler
+// (definidos em src/Shared/Http/)
 
 builder.Services.AddHttpClient<PixProcessingClient>((sp, client) =>
 {
@@ -162,7 +165,7 @@ builder.Services.AddHttpClient<PixProcessingClient>((sp, client) =>
 .AddHttpMessageHandler<CorrelationIdHandler>()   // handlers em cadeia (ordem importa)
 .AddHttpMessageHandler<IdempotencyKeyHandler>()
 .AddHttpMessageHandler<RequestLoggingHandler>()
-.AddStandardResilienceHandler();                 // Retry + Circuit Breaker + Timeout (Polly v8)
+.AddDefaultApiResiliencePipeline("pix", new ApiClientOptionsBase()); // Retry + Circuit Breaker + Timeout
 ```
 
 A cadeia de handlers executa de fora para dentro na requisição e de dentro para fora na resposta:
@@ -217,7 +220,7 @@ public async Task<string> ObterTokenAsync()
 O `IdempotencyKeyHandler` injeta um UUID v4 por requisição em todos os métodos não-idempotentes:
 
 ```csharp
-// samples/Pix/Pix.ClientDemo/Client/Handlers/IdempotencyKeyHandler.cs (simplificado)
+// src/Shared/Http/IdempotencyKeyHandler.cs (simplificado)
 protected override async Task<HttpResponseMessage> SendAsync(
     HttpRequestMessage request, CancellationToken cancellationToken)
 {

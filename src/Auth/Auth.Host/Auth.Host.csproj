@@ -9,6 +9,7 @@
     <Description>API de Autenticação (JWT) - Projeto Educacional</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>Auth.Host.xml</DocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Auth.Endpoints/Auth.Endpoints.csproj" />

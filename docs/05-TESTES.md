@@ -4,10 +4,10 @@
 
 | Projeto                | Testes (aprox.) | Escopo                                             |
 | ---------------------- | --------------- | -------------------------------------------------- |
-| `Catalogo.Tests`       | 102             | Catálogo (integração HTTP + unitários + validação) |
+| `Catalogo.Tests`       | 116             | Catálogo (integração HTTP + unitários + validação) |
 | `Pedidos.Tests`        | 47              | Pedidos (endpoints + integração + domínio)         |
 | `Pix.MockServer.Tests` | 7               | Integração HTTP PIX (OAuth2, mTLS, idempotência)   |
-| **Total**              | **156**         |                                                    |
+| **Total**              | **170**         |                                                    |
 
 > Contagem estimada por atributos `[Fact]` e `[Theory]` na branch atual.
 
@@ -17,10 +17,10 @@
 
 | Tipo                  | Escopo                                               | Aprox. |
 | --------------------- | ---------------------------------------------------- | ------ |
-| Integração (Catálogo) | Endpoints HTTP completos via `HttpClient`            | ~45    |
+| Integração (Catálogo) | Endpoints HTTP completos via `HttpClient`            | ~55    |
 | Rate limiting         | Políticas de throttling via `RateLimitingApiFactory` | 3      |
-| Unitários (domínio)   | Entidades, value objects, invariantes                | ~30    |
-| Validators            | Regras FluentValidation                              | ~24    |
+| Unitários (domínio)   | Entidades, value objects, invariantes                | ~35    |
+| Validators            | Regras FluentValidation                              | ~23    |
 
 ---
 
@@ -252,16 +252,16 @@ public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
 public class PedidoTests
 {
     [Fact]
-    public void AddItem_PedidoCancelado_RetornaFalha()
+    public void AdicionarItem_PedidoCancelado_RetornaFalha()
     {
-        var pedido = Pedido.Create("Cliente Teste").Value!;
-        pedido.Cancel();
+        var pedido = Pedido.Criar();
+        pedido.Cancelar("motivo teste");
 
-        var produto = new Produto { Estoque = 10 };
-        var result = pedido.AddItem(produto, 1);
+        var produto = ProdutoTestBuilder.Criar();
+        var result = pedido.AdicionarItem(produto, 1);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().Contain("Pedido não está aberto");
+        result.Error.Should().Contain("rascunho");
     }
 }
 ```

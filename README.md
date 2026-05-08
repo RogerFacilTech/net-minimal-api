@@ -23,20 +23,31 @@ Nenhum padrão é prescrito como "o correto" — a coexistência intencional é 
 ```bash
 git clone https://github.com/seu-usuario/net-minimal-api.git
 cd net-minimal-api
-dotnet run
 ```
 
-Swagger disponível em: http://localhost:5000
+O projeto possui três hosts independentes. Rode cada um em um terminal separado:
+
+```bash
+# Auth (emissor JWT) — Swagger: http://localhost:5020
+dotnet run --project src/Auth/Auth.Host/Auth.Host.csproj
+
+# Catálogo — Swagger: http://localhost:5000
+dotnet run --project src/Catalogo/Catalogo.Host/Catalogo.Host.csproj
+
+# Pedidos — Swagger: http://localhost:5001
+dotnet run --project src/Pedidos/Pedidos.Host/Pedidos.Host.csproj
+```
 
 ---
 
 ## Bounded Contexts
 
-| Contexto  | Padrão                        | Rotas base           | Descrição                                               |
-| --------- | ------------------------------ | -------------------- | --------------------------------------------------------- |
+| Contexto | Padrão                        | Rotas base           | Descrição                                                 |
+| -------- | ----------------------------- | -------------------- | --------------------------------------------------------- |
+| Auth     | Vertical Slice                | `/api/v1/auth/*`     | Emissor JWT; demais serviços apenas validam o token       |
 | Catálogo | Clean Architecture híbrida    | `/api/v1/catalogo/*` | 5 recursos com CRUD completo, rate limiting e soft delete |
-| Pedidos   | Vertical Slice + Domínio Rico | `/api/v1/pedidos/*`  | Agregado rico, Result pattern, auth obrigatório          |
-| Pix       | Mock Server + HTTP Client      | `/pix/v1/*` (mock)   | mTLS, OAuth2, idempotência, resiliência                 |
+| Pedidos  | Vertical Slice + Domínio Rico | `/api/v1/pedidos/*`  | Agregado rico, Result pattern, auth obrigatório           |
+| Pix      | Mock Server + HTTP Client     | `/pix/v1/*` (mock)   | mTLS, OAuth2, idempotência, resiliência                   |
 
 ---
 
@@ -44,35 +55,50 @@ Swagger disponível em: http://localhost:5000
 
 ```
 net-minimal-api/
-├── Program.cs
-├── FacShopAPI.csproj
 ├── FacShopAPI.slnx
 │
 ├── src/
+│   ├── Auth/
+│   │   ├── Auth.Endpoints/
+│   │   └── Auth.Host/
+│   │
 │   ├── Catalogo/
+│   │   ├── Catalogo.Common/
+│   │   ├── Catalogo.Data/
 │   │   ├── Catalogo.Domain/
 │   │   ├── Catalogo.Application/
 │   │   ├── Catalogo.Infrastructure/
-│   │   ├── Catalogo.API/
-│   │   └── Catalogo.ClientDemo/
+│   │   ├── Catalogo.Endpoints/
+│   │   ├── Catalogo.Host/
+│   │   └── Catalogo.Tests/
+│   │
 │   ├── Pedidos/
-│   │   ├── CreatePedido/
-│   │   ├── GetPedido/
-│   │   ├── ListPedidos/
-│   │   ├── CancelarPedido/
-│   │   ├── AdicionarItem/
-│   │   └── Domain/
-│   ├── Pix/
-│   │   ├── Pix.MockServer/
-│   │   └── Pix.ClientDemo/
+│   │   ├── Pedidos.Common/
+│   │   ├── Pedidos.Data/
+│   │   ├── Pedidos.Domain/
+│   │   ├── Pedidos.Application/
+│   │   ├── Pedidos.Infrastructure/
+│   │   ├── Pedidos.Endpoints/
+│   │   │   ├── CreatePedido/
+│   │   │   ├── GetPedido/
+│   │   │   ├── ListPedidos/
+│   │   │   ├── AddItemPedido/
+│   │   │   └── CancelPedido/
+│   │   ├── Pedidos.Host/
+│   │   └── Pedidos.Tests/
+│   │
 │   └── Shared/
-│       ├── Common/
 │       ├── Data/
-│       └── Middleware/
+│       ├── Http/
+│       ├── Kernel/
+│       └── Web/
 │
-├── src/Catalogo/Catalogo.Tests/
-├── src/Pedidos/Pedidos.Tests/
-└── samples/Pix/Pix.MockServer.Tests/
+└── samples/
+    ├── Catalogo.HttpClientDemo/
+    └── Pix/
+        ├── Pix.MockServer/
+        ├── Pix.ClientDemo/
+        └── Pix.MockServer.Tests/
 ```
 
 ---
@@ -81,38 +107,38 @@ net-minimal-api/
 
 ### Autenticação
 
-| Método | Rota                 | Descrição                                                                                    |
-| ------- | -------------------- | ---------------------------------------------------------------------------------------------- |
-| `POST`  | `/api/v1/auth/login` | Retorna JWT no microserviço Auth. Body: `{"email": "admin@example.com", "senha": "senha123"}` |
+| Método | Rota                 | Descrição                                                                                     |
+| ------ | -------------------- | --------------------------------------------------------------------------------------------- |
+| `POST` | `/api/v1/auth/login` | Retorna JWT no microserviço Auth. Body: `{"email": "admin@example.com", "senha": "senha123"}` |
 
 Para execução local, obtenha o token no Auth.Host (ex.: `http://localhost:5020/api/v1/auth/login`) e use o bearer token nas chamadas protegidas de Catalogo/Pedidos.
 
 ### Catálogo
 
-| Método  | Rota                                      | Auth | Observações                            |
+| Método   | Rota                                      | Auth | Observações                              |
 | -------- | ----------------------------------------- | ---- | ---------------------------------------- |
-| `GET`    | `/api/v1/catalogo/produtos`               | —  | Paginado; filtros: `categoria`, `search` |
-| `GET`    | `/api/v1/catalogo/produtos/{id}`          | —  |                                          |
+| `GET`    | `/api/v1/catalogo/produtos`               | —    | Paginado; filtros: `categoria`, `search` |
+| `GET`    | `/api/v1/catalogo/produtos/{id}`          | —    |                                          |
 | `POST`   | `/api/v1/catalogo/produtos`               | JWT  | Rate limit: `criacao-produto`            |
 | `PUT`    | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/produtos/{id}`          | JWT  | Soft delete (seta `Ativo = false`)       |
-| `GET`    | `/api/v1/catalogo/categorias`             | —  |                                          |
-| `GET`    | `/api/v1/catalogo/categorias/{id}`        | —  |                                          |
+| `GET`    | `/api/v1/catalogo/categorias`             | —    |                                          |
+| `GET`    | `/api/v1/catalogo/categorias/{id}`        | —    |                                          |
 | `POST`   | `/api/v1/catalogo/categorias`             | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/variantes`              | —  | Query: `?produtoId={id}`                 |
-| `GET`    | `/api/v1/catalogo/variantes/{id}`         | —  |                                          |
+| `GET`    | `/api/v1/catalogo/variantes`              | —    | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/variantes/{id}`         | —    |                                          |
 | `POST`   | `/api/v1/catalogo/variantes`              | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/variantes/{id}/estoque` | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/atributos`              | —  | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/atributos`              | —    | Query: `?produtoId={id}`                 |
 | `POST`   | `/api/v1/catalogo/atributos`              | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/midias`                 | —  | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/midias`                 | —    | Query: `?produtoId={id}`                 |
 | `POST`   | `/api/v1/catalogo/midias`                 | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/midias/{id}/ordem`      | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/midias/{id}`            | JWT  |                                          |
@@ -120,12 +146,12 @@ Para execução local, obtenha o token no Auth.Host (ex.: `http://localhost:5020
 ### Pedidos
 
 | Método | Rota                            | Auth |
-| ------- | ------------------------------- | ---- |
-| `POST`  | `/api/v1/pedidos`               | JWT  |
-| `GET`   | `/api/v1/pedidos`               | JWT  |
-| `GET`   | `/api/v1/pedidos/{id}`          | JWT  |
-| `POST`  | `/api/v1/pedidos/{id}/itens`    | JWT  |
-| `POST`  | `/api/v1/pedidos/{id}/cancelar` | JWT  |
+| ------ | ------------------------------- | ---- |
+| `POST` | `/api/v1/pedidos`               | JWT  |
+| `GET`  | `/api/v1/pedidos`               | JWT  |
+| `GET`  | `/api/v1/pedidos/{id}`          | JWT  |
+| `POST` | `/api/v1/pedidos/{id}/itens`    | JWT  |
+| `POST` | `/api/v1/pedidos/{id}/cancelar` | JWT  |
 
 ---
 
@@ -133,10 +159,10 @@ Para execução local, obtenha o token no Auth.Host (ex.: `http://localhost:5020
 
 | Projeto                | Testes (aprox.) |
 | ---------------------- | --------------- |
-| `Catalogo.Tests`       | 102             |
+| `Catalogo.Tests`       | 116             |
 | `Pedidos.Tests`        | 47              |
 | `Pix.MockServer.Tests` | 7               |
-| **Total**              | **156**         |
+| **Total**              | **170**         |
 
 ```bash
 # Catálogo
@@ -156,12 +182,12 @@ dotnet test FacShopAPI.slnx
 
 ## Documentação
 
-| Arquivo                                          | Conteúdo                                                       |
-| ------------------------------------------------ | --------------------------------------------------------------- |
-| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | Visão geral e orientação de leitura                          |
-| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisões arquiteturais                             |
+| Arquivo                                          | Conteúdo                                                      |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | Visão geral e orientação de leitura                           |
+| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisões arquiteturais                            |
 | [docs/02-CATALOGO.md](docs/02-CATALOGO.md)       | Catálogo: Clean Architecture híbrida, recursos, rate limiting |
-| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domínio rico, Result pattern          |
-| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                    |
-| [docs/05-TESTES.md](docs/05-TESTES.md)           | Estratégia de testes, factories, helpers                       |
-| [docs/ADRs/](docs/ADRs/)                         | 15 ADRs no formato MADR 3.x                                     |
+| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domínio rico, Result pattern         |
+| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                  |
+| [docs/05-TESTES.md](docs/05-TESTES.md)           | Estratégia de testes, factories, helpers                      |
+| [docs/ADRs/](docs/ADRs/)                         | 16 ADRs no formato MADR 3.x                                   |

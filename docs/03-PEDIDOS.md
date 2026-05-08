@@ -11,7 +11,7 @@ O servico de `Pedidos` e um resource server.
 
 > Complemento didÃ¡tico: para integraÃ§Ã£o externa com APIs e JSON complexo, veja [04-PIX.md](04-PIX.md), que cobre `HttpClientFactory`, idempotÃªncia e servidor mock auto-contido.
 
-Para entender a arquitetura do CatÃ¡logo (CA hÃ­brida em camadas), explore `src/Catalogo/Catalogo.API/Endpoints/`.
+Para entender a arquitetura do Catálogo (CA híbrida em camadas), explore `src/Catalogo/Catalogo.Endpoints/Endpoints/`.
 
 ---
 
@@ -40,11 +40,10 @@ Essa dispersÃ£o acontece porque o domÃ­nio Ã© **anÃªmico** â€” enti
 Uma **slice** (fatia) representa **um Ãºnico caso de uso** ou funcionalidade. Todas as peÃ§as necessÃ¡rias para executÃ¡-la residem em uma pasta isolada:
 
 ```
-src/Pedidos/CreatePedido/
-  â”œâ”€ CreatePedidoCommand.cs      # Input (DTO)
-  â”œâ”€ CreatePedidoValidator.cs    # ValidaÃ§Ãµes de entrada
-  â”œâ”€ CreatePedidoHandler.cs      # OrquestraÃ§Ã£o
-  â””â”€ CreatePedidoEndpoint.cs     # Rota HTTP
+src/Pedidos/Pedidos.Endpoints/CreatePedido/
+  ├─ CreatePedidoCommand.cs     # DTO de entrada + Handler (orquestração)
+  ├─ CreatePedidoValidator.cs   # FluentValidation
+  └─ CreatePedidoEndpoint.cs    # Rota HTTP, implementa IEndpoint
 ```
 
 Cada slice Ã© **independente**: alterar o comportamento de criaÃ§Ã£o de pedido nÃ£o afeta diretamente outras operaÃ§Ãµes.
@@ -100,33 +99,31 @@ public sealed class CreatePedidoValidator : AbstractValidator<CreatePedidoComman
 #### 2.3 Handler (OrquestraÃ§Ã£o com domÃ­nio)
 
 ```csharp
-public sealed class CreatePedidoHandler(
-    AppDbContext context,
-    IValidator<CreatePedidoCommand> validator
-)
+public record CreatePedidoCommand(List<CreatePedidoItemDto> Itens);
+public record CreatePedidoItemDto(int ProdutoId, int Quantidade);
+
+public class CreatePedidoHandler(IPedidoCommandRepository repository)
 {
-    public async Task<Result<int>> HandleAsync(CreatePedidoCommand command)
+    public async Task<Result<PedidoResponse>> HandleAsync(
+        CreatePedidoCommand cmd, CancellationToken ct = default)
     {
-        var validationResult = await validator.ValidateAsync(command);
-        if (!validationResult.IsValid)
-            return Result<int>.Fail("ValidaÃ§Ã£o falhou");
+        var pedido = Pedido.Criar();
 
-        var pedido = Pedido.Create(command.ClienteNome);
-
-        foreach (var item in command.Itens)
+        foreach (var itemDto in cmd.Itens)
         {
-            var produto = await context.Produtos.FindAsync(item.ProdutoId);
-            if (produto == null)
-                return Result<int>.Fail($"Produto {item.ProdutoId} nÃ£o encontrado");
+            var produto = await repository.ObterProdutoParaItemAsync(itemDto.ProdutoId, ct);
+            if (produto is null)
+                return Result<PedidoResponse>.Fail($"Produto {itemDto.ProdutoId} não encontrado.");
 
-            var result = pedido.AddItem(produto, item.Quantidade);
-            if (!result.IsSuccess)
-                return Result<int>.Fail(result.Error);
+            var resultado = pedido.AdicionarItem(produto, itemDto.Quantidade);
+            if (!resultado.IsSuccess)
+                return Result<PedidoResponse>.Fail(resultado.Error!);
         }
 
-        context.Pedidos.Add(pedido);
-        await context.SaveChangesAsync();
-        return Result<int>.Ok(pedido.Id);
+        await repository.AdicionarAsync(pedido, ct);
+        await repository.SaveChangesAsync(ct);
+
+        return Result<PedidoResponse>.Ok(PedidoResponse.From(pedido));
     }
 }
 ```
@@ -136,25 +133,26 @@ public sealed class CreatePedidoHandler(
 ```csharp
 public sealed class CreatePedidoEndpoint : IEndpoint
 {
-    public void Map(IEndpointRouteBuilder routes) =>
-        routes
-            .MapPost("/api/v1/pedidos")
-            .Produces<PedidoResponse>(StatusCodes.Status201Created)
-            .WithName("Create Pedido")
-            .WithOpenApi()
-            .RequireAuthorization();
+    public void MapEndpoints(IEndpointRouteBuilder app) =>
+        app.MapPost("/api/v1/pedidos", async (
+            CreatePedidoCommand cmd,
+            CreatePedidoHandler handler,
+            IValidator<CreatePedidoCommand> validator,
+            CancellationToken ct) =>
+        {
+            var validation = await validator.ValidateAsync(cmd, ct);
+            if (!validation.IsValid)
+                return Results.ValidationProblem(validation.ToDictionary());
 
-    public async Task<IResult> Handle(
-        CreatePedidoCommand command,
-        CreatePedidoHandler handler
-    )
-    {
-        var result = await handler.HandleAsync(command);
-        if (!result.IsSuccess)
-            return Results.BadRequest(new { error = result.Error });
+            var result = await handler.HandleAsync(cmd, ct);
+            if (!result.IsSuccess)
+                return Results.BadRequest(new { error = result.Error });
 
-        return Results.Created($"/api/v1/pedidos/{result.Value}", new { id = result.Value });
-    }
+            return Results.Created($"/api/v1/pedidos/{result.Value!.Id}", result.Value);
+        })
+        .RequireAuthorization()
+        .WithName("CreatePedido")
+        .WithOpenApi();
 }
 ```
 
@@ -167,20 +165,21 @@ public sealed class CreatePedidoEndpoint : IEndpoint
 **A soluÃ§Ã£o:** Interface comum `IEndpoint` + descoberta via reflexÃ£o.
 
 ```csharp
-// src/Shared/Common/IEndpoint.cs
+// src/Shared/Web/IEndpoint.cs
 public interface IEndpoint
 {
-    void Map(IEndpointRouteBuilder routes);
+    void MapEndpoints(IEndpointRouteBuilder app);
 }
 ```
 
 No `Program.cs`:
 
 ```csharp
-builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddEndpointsFromAssembly(typeof(CreatePedidoEndpoint).Assembly);
+app.MapRegisteredEndpoints();
 ```
 
-Isso varre todos os tipos implementando `IEndpoint` e chama `.Map()` automaticamente. Basta criar `NovoSliceEndpoint : IEndpoint` e ela serÃ¡ descoberta â€” sem cadastro manual.
+Isso varre todos os tipos implementando `IEndpoint` e chama `.MapEndpoints()` automaticamente. Basta criar `NovoSliceEndpoint : IEndpoint` e ela serÃ¡ descoberta â€” sem cadastro manual.
 
 ---
 
@@ -398,31 +397,30 @@ public void Pedido_AddItem_QuandoStatusNaoAberto_DeveRetornarFalha()
 
 Quando for adicionar um novo slice de Pedidos:
 
-- [ ] Criar pasta `src/Pedidos/NovoSlice/`
-- [ ] Criar `NovoSliceCommand.cs` (DTO)
+- [ ] Criar pasta `src/Pedidos/Pedidos.Endpoints/NovoSlice/`
+- [ ] Criar `NovoSliceCommand.cs` (DTO + Handler)
 - [ ] Criar `NovoSliceValidator.cs` (FluentValidation)
-- [ ] Criar `NovoSliceHandler.cs` (orquestraÃ§Ã£o)
 - [ ] Criar `NovoSliceEndpoint.cs` (implementa `IEndpoint`)
-- [ ] Adicionar mÃ©todo ao agregado `Pedido` (se necessÃ¡rio)
-- [ ] Criar testes em `tests/FacShopAPI.Tests/Integration/Pedidos/`
+- [ ] Adicionar método ao agregado `Pedido` (se necessário)
+- [ ] Criar testes em `src/Pedidos/Pedidos.Tests/`
 - [ ] Testar via `dotnet run` + Swagger
 
 ---
 
 ## 9. ReferÃªncias no CÃ³digo
 
-### CatÃ¡logo (CA HÃ­brida)
+### Catálogo (CA Híbrida)
 
-- Endpoints: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)
+- Endpoints: [src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs)
 - Service: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)
-- Testes: [tests/FacShopAPI.Tests/Integration/](../tests/FacShopAPI.Tests/Integration/)
+- Testes: [src/Catalogo/Catalogo.Tests/](../src/Catalogo/Catalogo.Tests/)
 
 ### Vertical Slice (Pedidos)
 
-- Domain: [src/Pedidos/Domain/](../src/Pedidos/Domain/)
-- CreatePedido: [src/Pedidos/CreatePedido/](../src/Pedidos/CreatePedido/)
-- Result Pattern: [src/Shared/Common/Result.cs](../src/Shared/Common/Result.cs)
-- Testes: [tests/FacShopAPI.Tests/Integration/](../tests/FacShopAPI.Tests/Integration/)
+- Domain: [src/Pedidos/Pedidos.Domain/](../src/Pedidos/Pedidos.Domain/)
+- CreatePedido: [src/Pedidos/Pedidos.Endpoints/CreatePedido/](../src/Pedidos/Pedidos.Endpoints/CreatePedido/)
+- Result Pattern: [src/Shared/Kernel/Result.cs](../src/Shared/Kernel/Result.cs)
+- Testes: [src/Pedidos/Pedidos.Tests/](../src/Pedidos/Pedidos.Tests/)
 
 ---
 

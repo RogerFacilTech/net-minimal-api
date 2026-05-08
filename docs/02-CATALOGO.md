@@ -2,15 +2,17 @@
 
 ## 1. Estrutura de Projetos
 
-O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Architecture e Vertical Slice, organizada em 5 sub-projetos:
+O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Architecture e Vertical Slice, organizada em 7 sub-projetos:
 
 | Projeto                                 | Responsabilidade                                                 |
 | --------------------------------------- | ---------------------------------------------------------------- |
+| `src/Catalogo/Catalogo.Common/`         | Interfaces e tipos compartilhados entre camadas                  |
 | `src/Catalogo/Catalogo.Domain/`         | Entidades, value objects e regras de domínio                     |
 | `src/Catalogo/Catalogo.Application/`    | Serviços de aplicação, DTOs e validators (FluentValidation)      |
 | `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, migrations e DbSeeder                      |
-| `src/Catalogo/Catalogo.API/`            | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
-| `src/Catalogo/Catalogo.ClientDemo/`     | Console app demonstrando pipeline de resiliência                 |
+| `src/Catalogo/Catalogo.Data/`           | `CatalogoDbContext` e migrations                                 |
+| `src/Catalogo/Catalogo.Endpoints/`      | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
+| `src/Catalogo/Catalogo.Host/`           | Entry point da API, DI, middleware, Program.cs                   |
 
 ---
 
@@ -18,13 +20,13 @@ O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Archi
 
 Todos os endpoints seguem o prefixo `/api/v1/catalogo/`.
 
-| Recurso    | GET (anon)                     | GET /{id} (anon)                     | POST [auth]                     | PUT/PATCH [auth]                     | DELETE [auth]                           |
-| ---------- | ------------------------------ | ------------------------------------ | ------------------------------- | ------------------------------------ | --------------------------------------- |
-| Produtos   | `GET /produtos`                | `GET /produtos/{id}`                 | `POST /produtos`                | `PUT /produtos/{id}`                 | `DELETE /produtos/{id}`                 |
-| Categorias | `GET /categorias`              | `GET /categorias/{id}`               | `POST /categorias`              | `PUT /categorias/{id}`               | `DELETE /categorias/{id}`               |
-| Variantes  | `GET /produtos/{id}/variantes` | `GET /produtos/{id}/variantes/{vid}` | `POST /produtos/{id}/variantes` | `PUT /produtos/{id}/variantes/{vid}` | `DELETE /produtos/{id}/variantes/{vid}` |
-| Atributos  | `GET /produtos/{id}/atributos` | `GET /produtos/{id}/atributos/{aid}` | `POST /produtos/{id}/atributos` | `PUT /produtos/{id}/atributos/{aid}` | `DELETE /produtos/{id}/atributos/{aid}` |
-| Mídias     | `GET /produtos/{id}/midias`    | `GET /produtos/{id}/midias/{mid}`    | `POST /produtos/{id}/midias`    | `PUT /produtos/{id}/midias/{mid}`    | `DELETE /produtos/{id}/midias/{mid}`    |
+| Recurso    | GET (anon)                  | GET /{id} (anon)       | POST [auth]        | PUT/PATCH [auth]                                        | DELETE [auth]             |
+| ---------- | --------------------------- | ---------------------- | ------------------ | ------------------------------------------------------- | ------------------------- |
+| Produtos   | `GET /produtos`             | `GET /produtos/{id}`   | `POST /produtos`   | `PUT /produtos/{id}`                                    | `DELETE /produtos/{id}`   |
+| Categorias | `GET /categorias`           | `GET /categorias/{id}` | `POST /categorias` | `PUT /categorias/{id}`                                  | `DELETE /categorias/{id}` |
+| Variantes  | `GET /variantes?produtoId=` | `GET /variantes/{id}`  | `POST /variantes`  | `PUT /variantes/{id}` / `PATCH /variantes/{id}/estoque` | `DELETE /variantes/{id}`  |
+| Atributos  | `GET /atributos?produtoId=` | —                      | `POST /atributos`  | `PUT /atributos/{id}`                                   | `DELETE /atributos/{id}`  |
+| Mídias     | `GET /midias?produtoId=`    | —                      | `POST /midias`     | `PATCH /midias/{id}/ordem`                              | `DELETE /midias/{id}`     |
 
 ### Políticas de Rate Limiting por verbo
 
@@ -125,7 +127,7 @@ Authorization: Bearer {token}
 
 ## 6. ClientDemo — Resiliência
 
-`Catalogo.ClientDemo` é um console app que demonstra o consumo da API com um pipeline de resiliência composto (Polly v8):
+`Catalogo.HttpClientDemo` é um console app que demonstra o consumo da API com um pipeline de resiliência composto (Polly v8):
 
 | Camada | Política        | Configuração                                                        |
 | ------ | --------------- | ------------------------------------------------------------------- |
@@ -139,7 +141,7 @@ As políticas são aplicadas de fora para dentro: o timeout global envolve tudo,
 Para executar:
 
 ```bash
-dotnet run --project src/Catalogo/Catalogo.ClientDemo -- https://localhost:5001
+dotnet run --project samples/Catalogo.HttpClientDemo/Catalogo.HttpClientDemo.csproj -- https://localhost:5000
 ```
 
 ---
@@ -164,7 +166,7 @@ Testes que criam novos produtos começam a partir do ID 9.
 ### Registro de endpoint com rate limiting e auth
 
 ```csharp
-// src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
+// src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs
 var group = catalogoGroup.MapGroup("/produtos")
     .WithTags("Catálogo - Produtos");
 
@@ -254,7 +256,7 @@ public interface IProdutoCommandRepository
 ### Configuração das três políticas de rate limiting
 
 ```csharp
-// src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs
+// src/Catalogo/Catalogo.Endpoints/Extensions/RateLimitingExtensions.cs
 services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -301,17 +303,17 @@ services.AddRateLimiter(options =>
 
 ```bash
 # Listar produtos (anônimo, paginado)
-curl "http://localhost:5001/api/v1/catalogo/produtos?page=1&pageSize=10"
+curl "http://localhost:5000/api/v1/catalogo/produtos?page=1&pageSize=10"
 
 # Obter produto por ID (anônimo)
-curl "http://localhost:5001/api/v1/catalogo/produtos/1"
+curl "http://localhost:5000/api/v1/catalogo/produtos/1"
 
 # Criar produto (requer JWT)
 TOKEN=$(curl -s -X POST http://localhost:5020/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","senha":"senha123"}' | jq -r .token)
 
-curl -X POST "http://localhost:5001/api/v1/catalogo/produtos" \
+curl -X POST "http://localhost:5000/api/v1/catalogo/produtos" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -323,13 +325,13 @@ curl -X POST "http://localhost:5001/api/v1/catalogo/produtos" \
   }'
 
 # Soft delete (retorna 204; produto fica inativo e passa a retornar 404)
-curl -X DELETE "http://localhost:5001/api/v1/catalogo/produtos/1" \
+curl -X DELETE "http://localhost:5000/api/v1/catalogo/produtos/1" \
   -H "Authorization: Bearer $TOKEN"
 
 # Forçar limite de rate limiting para observar comportamento
 for i in {1..6}; do
   curl -s -o /dev/null -w "Status: %{http_code}\n" \
-    "http://localhost:5001/api/v1/catalogo/produtos"
+    "http://localhost:5000/api/v1/catalogo/produtos"
 done
 # Primeiras 60 requisições retornam 200; a partir daí, 429 + header Retry-After
 ```

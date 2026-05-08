@@ -6,8 +6,8 @@ Os projetos **Catálogo** e **Pedidos** podem ser classificados como **microserv
 
 - **Isolamento de Contextos**: Cada domínio (Catálogo e Pedidos) possui seu próprio conjunto de projetos, regras de negócio, endpoints e infraestrutura, permitindo evolução e manutenção independentes.
 - **Deploy Independente**: Os hosts (`Catalogo.Host` e `Pedidos.Host`) permitem que cada serviço seja executado, escalado e publicado separadamente, sem dependências de ciclo de vida entre si.
-- **Persistência Compartilhada, Lógica Separada**: Apesar de compartilharem o mesmo `AppDbContext` (por simplicidade educacional), a lógica de domínio, casos de uso e endpoints são totalmente isolados, respeitando os limites de contexto.
-- **Contratos e Integrações**: A comunicação entre contextos ocorre apenas por contratos bem definidos (em `Shared.Common`), evitando acoplamento direto entre domínios.
+- **Persistência Isolada**: Cada domínio possui seu próprio DbContext (`CatalogoDbContext`, `PedidosDbContext`) com migrations independentes, permitindo evolução do schema sem impacto cruzado.
+- **Contratos e Integrações**: A comunicação entre contextos ocorre apenas por contratos bem definidos (em `Shared.Kernel` e `Shared.Web`), evitando acoplamento direto entre domínios.
 - **Padrões Arquiteturais Distintos**: Cada microserviço pode adotar padrões próprios (ex: Clean Architecture no Catálogo, Vertical Slice em Pedidos), reforçando autonomia tecnológica.
 
 Esses fatores permitem classificar Catálogo e Pedidos como microserviços, mesmo coexistindo na mesma solução para fins didáticos.
@@ -26,22 +26,27 @@ A solucao foi reorganizada para separar claramente:
 
 ```text
 src/
+  Auth/
+    Auth.Endpoints/              -> Endpoint de login (POST /api/v1/auth/login)
+    Auth.Host/                   -> Entry point do microserviço Auth (porta 5020)
   Catalogo/
     Catalogo.Application/        -> Casos de uso do Catálogo
     Catalogo.Common/             -> Contratos e utilitários específicos do Catálogo
     Catalogo.Data/               -> DbContext e migrations do Catálogo
     Catalogo.Domain/             -> Domínio do Catálogo
     Catalogo.Endpoints/          -> Endpoints, DTOs, extensões HTTP
-    Catalogo.Host/               -> Entry point específico do Catálogo
+    Catalogo.Host/               -> Entry point específico do Catálogo (porta 5000)
     Catalogo.Infrastructure/     -> Implementações de repositório, queries, DbSeeder
+    Catalogo.Tests/              -> Testes do Catálogo
   Pedidos/
     Pedidos.Application/         -> Casos de uso de Pedidos
     Pedidos.Common/              -> Contratos e utilitários específicos de Pedidos
     Pedidos.Data/                -> DbContext e migrations de Pedidos
     Pedidos.Domain/              -> Domínio rico de Pedidos
     Pedidos.Endpoints/           -> Endpoints, DTOs, validadores
-    Pedidos.Host/                -> Entry point específico de Pedidos
+    Pedidos.Host/                -> Entry point específico de Pedidos (porta 5001)
     Pedidos.Infrastructure/      -> Implementações de persistência e integrações
+    Pedidos.Tests/               -> Testes de Pedidos
   Shared/
     Data/                        -> Extensões de inicialização de banco compartilhadas
     Http/                        -> Utilitários HTTP, handlers, idempotência
@@ -53,15 +58,14 @@ samples/
     Pix.ClientDemo/              -> Console app cliente Pix
     Pix.MockServer/              -> Servidor mock Pix (mTLS + OAuth2)
     Pix.MockServer.Tests/        -> Testes do mock Pix
-tests/
-  Catalogo.Tests/                -> Testes de Catálogo
-  Pedidos.Tests/                 -> Testes de Pedidos
 ```
 
 ## Função de Cada Projeto
 
 | Projeto                 | Responsabilidade                                                                              |
 | ----------------------- | --------------------------------------------------------------------------------------------- |
+| Auth.Endpoints          | Endpoint de login (`POST /api/v1/auth/login`), emissão de JWT assinado.                       |
+| Auth.Host               | Entry point do microserviço Auth. Demais serviços apenas validam o token emitido aqui.        |
 | Catalogo.Application    | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
 | Catalogo.Common         | Contratos e utilitários específicos do Catálogo.                                              |
 | Catalogo.Data           | DbContext e migrations do Catálogo.                                                           |
@@ -89,6 +93,10 @@ tests/
 ```text
 Shared.Kernel, Shared.Web, Shared.Http, Shared.Data
   ^
+Auth.Endpoints
+  ^
+Auth.Host
+
 Catalogo.Domain   Pedidos.Domain
   ^                   ^
 Catalogo.Application    Pedidos.Application
