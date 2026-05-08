@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -7,8 +8,28 @@ namespace Catalogo.Tests.Integration;
 
 public static class AuthHelper
 {
-    public static Task<string> ObterTokenAsync(HttpClient client)
+    public static async Task<string> ObterTokenAsync(HttpClient client)
     {
+        var authBaseUrl = Environment.GetEnvironmentVariable("AUTH_BASE_URL");
+        if (!string.IsNullOrWhiteSpace(authBaseUrl))
+        {
+            using var authClient = new HttpClient { BaseAddress = new Uri(authBaseUrl) };
+            var loginResponse = await authClient.PostAsJsonAsync("/api/v1/auth/login", new
+            {
+                Email = Environment.GetEnvironmentVariable("AUTH_ADMIN_EMAIL") ?? "admin@example.com",
+                Senha = Environment.GetEnvironmentVariable("AUTH_ADMIN_PASSWORD") ?? "senha123"
+            });
+
+            if (!loginResponse.IsSuccessStatusCode)
+                throw new InvalidOperationException($"Auth login failed against AUTH_BASE_URL='{authBaseUrl}': {loginResponse.StatusCode}");
+
+            var tokenResponse = await loginResponse.Content.ReadFromJsonAsync<TokenResponse>();
+            if (string.IsNullOrWhiteSpace(tokenResponse?.Token))
+                throw new InvalidOperationException("Auth login returned empty token.");
+
+            return tokenResponse.Token;
+        }
+
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, "admin_id"),
@@ -27,6 +48,8 @@ public static class AuthHelper
             signingCredentials: creds);
 
         var encoded = new JwtSecurityTokenHandler().WriteToken(token);
-        return Task.FromResult(encoded);
+        return encoded;
     }
+
+    private sealed record TokenResponse(string Token);
 }

@@ -2,11 +2,11 @@
 
 ## 1. Projetos de Teste
 
-| Projeto                | Testes  | Escopo                            |
-| ---------------------- | ------- | --------------------------------- |
-| `FacShopAPI.Tests`    | 143     | CatÃ¡logo (integraÃ§Ã£o + unitÃ¡rios) |
-| `Pix.MockServer.Tests` | 7       | IntegraÃ§Ã£o HTTP PIX               |
-| **Total**              | **150** |                                   |
+| Projeto                | Testes  | Escopo                                |
+| ---------------------- | ------- | ------------------------------------- |
+| `FacShopAPI.Tests`     | 143     | CatÃ¡logo (integraÃ§Ã£o + unitÃ¡rios) |
+| `Pix.MockServer.Tests` | 7       | IntegraÃ§Ã£o HTTP PIX                 |
+| **Total**              | **150** |                                       |
 
 > `Pedidos.Tests` existe no repositÃ³rio mas tem uma dependÃªncia pendente de correÃ§Ã£o â€” nÃ£o estÃ¡ incluÃ­do na contagem acima.
 
@@ -14,12 +14,12 @@
 
 ## 2. DistribuiÃ§Ã£o por Tipo â€” FacShopAPI.Tests
 
-| Tipo                  | Escopo                                               | Aprox. |
-| --------------------- | ---------------------------------------------------- | ------ |
-| IntegraÃ§Ã£o (CatÃ¡logo) | Endpoints HTTP completos via `HttpClient`            | ~80    |
-| Rate limiting         | PolÃ­ticas de throttling via `RateLimitingApiFactory` | 3      |
-| UnitÃ¡rios (domÃ­nio)   | Entidades, value objects, invariantes                | ~30    |
-| Validators            | Regras FluentValidation                              | ~30    |
+| Tipo                     | Escopo                                                | Aprox. |
+| ------------------------ | ----------------------------------------------------- | ------ |
+| IntegraÃ§Ã£o (CatÃ¡logo) | Endpoints HTTP completos via `HttpClient`             | ~80    |
+| Rate limiting            | PolÃ­ticas de throttling via `RateLimitingApiFactory` | 3      |
+| UnitÃ¡rios (domÃ­nio)    | Entidades, value objects, invariantes                 | ~30    |
+| Validators               | Regras FluentValidation                               | ~30    |
 
 ---
 
@@ -35,7 +35,7 @@ Factory base para todos os testes funcionais. Configura `Environment = "Testing"
 
 Estende `ApiFactory` e sobrescreve o registro de `AddRateLimiting()`, aplicando limites baixos propositalmente:
 
-| PolÃ­tica          | Limite       |
+| PolÃ­tica         | Limite       |
 | ----------------- | ------------ |
 | `leitura`         | 3 req/janela |
 | `escrita`         | 3 req/janela |
@@ -98,13 +98,24 @@ dotnet test samples/Pix/Pix.MockServer.Tests/
 
 ## 6. Diretrizes para Novos Testes
 
-| SituaÃ§Ã£o                        | Diretriz                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------- |
-| Novo endpoint                   | Cobrir: resposta `2xx` com sucesso, `4xx` de validaÃ§Ã£o, `404` quando aplicÃ¡vel  |
-| Nova regra de domÃ­nio           | Escrever teste unitÃ¡rio no agregado **antes** do teste de integraÃ§Ã£o            |
-| Endpoint de escrita no CatÃ¡logo | Obter token com `AuthHelper.ObterTokenAsync(client)` antes de chamar o endpoint |
-| AsserÃ§Ã£o de rate limiting       | Usar `RateLimitingApiFactory`, nunca `ApiFactory`                               |
-| Novos produtos criados em teste | IDs comeÃ§am a partir de 9 (DbSeeder reserva 1â€“8)                                |
+| SituaÃ§Ã£o                       | Diretriz                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Novo endpoint                    | Cobrir: resposta `2xx` com sucesso, `4xx` de validaÃ§Ã£o, `404` quando aplicÃ¡vel |
+| Nova regra de domÃ­nio           | Escrever teste unitÃ¡rio no agregado **antes** do teste de integraÃ§Ã£o           |
+| Endpoint de escrita no CatÃ¡logo | Obter token com `AuthHelper.ObterTokenAsync(client)` antes de chamar o endpoint   |
+| AsserÃ§Ã£o de rate limiting      | Usar `RateLimitingApiFactory`, nunca `ApiFactory`                                 |
+| Novos produtos criados em teste  | IDs comeÃ§am a partir de 9 (DbSeeder reserva 1â€“8)                               |
+
+### Modo E2E opcional com Auth.Host real
+
+Por padrÃ£o, `AuthHelper` gera JWT localmente para manter os testes isolados.
+Se quiser validar o fluxo completo com emissÃ£o real do token no microserviÃ§o Auth, defina:
+
+- `AUTH_BASE_URL` (ex.: `http://localhost:5020`)
+- `AUTH_ADMIN_EMAIL` (opcional, default `admin@example.com`)
+- `AUTH_ADMIN_PASSWORD` (opcional, default `senha123`)
+
+Com `AUTH_BASE_URL` definido, `AuthHelper.ObterTokenAsync(client)` chama `POST /api/v1/auth/login` no Auth.Host.
 
 ---
 
@@ -283,17 +294,17 @@ public class PedidoTests
 
 ## 9. DistribuiÃ§Ã£o de Testes por Arquivo
 
-| Arquivo                                           | Tipo                       | Aprox.     |
-| ------------------------------------------------- | -------------------------- | ---------- |
-| `Unit/Domain/ProdutoTests.cs`                     | UnitÃ¡rio â€” domÃ­nio         | ~15        |
-| `Unit/Domain/CategoriaTests.cs`                   | UnitÃ¡rio â€” domÃ­nio         | ~10        |
-| `Unit/Domain/PedidoTests.cs`                      | UnitÃ¡rio â€” domÃ­nio         | ~8         |
-| `Unit/Common/ResultTests.cs`                      | UnitÃ¡rio â€” tipos comuns    | ~5         |
-| `Services/ProdutoServiceTests.cs`                 | UnitÃ¡rio â€” serviÃ§o         | ~15        |
+| Arquivo                                           | Tipo                         | Aprox.     |
+| ------------------------------------------------- | ---------------------------- | ---------- |
+| `Unit/Domain/ProdutoTests.cs`                     | UnitÃ¡rio â€” domÃ­nio       | ~15        |
+| `Unit/Domain/CategoriaTests.cs`                   | UnitÃ¡rio â€” domÃ­nio       | ~10        |
+| `Unit/Domain/PedidoTests.cs`                      | UnitÃ¡rio â€” domÃ­nio       | ~8         |
+| `Unit/Common/ResultTests.cs`                      | UnitÃ¡rio â€” tipos comuns   | ~5         |
+| `Services/ProdutoServiceTests.cs`                 | UnitÃ¡rio â€” serviÃ§o       | ~15        |
 | `Endpoints/ProdutoEndpointsTests.cs`              | IntegraÃ§Ã£o HTTP            | ~25        |
 | `Integration/Catalogo/CategoriaEndpointsTests.cs` | IntegraÃ§Ã£o HTTP            | ~20        |
 | `Integration/Pedidos/*.cs` (5 arquivos)           | IntegraÃ§Ã£o HTTP            | ~40        |
 | `Integration/RateLimitingTests.cs`                | IntegraÃ§Ã£o rate limiting   | 3          |
 | `Validators/*.cs`                                 | ValidaÃ§Ã£o FluentValidation | ~24        |
 | `Pix.MockServer.Tests/*.cs`                       | IntegraÃ§Ã£o HTTP (PIX)      | 7          |
-| **Total**                                         |                            | **~150+7** |
+| **Total**                                         |                              | **~150+7** |
