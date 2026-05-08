@@ -12,10 +12,10 @@ Em operações de escrita (POST, PUT, PATCH), clientes podem reenviar a mesma re
 
 ## Opções Consideradas
 
-* Idempotência na lógica de negócio de cada handler
-* Idempotência via middleware centralizado com header `Idempotency-Key`
-* API Gateway com deduplicação por hash de payload
-* Sem idempotência explícita (aceitar duplicidade)
+- Idempotência na lógica de negócio de cada handler
+- Idempotência via middleware centralizado com header `Idempotency-Key`
+- API Gateway com deduplicação por hash de payload
+- Sem idempotência explícita (aceitar duplicidade)
 
 ## Decisão
 
@@ -27,10 +27,16 @@ O middleware intercepta requisições POST, PUT e PATCH. Se o header `Idempotenc
 
 ### Consequências
 
-* Positivo, porque a proteção contra duplicidade é aplicada automaticamente a todos os endpoints de escrita sem mudança nos handlers.
-* Positivo, porque o contrato é simples: o cliente envia um `Idempotency-Key` UUID e pode retentar com segurança.
-* Negativo, porque o cache em memória não é durável — restarts do servidor invalidam todas as chaves armazenadas.
-* Negativo, porque em deployment multi-instância (load balancer), cada instância tem seu próprio cache, quebrando a garantia de idempotência.
+- Positivo, porque a proteção contra duplicidade é aplicada automaticamente a todos os endpoints de escrita sem mudança nos handlers.
+- Positivo, porque o contrato é simples: o cliente envia um `Idempotency-Key` UUID e pode retentar com segurança.
+- Negativo, porque o cache em memória não é durável — restarts do servidor invalidam todas as chaves armazenadas.
+- Negativo, porque em deployment multi-instância (load balancer), cada instância tem seu próprio cache, quebrando a garantia de idempotência.
+
+---
+
+### Ver também
+
+- [Overview de Idempotência](../08-IDEMPOTENCIA.md) — resumo de todos os mecanismos de idempotência do projeto (servidor, cliente HTTP e Pix MockServer)
 
 ---
 

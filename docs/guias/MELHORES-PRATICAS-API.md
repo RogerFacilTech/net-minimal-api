@@ -172,6 +172,8 @@ Na matemática e na programação, **Idempotência é a propriedade de uma opera
 
 ### Solução: IdempotencyMiddleware
 
+> Para um resumo completo de todos os mecanismos de idempotência do projeto (servidor, cliente HTTP e Pix), veja o [overview de idempotência](../08-IDEMPOTENCIA.md).
+
 Este projeto implementa um `IdempotencyMiddleware` em `src/Shared/Middleware/IdempotencyMiddleware.cs`. Quando o cliente envia o header `Idempotency-Key`, o middleware:
 
 1. Verifica se aquela chave já foi processada (cache em memória)
