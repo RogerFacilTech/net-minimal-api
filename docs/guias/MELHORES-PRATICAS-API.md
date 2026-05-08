@@ -1,12 +1,13 @@
 # Guia: Melhores Práticas para Criação de APIs REST
 
-Este é um guia conceitual desenvolvido **para todos os níveis**. Não vamos assumir que você já saiba arquitetura de software complexa. Aqui, explicaremos o *porquê* e o *como* das principais regras do desenvolvimento moderno de APIs.
+Este é um guia conceitual desenvolvido **para todos os níveis**. Não vamos assumir que você já saiba arquitetura de software complexa. Aqui, explicaremos o _porquê_ e o _como_ das principais regras do desenvolvimento moderno de APIs.
 
 Os exemplos de código abaixo são extraídos diretamente desta implementação.
 
 ---
 
 ## Índice
+
 1. [O que é uma API REST?](#1-o-que-é-uma-api-rest)
 2. [A Anatomia de uma URL e Design de Endpoints](#2-a-anatomia-de-uma-url)
 3. [Os Verbos HTTP e a Idempotência (MUITO IMPORTANTE)](#3-os-verbos-http-e-a-idempotência)
@@ -19,15 +20,16 @@ Os exemplos de código abaixo são extraídos diretamente desta implementação.
 
 ## 1. O que é uma API REST?
 
-API significa *Application Programming Interface* (Interface de Programação de Aplicação). Resumindo de forma bem prática, é como se fosse um **"garçom"** em um restaurante.
-- **O Cliente:** É você (o aplicativo do celular, ou um site). 
+API significa _Application Programming Interface_ (Interface de Programação de Aplicação). Resumindo de forma bem prática, é como se fosse um **"garçom"** em um restaurante.
+
+- **O Cliente:** É você (o aplicativo do celular, ou um site).
 - **O Garçom (API):** É quem recebe o seu pedido.
 - **A Cozinha:** É o Servidor / Banco de Dados onde a mágica acontece.
 
-O garçom anota seu pedido e leva pra cozinha. A cozinha prepara, devolve para o garçom e ele entrega a você (o *Response*). 
+O garçom anota seu pedido e leva pra cozinha. A cozinha prepara, devolve para o garçom e ele entrega a você (o _Response_).
 
 **Mas o que é REST?**
-REST é um "estilo" ou conjunto de regras e acordos sobre como esse garçom deve se comportar. Um garçom que segue o padrão REST tenta atender a premissas básicas, sendo a principal delas o modelo *Stateless* (O servidor não memoriza transações anteriores; se você pedir "mais um copo", ele precisa saber "um copo de que?").
+REST é um "estilo" ou conjunto de regras e acordos sobre como esse garçom deve se comportar. Um garçom que segue o padrão REST tenta atender a premissas básicas, sendo a principal delas o modelo _Stateless_ (O servidor não memoriza transações anteriores; se você pedir "mais um copo", ele precisa saber "um copo de que?").
 
 ---
 
@@ -157,10 +159,12 @@ group.MapDelete("/{id}", DeletarProduto)
 Na matemática e na programação, **Idempotência é a propriedade de uma operação poder ser repetida várias vezes de forma idêntica e o resultado final no servidor não se alterar a partir da 2ª vez**.
 
 **Exemplo da vida real (Controle Remoto da TV):**
+
 - O botão "Aumentar Volume (+)" **NÃO É** idempotente. Se você apertar ele 5 vezes, o volume vai aumentar 5 vezes (efeitos colaterais continuam acumulando).
 - O botão "Colocar no Canal 4" **É** idempotente. Você pode apertá-lo uma vez, ou apertá-lo 500 vezes sem parar... o resultado final será exatamente o mesmo: a TV estará no Canal 4.
 
 **Na API:**
+
 - **GET**: É Idempotente. Ler algo 100 vezes não altera o banco.
 - **PUT** e **DELETE**: São Idempotentes. Deletar ou substituir um item dez vezes resulta no mesmo estado final.
 - **POST (Criação): NÃO É IDEMPOTENTE!**
@@ -169,6 +173,7 @@ Na matemática e na programação, **Idempotência é a propriedade de uma opera
 ### Solução: IdempotencyMiddleware
 
 Este projeto implementa um `IdempotencyMiddleware` em `src/Shared/Middleware/IdempotencyMiddleware.cs`. Quando o cliente envia o header `Idempotency-Key`, o middleware:
+
 1. Verifica se aquela chave já foi processada (cache em memória)
 2. Se sim, devolve a resposta gravada — sem tocar no banco
 3. Se não, processa normalmente e grava a resposta no cache por 24h
@@ -234,7 +239,8 @@ Nenhum sistema moderno vive sem proteção, e a forma número #1 de protegermos 
 ### O que é o JWT (JSON Web Tokens)?
 
 Imagine o JWT como uma **pulseira VIP** numa balada (sua API).
-1. Você chama o endpoint de login (`POST /api/v1/auth/login`).
+
+1. Você chama o endpoint de login no microserviço Auth (`POST /api/v1/auth/login`).
 2. Se as credenciais estiverem corretas, o servidor gera um Token JWT com validade de 2 horas.
 3. Esse token contém "Claims" (ex: seu e-mail, seu papel `Admin`).
 4. O servidor **assina** o token com uma chave secreta — você não consegue forjar.
@@ -242,7 +248,7 @@ Imagine o JWT como uma **pulseira VIP** numa balada (sua API).
 
 ### Implementação no projeto
 
-**Geração do token** (`src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs`):
+**Geração do token** (`src/Auth/Auth.Endpoints/LoginEndpoint.cs`):
 
 ```csharp
 private static IResult Login(LoginRequest req, IConfiguration configuration)
@@ -315,18 +321,18 @@ Não responda problemas do cliente com a tela azul da morte. Use Códigos de Sta
 
 ### Status Codes em uso neste projeto
 
-| Família | Código | Significado | Quando retornamos |
-|---------|--------|-------------|-------------------|
-| 2xx Sucesso | `200 OK` | Tudo certo | GET, PUT, PATCH bem-sucedidos |
-| | `201 Created` | Recurso criado | POST que persistiu no banco |
-| | `204 No Content` | Sucesso sem corpo | DELETE bem-sucedido |
-| 4xx Erro do cliente | `400 Bad Request` | Requisição inválida | Payload ilegível ou argumento inválido |
-| | `401 Unauthorized` | Sem autenticação | Token JWT ausente ou inválido |
-| | `403 Forbidden` | Sem autorização | Token válido, mas sem permissão |
-| | `404 Not Found` | Recurso inexistente | ID não existe ou produto inativo |
-| | `409 Conflict` | Conflito de estado | Idempotency-Key reutilizada com payload diferente |
-| | `422 Unprocessable Entity` | Regra de negócio violada | Preço negativo, categoria inválida |
-| 5xx Erro do servidor | `500 Internal Server Error` | Falha interna | Exceção não tratada |
+| Família              | Código                      | Significado              | Quando retornamos                                 |
+| -------------------- | --------------------------- | ------------------------ | ------------------------------------------------- |
+| 2xx Sucesso          | `200 OK`                    | Tudo certo               | GET, PUT, PATCH bem-sucedidos                     |
+|                      | `201 Created`               | Recurso criado           | POST que persistiu no banco                       |
+|                      | `204 No Content`            | Sucesso sem corpo        | DELETE bem-sucedido                               |
+| 4xx Erro do cliente  | `400 Bad Request`           | Requisição inválida      | Payload ilegível ou argumento inválido            |
+|                      | `401 Unauthorized`          | Sem autenticação         | Token JWT ausente ou inválido                     |
+|                      | `403 Forbidden`             | Sem autorização          | Token válido, mas sem permissão                   |
+|                      | `404 Not Found`             | Recurso inexistente      | ID não existe ou produto inativo                  |
+|                      | `409 Conflict`              | Conflito de estado       | Idempotency-Key reutilizada com payload diferente |
+|                      | `422 Unprocessable Entity`  | Regra de negócio violada | Preço negativo, categoria inválida                |
+| 5xx Erro do servidor | `500 Internal Server Error` | Falha interna            | Exceção não tratada                               |
 
 ### Exemplos de retorno nos endpoints
 
@@ -386,7 +392,7 @@ switch (exception)
 
 Seu Mobile App leva tempo pra atualizar e ser aprovado pela loja do Google/Apple. Se você mudar a regra do servidor e quebrar como ele funciona de repente, todos os aplicativos antigos no celular dos clientes vão **craxar simultaneamente!**
 
-Para isso usamos *Versioning*. Este projeto utiliza versionamento por caminho de URL — a estratégia mais comum:
+Para isso usamos _Versioning_. Este projeto utiliza versionamento por caminho de URL — a estratégia mais comum:
 
 ```csharp
 // Todos os grupos de endpoints do Catálogo usam /api/v1/catalogo/ como prefixo
@@ -510,11 +516,11 @@ APIs públicas precisam se proteger de abuso. Sem limites, um único cliente pod
 
 Diferentes operações têm diferentes custos e frequências esperadas. Uma listagem tem impacto baixo e pode ser chamada com frequência; criar um produto tem custo alto (validação, persistência, indexação futura) e ocorre raramente.
 
-| Política | Algoritmo | Limite | Aplicação |
-|----------|-----------|--------|-----------|
-| `leitura` | Fixed Window | 60 req/min | Todos os `GET` |
-| `escrita` | Sliding Window | 20 req/min | `POST`, `PUT`, `PATCH`, `DELETE` (exceto criação de produto) |
-| `criacao-produto` | Token Bucket | 5 req/min | `POST /catalogo/produtos` |
+| Política          | Algoritmo      | Limite     | Aplicação                                                    |
+| ----------------- | -------------- | ---------- | ------------------------------------------------------------ |
+| `leitura`         | Fixed Window   | 60 req/min | Todos os `GET`                                               |
+| `escrita`         | Sliding Window | 20 req/min | `POST`, `PUT`, `PATCH`, `DELETE` (exceto criação de produto) |
+| `criacao-produto` | Token Bucket   | 5 req/min  | `POST /catalogo/produtos`                                    |
 
 ### Fixed Window vs Sliding Window vs Token Bucket
 
@@ -603,6 +609,7 @@ O header `Retry-After` informa quantos segundos o cliente deve esperar antes de 
 ### Ambiente de testes
 
 Em `Environment = "Testing"`, as políticas de produção não são registradas. Cada factory de teste registra suas próprias políticas:
+
 - `ApiFactory`: limites de `10000` para não interferir nos testes funcionais
 - `RateLimitingApiFactory`: limites baixos (3/3/2) para testar o comportamento de rejeição
 

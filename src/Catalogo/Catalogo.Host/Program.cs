@@ -2,7 +2,6 @@
 using FacShopAPI.Catalogo.Application.Interfaces;
 using FacShopAPI.Catalogo.Data;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Atributos;
-using FacShopAPI.Catalogo.Endpoints.Endpoints.Auth;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Categorias;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
@@ -225,8 +224,6 @@ app.UseMiddleware<IdempotencyMiddleware>();
 // ==========================================
 // CONFIGURAR ENDPOINTS
 // ==========================================
-
-app.MapAuthEndpoints();
 
 var v1 = app.MapGroup("/api/v1");
 var catalogo = v1.MapGroup("/catalogo");

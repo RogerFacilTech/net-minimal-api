@@ -23,11 +23,12 @@ Separar a emissao de JWT do microservico de Catalogo para um novo microservico d
 
 ## Estado Atual (resumo)
 
-- Login existe em Catalogo:
-    - src/Catalogo/Catalogo.Endpoints/Endpoints/Auth/AuthEndpoints.cs
-    - src/Catalogo/Catalogo.Host/Program.cs (app.MapAuthEndpoints)
+- Login centralizado no Auth:
+    - src/Auth/Auth.Endpoints/LoginEndpoint.cs
+    - src/Auth/Auth.Host/Program.cs
 - Catalogo e Pedidos ja validam JWT via AddJwtBearer.
-- Testes de Catalogo obtêm token via /api/v1/auth/login em AuthHelper.
+- Catalogo nao expoe mais /api/v1/auth/login.
+- Testes de Catalogo geram JWT localmente em AuthHelper.
 
 ## Estrategia de Migracao
 

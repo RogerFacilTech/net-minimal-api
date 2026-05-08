@@ -1,23 +1,32 @@
-using System.Net.Http.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Catalogo.Tests.Integration;
 
 public static class AuthHelper
 {
-    public static async Task<string> ObterTokenAsync(HttpClient client)
+    public static Task<string> ObterTokenAsync(HttpClient client)
     {
-        var response = await client.PostAsJsonAsync("/api/v1/auth/login", new
+        var claims = new[]
         {
-            Email = "admin@example.com",
-            Senha = "senha123"
-        });
+            new Claim(JwtRegisteredClaimNames.Sub, "admin_id"),
+            new Claim(JwtRegisteredClaimNames.Email, "admin@example.com"),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
 
-        if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException($"Login failed: {response.StatusCode}");
+        var secretKey = "MinhaChaveSuperSecretaDePeloMenos32BytesAki123!";
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            issuer: "FacShopAPI",
+            audience: "TodosOsClientes",
+            claims: claims,
+            expires: DateTime.UtcNow.AddHours(2),
+            signingCredentials: creds);
 
-        var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
-        return result!.Token;
+        var encoded = new JwtSecurityTokenHandler().WriteToken(token);
+        return Task.FromResult(encoded);
     }
-
-    private record TokenResponse(string Token);
 }

@@ -4,13 +4,13 @@
 
 O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Architecture e Vertical Slice, organizada em 5 sub-projetos:
 
-| Projeto | Responsabilidade |
-|---|---|
-| `src/Catalogo/Catalogo.Domain/` | Entidades, value objects e regras de domínio |
-| `src/Catalogo/Catalogo.Application/` | Serviços de aplicação, DTOs e validators (FluentValidation) |
-| `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, migrations e DbSeeder |
-| `src/Catalogo/Catalogo.API/` | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
-| `src/Catalogo/Catalogo.ClientDemo/` | Console app demonstrando pipeline de resiliência |
+| Projeto                                 | Responsabilidade                                                 |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `src/Catalogo/Catalogo.Domain/`         | Entidades, value objects e regras de domínio                     |
+| `src/Catalogo/Catalogo.Application/`    | Serviços de aplicação, DTOs e validators (FluentValidation)      |
+| `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, migrations e DbSeeder                      |
+| `src/Catalogo/Catalogo.API/`            | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
+| `src/Catalogo/Catalogo.ClientDemo/`     | Console app demonstrando pipeline de resiliência                 |
 
 ---
 
@@ -18,21 +18,21 @@ O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Archi
 
 Todos os endpoints seguem o prefixo `/api/v1/catalogo/`.
 
-| Recurso | GET (anon) | GET /{id} (anon) | POST [auth] | PUT/PATCH [auth] | DELETE [auth] |
-|---|---|---|---|---|---|
-| Produtos | `GET /produtos` | `GET /produtos/{id}` | `POST /produtos` | `PUT /produtos/{id}` | `DELETE /produtos/{id}` |
-| Categorias | `GET /categorias` | `GET /categorias/{id}` | `POST /categorias` | `PUT /categorias/{id}` | `DELETE /categorias/{id}` |
-| Variantes | `GET /produtos/{id}/variantes` | `GET /produtos/{id}/variantes/{vid}` | `POST /produtos/{id}/variantes` | `PUT /produtos/{id}/variantes/{vid}` | `DELETE /produtos/{id}/variantes/{vid}` |
-| Atributos | `GET /produtos/{id}/atributos` | `GET /produtos/{id}/atributos/{aid}` | `POST /produtos/{id}/atributos` | `PUT /produtos/{id}/atributos/{aid}` | `DELETE /produtos/{id}/atributos/{aid}` |
-| Mídias | `GET /produtos/{id}/midias` | `GET /produtos/{id}/midias/{mid}` | `POST /produtos/{id}/midias` | `PUT /produtos/{id}/midias/{mid}` | `DELETE /produtos/{id}/midias/{mid}` |
+| Recurso    | GET (anon)                     | GET /{id} (anon)                     | POST [auth]                     | PUT/PATCH [auth]                     | DELETE [auth]                           |
+| ---------- | ------------------------------ | ------------------------------------ | ------------------------------- | ------------------------------------ | --------------------------------------- |
+| Produtos   | `GET /produtos`                | `GET /produtos/{id}`                 | `POST /produtos`                | `PUT /produtos/{id}`                 | `DELETE /produtos/{id}`                 |
+| Categorias | `GET /categorias`              | `GET /categorias/{id}`               | `POST /categorias`              | `PUT /categorias/{id}`               | `DELETE /categorias/{id}`               |
+| Variantes  | `GET /produtos/{id}/variantes` | `GET /produtos/{id}/variantes/{vid}` | `POST /produtos/{id}/variantes` | `PUT /produtos/{id}/variantes/{vid}` | `DELETE /produtos/{id}/variantes/{vid}` |
+| Atributos  | `GET /produtos/{id}/atributos` | `GET /produtos/{id}/atributos/{aid}` | `POST /produtos/{id}/atributos` | `PUT /produtos/{id}/atributos/{aid}` | `DELETE /produtos/{id}/atributos/{aid}` |
+| Mídias     | `GET /produtos/{id}/midias`    | `GET /produtos/{id}/midias/{mid}`    | `POST /produtos/{id}/midias`    | `PUT /produtos/{id}/midias/{mid}`    | `DELETE /produtos/{id}/midias/{mid}`    |
 
 ### Políticas de Rate Limiting por verbo
 
-| Verbo / Rota | Política |
-|---|---|
-| `GET` (todos) | `leitura` — FixedWindow, 60 req/min |
-| `POST /produtos` | `criacao-produto` — TokenBucket, 5 req/min |
-| `POST`, `PUT`, `PATCH`, `DELETE` (demais rotas) | `escrita` — SlidingWindow, 20 req/min |
+| Verbo / Rota                                    | Política                                   |
+| ----------------------------------------------- | ------------------------------------------ |
+| `GET` (todos)                                   | `leitura` — FixedWindow, 60 req/min        |
+| `POST /produtos`                                | `criacao-produto` — TokenBucket, 5 req/min |
+| `POST`, `PUT`, `PATCH`, `DELETE` (demais rotas) | `escrita` — SlidingWindow, 20 req/min      |
 
 ---
 
@@ -111,8 +111,8 @@ Em `Environment = "Testing"`, o `Program.cs` não registra `AddCatalogoRateLimit
 Todos os endpoints de escrita (`POST`, `PUT`, `PATCH`, `DELETE`) exigem JWT Bearer. Endpoints `GET` são anônimos.
 
 ```bash
-# 1. Obter token
-POST /api/v1/auth/login
+# 1. Obter token (no microserviço Auth)
+POST http://localhost:5020/api/v1/auth/login
 Content-Type: application/json
 
 {"email": "admin@example.com", "senha": "senha123"}
@@ -127,12 +127,12 @@ Authorization: Bearer {token}
 
 `Catalogo.ClientDemo` é um console app que demonstra o consumo da API com um pipeline de resiliência composto (Polly v8):
 
-| Camada | Política | Configuração |
-|---|---|---|
-| 1ª | Timeout interno | 5 segundos por tentativa |
-| 2ª | Retry | 3 tentativas, backoff exponencial + jitter; ativa em `429` e `503` |
-| 3ª | Circuit Breaker | Abre se 50% das requisições falham em 30s; permanece aberto por 15s |
-| 4ª | Timeout global | 30 segundos para toda a operação |
+| Camada | Política        | Configuração                                                        |
+| ------ | --------------- | ------------------------------------------------------------------- |
+| 1ª     | Timeout interno | 5 segundos por tentativa                                            |
+| 2ª     | Retry           | 3 tentativas, backoff exponencial + jitter; ativa em `429` e `503`  |
+| 3ª     | Circuit Breaker | Abre se 50% das requisições falham em 30s; permanece aberto por 15s |
+| 4ª     | Timeout global  | 30 segundos para toda a operação                                    |
 
 As políticas são aplicadas de fora para dentro: o timeout global envolve tudo, incluindo as retentativas.
 
@@ -148,10 +148,10 @@ dotnet run --project src/Catalogo/Catalogo.ClientDemo -- https://localhost:5001
 
 O `DbSeeder` em `Catalogo.Infrastructure` popula os dados iniciais ao subir a aplicação (e nos testes de integração via `ApiFactory`):
 
-| Entidade | Quantidade | IDs reservados |
-|---|---|---|
-| Produtos | 8 | 1–8 |
-| Categorias | 5 | 1–5 |
+| Entidade   | Quantidade | IDs reservados |
+| ---------- | ---------- | -------------- |
+| Produtos   | 8          | 1–8            |
+| Categorias | 5          | 1–5            |
 
 Categorias iniciais: **Eletrônicos** (1), **Vestuário** (2), **Alimentos** (3), **Casa & Jardim** (4), **Esportes** (5).
 
@@ -307,7 +307,7 @@ curl "http://localhost:5001/api/v1/catalogo/produtos?page=1&pageSize=10"
 curl "http://localhost:5001/api/v1/catalogo/produtos/1"
 
 # Criar produto (requer JWT)
-TOKEN=$(curl -s -X POST http://localhost:5001/api/v1/auth/login \
+TOKEN=$(curl -s -X POST http://localhost:5020/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","senha":"senha123"}' | jq -r .token)
 

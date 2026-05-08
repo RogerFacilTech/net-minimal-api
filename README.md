@@ -32,11 +32,11 @@ Swagger disponÃ­vel em: http://localhost:5000
 
 ## Bounded Contexts
 
-| Contexto | PadrÃ£o                        | Rotas base           | DescriÃ§Ã£o                                                 |
-| -------- | ----------------------------- | -------------------- | --------------------------------------------------------- |
+| Contexto  | PadrÃ£o                        | Rotas base           | DescriÃ§Ã£o                                               |
+| --------- | ------------------------------ | -------------------- | --------------------------------------------------------- |
 | CatÃ¡logo | Clean Architecture hÃ­brida    | `/api/v1/catalogo/*` | 5 recursos com CRUD completo, rate limiting e soft delete |
-| Pedidos  | Vertical Slice + DomÃ­nio Rico | `/api/v1/pedidos/*`  | Agregado rico, Result pattern, auth obrigatÃ³rio           |
-| Pix      | Mock Server + HTTP Client     | `/pix/v1/*` (mock)   | mTLS, OAuth2, idempotÃªncia, resiliÃªncia                   |
+| Pedidos   | Vertical Slice + DomÃ­nio Rico | `/api/v1/pedidos/*`  | Agregado rico, Result pattern, auth obrigatÃ³rio          |
+| Pix       | Mock Server + HTTP Client      | `/pix/v1/*` (mock)   | mTLS, OAuth2, idempotÃªncia, resiliÃªncia                 |
 
 ---
 
@@ -81,36 +81,38 @@ net-minimal-api/
 
 ### AutenticaÃ§Ã£o
 
-| MÃ©todo | Rota                 | DescriÃ§Ã£o                                                                |
-| ------ | -------------------- | ------------------------------------------------------------------------ |
-| `POST` | `/api/v1/auth/login` | Retorna JWT. Body: `{"email": "admin@example.com", "senha": "senha123"}` |
+| MÃ©todo | Rota                 | DescriÃ§Ã£o                                                                                    |
+| ------- | -------------------- | ---------------------------------------------------------------------------------------------- |
+| `POST`  | `/api/v1/auth/login` | Retorna JWT no microserviÃ§o Auth. Body: `{"email": "admin@example.com", "senha": "senha123"}` |
+
+Para execuÃ§Ã£o local, obtenha o token no Auth.Host (ex.: `http://localhost:5020/api/v1/auth/login`) e use o bearer token nas chamadas protegidas de Catalogo/Pedidos.
 
 ### CatÃ¡logo
 
-| MÃ©todo   | Rota                                      | Auth | ObservaÃ§Ãµes                              |
+| MÃ©todo  | Rota                                      | Auth | ObservaÃ§Ãµes                            |
 | -------- | ----------------------------------------- | ---- | ---------------------------------------- |
-| `GET`    | `/api/v1/catalogo/produtos`               | â€”    | Paginado; filtros: `categoria`, `search` |
-| `GET`    | `/api/v1/catalogo/produtos/{id}`          | â€”    |                                          |
+| `GET`    | `/api/v1/catalogo/produtos`               | â€”  | Paginado; filtros: `categoria`, `search` |
+| `GET`    | `/api/v1/catalogo/produtos/{id}`          | â€”  |                                          |
 | `POST`   | `/api/v1/catalogo/produtos`               | JWT  | Rate limit: `criacao-produto`            |
 | `PUT`    | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/produtos/{id}`          | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/produtos/{id}`          | JWT  | Soft delete (seta `Ativo = false`)       |
-| `GET`    | `/api/v1/catalogo/categorias`             | â€”    |                                          |
-| `GET`    | `/api/v1/catalogo/categorias/{id}`        | â€”    |                                          |
+| `GET`    | `/api/v1/catalogo/categorias`             | â€”  |                                          |
+| `GET`    | `/api/v1/catalogo/categorias/{id}`        | â€”  |                                          |
 | `POST`   | `/api/v1/catalogo/categorias`             | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/categorias/{id}`        | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/variantes`              | â€”    | Query: `?produtoId={id}`                 |
-| `GET`    | `/api/v1/catalogo/variantes/{id}`         | â€”    |                                          |
+| `GET`    | `/api/v1/catalogo/variantes`              | â€”  | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/variantes/{id}`         | â€”  |                                          |
 | `POST`   | `/api/v1/catalogo/variantes`              | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/variantes/{id}/estoque` | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/variantes/{id}`         | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/atributos`              | â€”    | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/atributos`              | â€”  | Query: `?produtoId={id}`                 |
 | `POST`   | `/api/v1/catalogo/atributos`              | JWT  |                                          |
 | `PUT`    | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/atributos/{id}`         | JWT  |                                          |
-| `GET`    | `/api/v1/catalogo/midias`                 | â€”    | Query: `?produtoId={id}`                 |
+| `GET`    | `/api/v1/catalogo/midias`                 | â€”  | Query: `?produtoId={id}`                 |
 | `POST`   | `/api/v1/catalogo/midias`                 | JWT  |                                          |
 | `PATCH`  | `/api/v1/catalogo/midias/{id}/ordem`      | JWT  |                                          |
 | `DELETE` | `/api/v1/catalogo/midias/{id}`            | JWT  |                                          |
@@ -118,12 +120,12 @@ net-minimal-api/
 ### Pedidos
 
 | MÃ©todo | Rota                            | Auth |
-| ------ | ------------------------------- | ---- |
-| `POST` | `/api/v1/pedidos`               | JWT  |
-| `GET`  | `/api/v1/pedidos`               | JWT  |
-| `GET`  | `/api/v1/pedidos/{id}`          | JWT  |
-| `POST` | `/api/v1/pedidos/{id}/itens`    | JWT  |
-| `POST` | `/api/v1/pedidos/{id}/cancelar` | JWT  |
+| ------- | ------------------------------- | ---- |
+| `POST`  | `/api/v1/pedidos`               | JWT  |
+| `GET`   | `/api/v1/pedidos`               | JWT  |
+| `GET`   | `/api/v1/pedidos/{id}`          | JWT  |
+| `POST`  | `/api/v1/pedidos/{id}/itens`    | JWT  |
+| `POST`  | `/api/v1/pedidos/{id}/cancelar` | JWT  |
 
 ---
 
@@ -131,7 +133,7 @@ net-minimal-api/
 
 | Projeto                | Testes  |
 | ---------------------- | ------- |
-| `FacShopAPI.Tests`    | 143     |
+| `FacShopAPI.Tests`     | 143     |
 | `Pix.MockServer.Tests` | 7       |
 | **Total**              | **150** |
 
@@ -150,12 +152,12 @@ dotnet test FacShopAPI.slnx
 
 ## DocumentaÃ§Ã£o
 
-| Arquivo                                          | ConteÃºdo                                                      |
-| ------------------------------------------------ | ------------------------------------------------------------- |
-| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | VisÃ£o geral e orientaÃ§Ã£o de leitura                           |
-| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisÃµes arquiteturais                            |
+| Arquivo                                          | ConteÃºdo                                                       |
+| ------------------------------------------------ | --------------------------------------------------------------- |
+| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | VisÃ£o geral e orientaÃ§Ã£o de leitura                          |
+| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisÃµes arquiteturais                             |
 | [docs/02-CATALOGO.md](docs/02-CATALOGO.md)       | CatÃ¡logo: Clean Architecture hÃ­brida, recursos, rate limiting |
-| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domÃ­nio rico, Result pattern         |
-| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                  |
-| [docs/05-TESTES.md](docs/05-TESTES.md)           | EstratÃ©gia de testes, factories, helpers                      |
-| [docs/ADRs/](docs/ADRs/)                         | 15 ADRs no formato MADR 3.x                                   |
+| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domÃ­nio rico, Result pattern          |
+| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                    |
+| [docs/05-TESTES.md](docs/05-TESTES.md)           | EstratÃ©gia de testes, factories, helpers                       |
+| [docs/ADRs/](docs/ADRs/)                         | 15 ADRs no formato MADR 3.x                                     |

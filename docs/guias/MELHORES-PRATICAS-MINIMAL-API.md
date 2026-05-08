@@ -810,8 +810,8 @@ dotnet run --project src/Catalogo/Catalogo.API
 # 2. Swagger UI
 open http://localhost:5001/swagger
 
-# 3. Autenticar (JWT)
-TOKEN=$(curl -s -X POST http://localhost:5001/api/v1/auth/login \
+# 3. Autenticar (JWT) no Auth.Host
+TOKEN=$(curl -s -X POST http://localhost:5020/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","senha":"senha123"}' | jq -r .token)
 
@@ -913,19 +913,19 @@ src/Catalogo/
 
 ## ReferÃªncias Cruzadas
 
-| Aspecto                       | Guia teÃ³rico                                                   | ImplementaÃ§Ã£o                                                                                                                                                                               |
-| ----------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RESTful Design                | [SeÃ§Ã£o 2 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)                                                                                                  |
-| HTTP Verbs + Rate Limiting    | [SeÃ§Ãµes 3 e 8](MELHORES-PRATICAS-API.md)                       | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
-| PaginaÃ§Ã£o                     | [SeÃ§Ã£o 2](MELHORES-PRATICAS-API.md)                            | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
-| Versionamento                 | [SeÃ§Ã£o 6](MELHORES-PRATICAS-API.md)                            | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
-| SeguranÃ§a JWT                 | [SeÃ§Ã£o 4](MELHORES-PRATICAS-API.md)                            | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
-| ValidaÃ§Ã£o FluentValidation    | [SeÃ§Ã£o 7](MELHORES-PRATICAS-API.md)                            | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
-| Tratamento de Erros           | [SeÃ§Ã£o 5](MELHORES-PRATICAS-API.md)                            | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
-| IdempotÃªncia                  | [SeÃ§Ã£o 3](MELHORES-PRATICAS-API.md)                            | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
-| Logging                       | [SeÃ§Ã£o 9 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
-| Rate Limiting                 | [SeÃ§Ã£o 8](MELHORES-PRATICAS-API.md)                            | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
-| DomÃ­nio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                    | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
+| Aspecto                        | Guia teÃ³rico                                                      | ImplementaÃ§Ã£o                                                                                                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RESTful Design                 | [SeÃ§Ã£o 2 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)                                                                                                  |
+| HTTP Verbs + Rate Limiting     | [SeÃ§Ãµes 3 e 8](MELHORES-PRATICAS-API.md)                         | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
+| PaginaÃ§Ã£o                    | [SeÃ§Ã£o 2](MELHORES-PRATICAS-API.md)                              | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Versionamento                  | [SeÃ§Ã£o 6](MELHORES-PRATICAS-API.md)                              | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
+| SeguranÃ§a JWT                 | [SeÃ§Ã£o 4](MELHORES-PRATICAS-API.md)                              | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
+| ValidaÃ§Ã£o FluentValidation   | [SeÃ§Ã£o 7](MELHORES-PRATICAS-API.md)                              | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
+| Tratamento de Erros            | [SeÃ§Ã£o 5](MELHORES-PRATICAS-API.md)                              | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
+| IdempotÃªncia                  | [SeÃ§Ã£o 3](MELHORES-PRATICAS-API.md)                              | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
+| Logging                        | [SeÃ§Ã£o 9 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Rate Limiting                  | [SeÃ§Ã£o 8](MELHORES-PRATICAS-API.md)                              | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
+| DomÃ­nio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                        | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
 
 ---
 
