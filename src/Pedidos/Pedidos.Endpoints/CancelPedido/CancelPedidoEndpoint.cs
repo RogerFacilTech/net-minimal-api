@@ -31,6 +31,6 @@ public class CancelPedidoEndpoint : IEndpoint
         .Produces<PedidoResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
-        .AllowAnonymous();
+        .RequireAuthorization();
     }
 }
