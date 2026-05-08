@@ -182,12 +182,15 @@ dotnet test FacShopAPI.slnx
 
 ## Documentação
 
-| Arquivo                                          | Conteúdo                                                      |
-| ------------------------------------------------ | ------------------------------------------------------------- |
-| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md) | Visão geral e orientação de leitura                           |
-| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md) | Diagramas e decisões arquiteturais                            |
-| [docs/02-CATALOGO.md](docs/02-CATALOGO.md)       | Catálogo: Clean Architecture híbrida, recursos, rate limiting |
-| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)         | Pedidos: Vertical Slice, domínio rico, Result pattern         |
-| [docs/04-PIX.md](docs/04-PIX.md)                 | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                  |
-| [docs/05-TESTES.md](docs/05-TESTES.md)           | Estratégia de testes, factories, helpers                      |
-| [docs/ADRs/](docs/ADRs/)                         | 16 ADRs no formato MADR 3.x                                   |
+| Arquivo                                            | Conteúdo                                                      |
+| -------------------------------------------------- | ------------------------------------------------------------- |
+| [docs/00-VISAO-GERAL.md](docs/00-VISAO-GERAL.md)   | Visão geral e orientação de leitura                           |
+| [docs/01-ARQUITETURA.md](docs/01-ARQUITETURA.md)   | Diagramas e decisões arquiteturais                            |
+| [docs/02-CATALOGO.md](docs/02-CATALOGO.md)         | Catálogo: Clean Architecture híbrida, recursos, rate limiting |
+| [docs/03-PEDIDOS.md](docs/03-PEDIDOS.md)           | Pedidos: Vertical Slice, domínio rico, Result pattern         |
+| [docs/04-PIX.md](docs/04-PIX.md)                   | Pix: Mock Server, mTLS, OAuth2, cliente HTTP                  |
+| [docs/05-TESTES.md](docs/05-TESTES.md)             | Estratégia de testes, factories, helpers                      |
+| [docs/06-ESTRUTURA.MD](docs/06-ESTRUTURA.MD)       | Estrutura de projetos e grafo de dependências                 |
+| [docs/07-EXECUTAR.MD](docs/07-EXECUTAR.MD)         | Comandos para executar hosts, samples e testes                |
+| [docs/08-IDEMPOTENCIA.md](docs/08-IDEMPOTENCIA.md) | Overview completo do controle de idempotência                 |
+| [docs/ADRs/](docs/ADRs/)                           | 16 ADRs no formato MADR 3.x                                   |

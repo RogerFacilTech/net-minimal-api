@@ -120,18 +120,19 @@ Estudo completo incluindo integração externa, estratégia de testes e decisõe
 
 ## Mapa da Documentação
 
-| Arquivo                  | Objetivo                                                         | Público                   |
-| ------------------------ | ---------------------------------------------------------------- | ------------------------- |
-| `README.md`              | Visão geral e início rápido                                      | Todos                     |
-| `docs/01-ARQUITETURA.md` | Padrões e fluxo de dados                                         | Intermediário / Arquiteto |
-| `docs/02-CATALOGO.md`    | Deep-dive do Catálogo                                            | Intermediário             |
-| `docs/03-PEDIDOS.md`     | Vertical Slice e domínio rico                                    | Intermediário / Arquiteto |
-| `docs/04-PIX.md`         | Integração externa e resiliência                                 | Intermediário             |
-| `docs/05-TESTES.md`      | Estratégia e execução de testes                                  | Todos                     |
-| `docs/06-ESTRUTURA.MD`   | Estrutura de projetos, responsabilidades e grafo de dependências | Todos                     |
-| `docs/07-EXECUTAR.MD`    | Comandos para executar hosts, samples e testes                   | Todos                     |
-| `docs/guias/`            | Guias conceituais de REST e .NET                                 | Iniciante / Intermediário |
-| `docs/ADRs/`             | Decisões arquiteturais registradas                               | Arquiteto                 |
+| Arquivo                   | Objetivo                                                         | Público                   |
+| ------------------------- | ---------------------------------------------------------------- | ------------------------- |
+| `README.md`               | Visão geral e início rápido                                      | Todos                     |
+| `docs/01-ARQUITETURA.md`  | Padrões e fluxo de dados                                         | Intermediário / Arquiteto |
+| `docs/02-CATALOGO.md`     | Deep-dive do Catálogo                                            | Intermediário             |
+| `docs/03-PEDIDOS.md`      | Vertical Slice e domínio rico                                    | Intermediário / Arquiteto |
+| `docs/04-PIX.md`          | Integração externa e resiliência                                 | Intermediário             |
+| `docs/05-TESTES.md`       | Estratégia e execução de testes                                  | Todos                     |
+| `docs/06-ESTRUTURA.MD`    | Estrutura de projetos, responsabilidades e grafo de dependências | Todos                     |
+| `docs/07-EXECUTAR.MD`     | Comandos para executar hosts, samples e testes                   | Todos                     |
+| `docs/08-IDEMPOTENCIA.md` | Overview completo do controle de idempotência                    | Intermediário / Arquiteto |
+| `docs/guias/`             | Guias conceituais de REST e .NET                                 | Iniciante / Intermediário |
+| `docs/ADRs/`              | Decisões arquiteturais registradas                               | Arquiteto                 |
 
 ---
 
