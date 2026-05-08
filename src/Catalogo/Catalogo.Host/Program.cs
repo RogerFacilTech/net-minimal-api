@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using FacShopAPI.Catalogo.Application.Interfaces;
 using FacShopAPI.Catalogo.Data;
 using FacShopAPI.Catalogo.Endpoints.Endpoints.Atributos;
@@ -20,7 +20,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================
-// CONFIGURAÇÃO DE LOGGING
+// CONFIGURAÃ‡ÃƒO DE LOGGING
 // ==========================================
 
 Log.Logger = new LoggerConfiguration()
@@ -37,7 +37,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // ==========================================
-// CONFIGURAÇÃO DE BANCO DE DADOS
+// CONFIGURAÃ‡ÃƒO DE BANCO DE DADOS
 // ==========================================
 
 if (builder.Environment.IsEnvironment("Testing"))
@@ -59,16 +59,16 @@ else
 }
 
 // ==========================================
-// CONFIGURAÇÃO DE DEPENDENCY INJECTION
+// CONFIGURAÃ‡ÃƒO DE DEPENDENCY INJECTION
 // ==========================================
 
-// Conectar CatalogoDbContext → ICatalogoContext para injeção de dependência do repositório
+// Conectar CatalogoDbContext â†’ ICatalogoContext para injeÃ§Ã£o de dependÃªncia do repositÃ³rio
 builder.Services.AddScoped<ICatalogoContext>(sp => sp.GetRequiredService<CatalogoDbContext>());
 
-// Registrar todos os serviços do bounded context Catálogo
+// Registrar todos os serviÃ§os do bounded context CatÃ¡logo
 builder.Services.AddCatalogo();
 
-// Rate limiting — não registrar em Testing (ApiFactory/RateLimitingApiFactory registram com limites próprios)
+// Rate limiting â€” nÃ£o registrar em Testing (ApiFactory/RateLimitingApiFactory registram com limites prÃ³prios)
 if (!builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddCatalogoRateLimiting();
@@ -77,13 +77,13 @@ if (!builder.Environment.IsEnvironment("Testing"))
 
 
 // ==========================================
-// CONFIGURAÇÃO DE MAPEAMENTO
+// CONFIGURAÃ‡ÃƒO DE MAPEAMENTO
 // ==========================================
 
 builder.Services.AddAutoMapper(_ => { }, typeof(FacShopAPI.Catalogo.Application.Mappings.ProdutoMappingProfile).Assembly);
 
 // ==========================================
-// CONFIGURAÇÃO DE CORS
+// CONFIGURAÃ‡ÃƒO DE CORS
 // ==========================================
 
 builder.Services.AddCors(options =>
@@ -97,11 +97,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Cache em memória para armazenar as chaves de idempotência
+// Cache em memÃ³ria para armazenar as chaves de idempotÃªncia
 builder.Services.AddMemoryCache();
 
 // ==========================================
-// CONFIGURAÇÃO DE SEGURANÇA (JWT)
+// CONFIGURAÃ‡ÃƒO DE SEGURANÃ‡A (JWT)
 // ==========================================
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MinhaChaveSuperSecretaDePeloMenos32BytesAki123!";
@@ -114,7 +114,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "ProdutosAPI",
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "FacShopAPI",
             ValidAudience = builder.Configuration["Jwt:Audience"] ?? "TodosOsClientes",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
@@ -123,7 +123,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // ==========================================
-// CONFIGURAÇÃO DE DOCUMENTAÇÃO (SWAGGER)
+// CONFIGURAÃ‡ÃƒO DE DOCUMENTAÃ‡ÃƒO (SWAGGER)
 // ==========================================
 
 builder.Services.AddEndpointsApiExplorer();
@@ -146,7 +146,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    var xmlFile = Path.Combine(AppContext.BaseDirectory, "ProdutosAPI.xml");
+    var xmlFile = Path.Combine(AppContext.BaseDirectory, "FacShopAPI.xml");
     if (File.Exists(xmlFile))
     {
         c.IncludeXmlComments(xmlFile);
@@ -178,7 +178,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ==========================================
-// CRIAR APLICAÇÃO
+// CRIAR APLICAÃ‡ÃƒO
 // ==========================================
 
 var app = builder.Build();
@@ -187,7 +187,7 @@ var app = builder.Build();
 // EXECUTAR MIGRATIONS E SEED
 // ==========================================
 
-// Skip DB initialization in test environment — ApiFactory handles seeding
+// Skip DB initialization in test environment â€” ApiFactory handles seeding
 if (!app.Environment.IsEnvironment("Testing"))
 {
     app.MigrateDatabase<CatalogoDbContext>(db =>
@@ -242,7 +242,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy" }))
     .AllowAnonymous();
 
 // ==========================================
-// EXECUTAR APLICAÇÃO
+// EXECUTAR APLICAÃ‡ÃƒO
 // ==========================================
 
 app.Run();

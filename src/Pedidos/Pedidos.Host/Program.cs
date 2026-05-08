@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using FacShopAPI.Pedidos.AddItemPedido;
 using FacShopAPI.Pedidos.CancelPedido;
 using FacShopAPI.Pedidos.CreatePedido;
@@ -20,7 +20,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================
-// CONFIGURAÇÃO DE LOGGING
+// CONFIGURAÃ‡ÃƒO DE LOGGING
 // ==========================================
 
 Log.Logger = new LoggerConfiguration()
@@ -37,7 +37,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // ==========================================
-// CONFIGURAÇÃO DE BANCO DE DADOS
+// CONFIGURAÃ‡ÃƒO DE BANCO DE DADOS
 // ==========================================
 
 if (builder.Environment.IsEnvironment("Testing"))
@@ -58,7 +58,7 @@ else
 }
 
 // ==========================================
-// CONFIGURAÇÃO DE DEPENDENCY INJECTION
+// CONFIGURAÃ‡ÃƒO DE DEPENDENCY INJECTION
 // ==========================================
 
 var catalogoApiBaseUrl = builder.Configuration["CatalogoApi:BaseUrl"] ?? "https://localhost:5001";
@@ -92,7 +92,7 @@ builder.Services.AddScoped<CancelPedidoHandler>();
 builder.Services.AddValidatorsFromAssemblyContaining<AddItemValidator>();
 
 // ==========================================
-// CONFIGURAÇÃO DE SEGURANÇA (JWT)
+// CONFIGURAÃ‡ÃƒO DE SEGURANÃ‡A (JWT)
 // ==========================================
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MinhaChaveSuperSecretaDePeloMenos32BytesAki123!";
@@ -105,7 +105,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "ProdutosAPI",
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "FacShopAPI",
             ValidAudience = builder.Configuration["Jwt:Audience"] ?? "TodosOsClientes",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };

@@ -1,4 +1,4 @@
-# Design: Vertical Slice Architecture + Domínio Rico (Pedidos)
+﻿# Design: Vertical Slice Architecture + DomÃ­nio Rico (Pedidos)
 
 **Data:** 2026-02-27
 **Status:** Aprovado
@@ -7,24 +7,24 @@
 
 ## Contexto
 
-O projeto ProdutosAPI é um projeto educacional em .NET 10 Minimal API com arquitetura horizontal em camadas (Endpoints → Services → Data). O modelo de domínio atual é anêmico: a classe `Produto` é um contêiner de dados sem comportamento.
+O projeto FacShopAPI Ã© um projeto educacional em .NET 10 Minimal API com arquitetura horizontal em camadas (Endpoints â†’ Services â†’ Data). O modelo de domÃ­nio atual Ã© anÃªmico: a classe `Produto` Ã© um contÃªiner de dados sem comportamento.
 
 Este design introduz:
 1. **Vertical Slice Architecture** para o novo caso de uso de Pedidos
-2. **Modelo de domínio rico** em Pedidos e na refatoração de Produtos
-3. Coexistência dos dois padrões no mesmo projeto, demonstrando o contraste
+2. **Modelo de domÃ­nio rico** em Pedidos e na refatoraÃ§Ã£o de Produtos
+3. CoexistÃªncia dos dois padrÃµes no mesmo projeto, demonstrando o contraste
 
 ---
 
-## Decisões de Design
+## DecisÃµes de Design
 
-| Decisão | Escolha | Motivo |
+| DecisÃ£o | Escolha | Motivo |
 |---|---|---|
-| Escopo de Pedidos | Pedido + PedidoItem | Agregado clássico, didático |
-| Organização dos slices | CRUD como slices | Acessível, sem overhead de casos de uso complexos |
-| Handler | Inline no Command, sem MediatR | Sem dependências novas, mais simples |
-| Persistência | Mesmo AppDbContext | Evita complexidade de múltiplos contextos |
-| Produtos | Refatorado com domínio rico | Demonstra que domínio rico independe do padrão arquitetural |
+| Escopo de Pedidos | Pedido + PedidoItem | Agregado clÃ¡ssico, didÃ¡tico |
+| OrganizaÃ§Ã£o dos slices | CRUD como slices | AcessÃ­vel, sem overhead de casos de uso complexos |
+| Handler | Inline no Command, sem MediatR | Sem dependÃªncias novas, mais simples |
+| PersistÃªncia | Mesmo AppDbContext | Evita complexidade de mÃºltiplos contextos |
+| Produtos | Refatorado com domÃ­nio rico | Demonstra que domÃ­nio rico independe do padrÃ£o arquitetural |
 
 ---
 
@@ -32,77 +32,77 @@ Este design introduz:
 
 ```
 src/
-├── Endpoints/              ← Produtos (inalterado — horizontal layers)
-│   ├── ProdutoEndpoints.cs
-│   └── AuthEndpoints.cs
-├── Services/               ← Produtos (inalterado)
-├── Models/                 ← Produto (refatorado com domínio rico)
-├── DTOs/                   ← Produtos
-├── Validators/             ← Produtos
-│
-└── Features/               ← NOVO — Vertical Slice
-    └── Pedidos/
-        ├── Domain/
-        │   ├── Pedido.cs
-        │   ├── PedidoItem.cs
-        │   ├── StatusPedido.cs
-        │   └── PedidoErrors.cs
-        ├── Common/
-        │   ├── IEndpoint.cs
-        │   ├── Result.cs
-        │   └── PedidoResponse.cs
-        ├── CreatePedido/
-        │   ├── CreatePedidoCommand.cs
-        │   ├── CreatePedidoValidator.cs
-        │   └── CreatePedidoEndpoint.cs
-        ├── GetPedido/
-        │   ├── GetPedidoQuery.cs
-        │   └── GetPedidoEndpoint.cs
-        ├── ListPedidos/
-        │   ├── ListPedidosQuery.cs
-        │   └── ListPedidosEndpoint.cs
-        ├── AddItemPedido/
-        │   ├── AddItemCommand.cs
-        │   ├── AddItemValidator.cs
-        │   └── AddItemEndpoint.cs
-        └── CancelPedido/
-            ├── CancelPedidoCommand.cs
-            └── CancelPedidoEndpoint.cs
+â”œâ”€â”€ Endpoints/              â† Produtos (inalterado â€” horizontal layers)
+â”‚   â”œâ”€â”€ ProdutoEndpoints.cs
+â”‚   â””â”€â”€ AuthEndpoints.cs
+â”œâ”€â”€ Services/               â† Produtos (inalterado)
+â”œâ”€â”€ Models/                 â† Produto (refatorado com domÃ­nio rico)
+â”œâ”€â”€ DTOs/                   â† Produtos
+â”œâ”€â”€ Validators/             â† Produtos
+â”‚
+â””â”€â”€ Features/               â† NOVO â€” Vertical Slice
+    â””â”€â”€ Pedidos/
+        â”œâ”€â”€ Domain/
+        â”‚   â”œâ”€â”€ Pedido.cs
+        â”‚   â”œâ”€â”€ PedidoItem.cs
+        â”‚   â”œâ”€â”€ StatusPedido.cs
+        â”‚   â””â”€â”€ PedidoErrors.cs
+        â”œâ”€â”€ Common/
+        â”‚   â”œâ”€â”€ IEndpoint.cs
+        â”‚   â”œâ”€â”€ Result.cs
+        â”‚   â””â”€â”€ PedidoResponse.cs
+        â”œâ”€â”€ CreatePedido/
+        â”‚   â”œâ”€â”€ CreatePedidoCommand.cs
+        â”‚   â”œâ”€â”€ CreatePedidoValidator.cs
+        â”‚   â””â”€â”€ CreatePedidoEndpoint.cs
+        â”œâ”€â”€ GetPedido/
+        â”‚   â”œâ”€â”€ GetPedidoQuery.cs
+        â”‚   â””â”€â”€ GetPedidoEndpoint.cs
+        â”œâ”€â”€ ListPedidos/
+        â”‚   â”œâ”€â”€ ListPedidosQuery.cs
+        â”‚   â””â”€â”€ ListPedidosEndpoint.cs
+        â”œâ”€â”€ AddItemPedido/
+        â”‚   â”œâ”€â”€ AddItemCommand.cs
+        â”‚   â”œâ”€â”€ AddItemValidator.cs
+        â”‚   â””â”€â”€ AddItemEndpoint.cs
+        â””â”€â”€ CancelPedido/
+            â”œâ”€â”€ CancelPedidoCommand.cs
+            â””â”€â”€ CancelPedidoEndpoint.cs
 ```
 
 ---
 
-## Modelo de Domínio Rico
+## Modelo de DomÃ­nio Rico
 
 ### Pedido (Aggregate Root)
 
-Regras de negócio encapsuladas:
+Regras de negÃ³cio encapsuladas:
 
-- Itens só podem ser adicionados a pedidos em status `Rascunho`
-- Quantidade por item: mínimo 1, máximo 999
+- Itens sÃ³ podem ser adicionados a pedidos em status `Rascunho`
+- Quantidade por item: mÃ­nimo 1, mÃ¡ximo 999
 - Mesmo produto adicionado duas vezes faz merge de quantidade
 - Limite de 20 itens distintos por pedido
 - Produto precisa estar ativo e com estoque suficiente
-- Confirmar requer ao menos 1 item e valor mínimo de R$ 10,00
-- Pedido `Confirmado` ou `Cancelado` não pode ser confirmado novamente
-- Cancelamento exige motivo obrigatório
-- Pedido já cancelado não pode ser cancelado novamente
+- Confirmar requer ao menos 1 item e valor mÃ­nimo de R$ 10,00
+- Pedido `Confirmado` ou `Cancelado` nÃ£o pode ser confirmado novamente
+- Cancelamento exige motivo obrigatÃ³rio
+- Pedido jÃ¡ cancelado nÃ£o pode ser cancelado novamente
 
 ### PedidoItem (Entity filha)
 
-- Preço unitário e nome do produto são **snapshots** do momento do pedido
-- `Subtotal` é calculado (`PrecoUnitario * Quantidade`), nunca persistido
-- Construtores e mutações com acesso `internal` — protegidos fora do agregado
+- PreÃ§o unitÃ¡rio e nome do produto sÃ£o **snapshots** do momento do pedido
+- `Subtotal` Ã© calculado (`PrecoUnitario * Quantidade`), nunca persistido
+- Construtores e mutaÃ§Ãµes com acesso `internal` â€” protegidos fora do agregado
 
 ### Produto (refatorado)
 
-Métodos de domínio substituem setters públicos:
+MÃ©todos de domÃ­nio substituem setters pÃºblicos:
 
-- `Criar(...)` — factory method com validação (retorna `Result<Produto>`)
-- `AtualizarPreco(decimal)` — valida que é > 0 e diferente do atual
-- `ReporEstoque(int)` — valida positivo e não excede 99.999 unidades
-- `Desativar()` — valida que não está já inativo
-- `TemEstoqueDisponivel(int)` — guard usado pelo agregado Pedido
+- `Criar(...)` â€” factory method com validaÃ§Ã£o (retorna `Result<Produto>`)
+- `AtualizarPreco(decimal)` â€” valida que Ã© > 0 e diferente do atual
+- `ReporEstoque(int)` â€” valida positivo e nÃ£o excede 99.999 unidades
+- `Desativar()` â€” valida que nÃ£o estÃ¡ jÃ¡ inativo
+- `TemEstoqueDisponivel(int)` â€” guard usado pelo agregado Pedido
 
 ### Result Pattern
 
@@ -111,13 +111,13 @@ public record Result(bool IsSuccess, string? Error = null)
 public record Result<T>(bool IsSuccess, T? Value, string? Error = null)
 ```
 
-Erros de domínio retornam via `Result` — sem exceptions para fluxo de negócio.
+Erros de domÃ­nio retornam via `Result` â€” sem exceptions para fluxo de negÃ³cio.
 
 ---
 
 ## Arquitetura dos Slices
 
-### Interface IEndpoint — registro automático
+### Interface IEndpoint â€” registro automÃ¡tico
 
 ```csharp
 public interface IEndpoint
@@ -126,25 +126,25 @@ public interface IEndpoint
 }
 ```
 
-`Program.cs` faz scan de `IEndpoint` via `AddEndpointsFromAssembly` — nenhum slice é registrado manualmente.
+`Program.cs` faz scan de `IEndpoint` via `AddEndpointsFromAssembly` â€” nenhum slice Ã© registrado manualmente.
 
 ### Anatomia de um slice
 
-Cada slice tem três responsabilidades separadas:
+Cada slice tem trÃªs responsabilidades separadas:
 
-1. **Command/Query** — DTO de entrada + Handler com lógica de aplicação
-2. **Validator** — FluentValidation do DTO (quando necessário)
-3. **Endpoint** — apenas roteamento HTTP, sem lógica
+1. **Command/Query** â€” DTO de entrada + Handler com lÃ³gica de aplicaÃ§Ã£o
+2. **Validator** â€” FluentValidation do DTO (quando necessÃ¡rio)
+3. **Endpoint** â€” apenas roteamento HTTP, sem lÃ³gica
 
-### Coexistência dos padrões
+### CoexistÃªncia dos padrÃµes
 
 ```
 Produtos (Horizontal Layers)          Pedidos (Vertical Slice)
-─────────────────────────────         ──────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€         â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 ProdutoEndpoints.cs                   Features/Pedidos/CreatePedido/
-  └─ chama IProdutoService              └─ CreatePedidoEndpoint.cs
-       └─ usa AppDbContext               └─ CreatePedidoHandler
-                                         └─ AppDbContext (mesmo)
+  â””â”€ chama IProdutoService              â””â”€ CreatePedidoEndpoint.cs
+       â””â”€ usa AppDbContext               â””â”€ CreatePedidoHandler
+                                         â””â”€ AppDbContext (mesmo)
 ```
 
 Ambos usam o mesmo `AppDbContext`, mesma pipeline JWT, mesmo middleware.
@@ -158,34 +158,34 @@ Ambos usam o mesmo `AppDbContext`, mesma pipeline JWT, mesmo middleware.
 | `TypedResults` | Todos os endpoints dos slices |
 | `MapGroup` com metadados herdados | Grupo `/api/v1/pedidos` centraliza auth + tag |
 | Primary constructors | Handlers dos slices |
-| `IEndpoint` scan automático | `AddEndpointsFromAssembly` |
+| `IEndpoint` scan automÃ¡tico | `AddEndpointsFromAssembly` |
 | `Results.ValidationProblem` (RFC 7807) | FluentValidation nos slices |
 | Collection expressions `[]` | `_itens = []` no aggregate |
 
 ---
 
-## Estratégia de Testes
+## EstratÃ©gia de Testes
 
-### Testes de Domínio (Unit) — sem infraestrutura
+### Testes de DomÃ­nio (Unit) â€” sem infraestrutura
 
-- `PedidoTests.cs` — todas as regras do aggregate: merge de itens, limite de 20, valor mínimo, cancelamento, etc.
-- `PedidoItemTests.cs` — snapshot de preço, incremento de quantidade
-- `ProdutoTests.cs` — regras do domínio rico refatorado
+- `PedidoTests.cs` â€” todas as regras do aggregate: merge de itens, limite de 20, valor mÃ­nimo, cancelamento, etc.
+- `PedidoItemTests.cs` â€” snapshot de preÃ§o, incremento de quantidade
+- `ProdutoTests.cs` â€” regras do domÃ­nio rico refatorado
 
-### Testes de Integração (HTTP)
+### Testes de IntegraÃ§Ã£o (HTTP)
 
 - `CreatePedidoTests.cs`, `GetPedidoTests.cs`, `AddItemTests.cs`, `CancelPedidoTests.cs`
 - Via `WebApplicationFactory<Program>`, ponta a ponta com SQLite in-memory
 
 ### ProdutoBuilder (Test Helper)
 
-Builder fluente para criação de `Produto` em testes de domínio, sem boilerplate.
+Builder fluente para criaÃ§Ã£o de `Produto` em testes de domÃ­nio, sem boilerplate.
 
 ---
 
 ## Endpoints resultantes
 
-| Método | Rota | Slice | Auth |
+| MÃ©todo | Rota | Slice | Auth |
 |---|---|---|---|
 | `POST` | `/api/v1/pedidos` | CreatePedido | Sim |
 | `GET` | `/api/v1/pedidos/{id}` | GetPedido | Sim |

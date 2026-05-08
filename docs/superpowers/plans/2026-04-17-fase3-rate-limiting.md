@@ -1,23 +1,23 @@
-# Fase 3 — Rate Limiting e Resiliência de Cliente
+﻿# Fase 3 â€” Rate Limiting e ResiliÃªncia de Cliente
 
-**Pré-requisito:** Fase 1 e Fase 2 concluídas.  
-**Objetivo:** Adicionar rate limiting no servidor (3 políticas), resposta 429 com `Retry-After`, e um projeto `Catalogo.ClientDemo` demonstrando retry + circuit breaker.
+**PrÃ©-requisito:** Fase 1 e Fase 2 concluÃ­das.  
+**Objetivo:** Adicionar rate limiting no servidor (3 polÃ­ticas), resposta 429 com `Retry-After`, e um projeto `Catalogo.ClientDemo` demonstrando retry + circuit breaker.
 
 ---
 
-## Task 1 — Rate Limiting no servidor
+## Task 1 â€” Rate Limiting no servidor
 
-### 1.1 — Adicionar NuGet (já incluso no .NET 8+, confirmar)
+### 1.1 â€” Adicionar NuGet (jÃ¡ incluso no .NET 8+, confirmar)
 
-`AspNetCore.RateLimiting` está incluso no `Microsoft.AspNetCore.App` — não precisa de NuGet extra.
+`AspNetCore.RateLimiting` estÃ¡ incluso no `Microsoft.AspNetCore.App` â€” nÃ£o precisa de NuGet extra.
 
-### 1.2 — `src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs`
+### 1.2 â€” `src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs`
 
 ```csharp
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace ProdutosAPI.Catalogo.API.Extensions;
+namespace FacShopAPI.Catalogo.API.Extensions;
 
 public static class RateLimitingExtensions
 {
@@ -41,11 +41,11 @@ public static class RateLimitingExtensions
 
                 context.HttpContext.Response.ContentType = "application/json";
                 await context.HttpContext.Response.WriteAsync(
-                    """{"erro":"Too Many Requests","mensagem":"Limite de requisições excedido. Tente novamente em breve."}""",
+                    """{"erro":"Too Many Requests","mensagem":"Limite de requisiÃ§Ãµes excedido. Tente novamente em breve."}""",
                     cancellationToken);
             };
 
-            // Política 1: leitura — fixed window, 60 req/min por IP
+            // PolÃ­tica 1: leitura â€” fixed window, 60 req/min por IP
             options.AddFixedWindowLimiter("leitura", opt =>
             {
                 opt.Window = TimeSpan.FromMinutes(1);
@@ -54,7 +54,7 @@ public static class RateLimitingExtensions
                 opt.QueueLimit = 0;
             });
 
-            // Política 2: escrita — sliding window, 20 req/min por IP
+            // PolÃ­tica 2: escrita â€” sliding window, 20 req/min por IP
             options.AddSlidingWindowLimiter("escrita", opt =>
             {
                 opt.Window = TimeSpan.FromMinutes(1);
@@ -64,7 +64,7 @@ public static class RateLimitingExtensions
                 opt.QueueLimit = 0;
             });
 
-            // Política 3: criação de produto — token bucket, 5 req/min por IP
+            // PolÃ­tica 3: criaÃ§Ã£o de produto â€” token bucket, 5 req/min por IP
             options.AddTokenBucketLimiter("criacao-produto", opt =>
             {
                 opt.TokenLimit = 5;
@@ -80,9 +80,9 @@ public static class RateLimitingExtensions
 }
 ```
 
-### 1.3 — `Program.cs` — registrar middleware e serviço
+### 1.3 â€” `Program.cs` â€” registrar middleware e serviÃ§o
 
-No bloco de serviços (após `builder.Services.AddCatalogo()`):
+No bloco de serviÃ§os (apÃ³s `builder.Services.AddCatalogo()`):
 
 ```csharp
 builder.Services.AddCatalogoRateLimiting();
@@ -96,9 +96,9 @@ app.UseRateLimiter();
 
 ---
 
-## Task 2 — Aplicar políticas nos endpoints
+## Task 2 â€” Aplicar polÃ­ticas nos endpoints
 
-### 2.1 — `src/Catalogo/Catalogo.API/Endpoints/ProdutoEndpoints.cs`
+### 2.1 â€” `src/Catalogo/Catalogo.API/Endpoints/ProdutoEndpoints.cs`
 
 Adicionar `.RequireRateLimiting()` por verbo:
 
@@ -138,7 +138,7 @@ public static void MapProdutoEndpoints(this RouteGroupBuilder catalogoGroup)
 }
 ```
 
-### 2.2 — `src/Catalogo/Catalogo.API/Endpoints/CategoriaEndpoints.cs`
+### 2.2 â€” `src/Catalogo/Catalogo.API/Endpoints/CategoriaEndpoints.cs`
 
 ```csharp
 group.MapGet("/", GetAll)      .RequireRateLimiting("leitura");
@@ -148,7 +148,7 @@ group.MapPut("/{id:int}", Update).RequireAuthorization().RequireRateLimiting("es
 group.MapDelete("/{id:int}", Delete).RequireAuthorization().RequireRateLimiting("escrita");
 ```
 
-### 2.3 — `src/Catalogo/Catalogo.API/Endpoints/VarianteEndpoints.cs`
+### 2.3 â€” `src/Catalogo/Catalogo.API/Endpoints/VarianteEndpoints.cs`
 
 ```csharp
 group.MapGet("/", GetAll)              .RequireRateLimiting("leitura");
@@ -159,13 +159,13 @@ group.MapPatch("/{id:int}/estoque", UpdateEstoque).RequireAuthorization().Requir
 group.MapDelete("/{id:int}", Delete)   .RequireAuthorization().RequireRateLimiting("escrita");
 ```
 
-### 2.4 — Atributo e Midia endpoints — mesma pattern de escrita/leitura (omitido por brevidade, seguir o mesmo padrão)
+### 2.4 â€” Atributo e Midia endpoints â€” mesma pattern de escrita/leitura (omitido por brevidade, seguir o mesmo padrÃ£o)
 
 ---
 
-## Task 3 — Projeto `Catalogo.ClientDemo`
+## Task 3 â€” Projeto `Catalogo.ClientDemo`
 
-### 3.1 — Criar csproj: `src/Catalogo/Catalogo.ClientDemo/Catalogo.ClientDemo.csproj`
+### 3.1 â€” Criar csproj: `src/Catalogo/Catalogo.ClientDemo/Catalogo.ClientDemo.csproj`
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -174,7 +174,7 @@ group.MapDelete("/{id:int}", Delete)   .RequireAuthorization().RequireRateLimiti
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.ClientDemo</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.ClientDemo</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.*" />
@@ -189,12 +189,12 @@ Adicionar ao `FacShopAPI.slnx`:
 <Project Path="src/Catalogo/Catalogo.ClientDemo/Catalogo.ClientDemo.csproj" />
 ```
 
-### 3.2 — `src/Catalogo/Catalogo.ClientDemo/CatalogoHttpClient.cs`
+### 3.2 â€” `src/Catalogo/Catalogo.ClientDemo/CatalogoHttpClient.cs`
 
 ```csharp
 using System.Net.Http.Json;
 
-namespace ProdutosAPI.Catalogo.ClientDemo;
+namespace FacShopAPI.Catalogo.ClientDemo;
 
 public class CatalogoHttpClient(HttpClient http)
 {
@@ -212,7 +212,7 @@ public class CatalogoHttpClient(HttpClient http)
 }
 ```
 
-### 3.3 — `src/Catalogo/Catalogo.ClientDemo/ResilienceDemo.cs`
+### 3.3 â€” `src/Catalogo/Catalogo.ClientDemo/ResilienceDemo.cs`
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -220,7 +220,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 
-namespace ProdutosAPI.Catalogo.ClientDemo;
+namespace FacShopAPI.Catalogo.ClientDemo;
 
 public static class ResilienceDemo
 {
@@ -238,7 +238,7 @@ public static class ResilienceDemo
                 // 1. Timeout por tentativa
                 pipeline.AddTimeout(TimeSpan.FromSeconds(5));
 
-                // 2. Retry com exponential backoff — só para erros transientes e 429
+                // 2. Retry com exponential backoff â€” sÃ³ para erros transientes e 429
                 pipeline.AddRetry(new HttpRetryStrategyOptions
                 {
                     MaxRetryAttempts = 3,
@@ -254,7 +254,7 @@ public static class ResilienceDemo
                     },
                     OnRetry = args =>
                     {
-                        // Respeitar Retry-After do servidor se disponível
+                        // Respeitar Retry-After do servidor se disponÃ­vel
                         if (args.Outcome.Result?.Headers.RetryAfter?.Delta is { } retryAfter)
                         {
                             Console.WriteLine($"[Retry] Aguardando {retryAfter.TotalSeconds}s (Retry-After do servidor)...");
@@ -267,7 +267,7 @@ public static class ResilienceDemo
                     }
                 });
 
-                // 3. Circuit breaker — abre após 5 falhas em 30s
+                // 3. Circuit breaker â€” abre apÃ³s 5 falhas em 30s
                 pipeline.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
                 {
                     SamplingDuration = TimeSpan.FromSeconds(30),
@@ -281,12 +281,12 @@ public static class ResilienceDemo
                     },
                     OnClosed = _ =>
                     {
-                        Console.WriteLine("[CircuitBreaker] Fechado — serviço recuperado");
+                        Console.WriteLine("[CircuitBreaker] Fechado â€” serviÃ§o recuperado");
                         return ValueTask.CompletedTask;
                     }
                 });
 
-                // 4. Timeout global (toda a operação incluindo retries)
+                // 4. Timeout global (toda a operaÃ§Ã£o incluindo retries)
                 pipeline.AddTimeout(TimeSpan.FromSeconds(30));
             });
 
@@ -295,12 +295,12 @@ public static class ResilienceDemo
 }
 ```
 
-### 3.4 — `src/Catalogo/Catalogo.ClientDemo/Program.cs`
+### 3.4 â€” `src/Catalogo/Catalogo.ClientDemo/Program.cs`
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProdutosAPI.Catalogo.ClientDemo;
+using FacShopAPI.Catalogo.ClientDemo;
 
 var builder = Host.CreateApplicationBuilder(args);
 var apiBase = args.Length > 0 ? args[0] : "https://localhost:5001";
@@ -310,9 +310,9 @@ builder.AddCatalogoClient(apiBase);
 var host = builder.Build();
 var client = host.Services.GetRequiredService<CatalogoHttpClient>();
 
-Console.WriteLine($"=== Catalogo Client Demo — {apiBase} ===\n");
+Console.WriteLine($"=== Catalogo Client Demo â€” {apiBase} ===\n");
 
-// Demo 1: leituras em sequência (deve passar todas)
+// Demo 1: leituras em sequÃªncia (deve passar todas)
 Console.WriteLine("--- Demo 1: Leituras ---");
 for (int i = 1; i <= 5; i++)
 {
@@ -328,9 +328,9 @@ for (int i = 1; i <= 5; i++)
     await Task.Delay(200);
 }
 
-// Demo 2: criações em rajada (espera-se 429 após 5)
-Console.WriteLine("\n--- Demo 2: Criações em rajada (429 esperado após 5) ---");
-var payload = new { nome = "Produto Demo", preco = 99.90, estoque = 10, categoria = "Eletrônicos", descricao = "Demo" };
+// Demo 2: criaÃ§Ãµes em rajada (espera-se 429 apÃ³s 5)
+Console.WriteLine("\n--- Demo 2: CriaÃ§Ãµes em rajada (429 esperado apÃ³s 5) ---");
+var payload = new { nome = "Produto Demo", preco = 99.90, estoque = 10, categoria = "EletrÃ´nicos", descricao = "Demo" };
 for (int i = 1; i <= 8; i++)
 {
     try
@@ -340,28 +340,28 @@ for (int i = 1; i <= 8; i++)
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"  [{i}] ERRO (após retries): {ex.Message}");
+        Console.WriteLine($"  [{i}] ERRO (apÃ³s retries): {ex.Message}");
     }
     await Task.Delay(100);
 }
 
-Console.WriteLine("\nDemo concluído.");
+Console.WriteLine("\nDemo concluÃ­do.");
 ```
 
 ---
 
-## Task 4 — Testes de integração para rate limiting
+## Task 4 â€” Testes de integraÃ§Ã£o para rate limiting
 
-### 4.1 — `tests/ProdutosAPI.Tests/Integration/RateLimitingTests.cs`
+### 4.1 â€” `tests/FacShopAPI.Tests/Integration/RateLimitingTests.cs`
 
-> **Nota:** Rate limiting em testes de integração requer configuração especial. O `WebApplicationFactory` usa um pipeline completo, então `UseRateLimiter()` ativa de verdade. Para testes determinísticos, usar limites muito baixos via `IConfiguration` override na `ApiFactory` de teste.
+> **Nota:** Rate limiting em testes de integraÃ§Ã£o requer configuraÃ§Ã£o especial. O `WebApplicationFactory` usa um pipeline completo, entÃ£o `UseRateLimiter()` ativa de verdade. Para testes determinÃ­sticos, usar limites muito baixos via `IConfiguration` override na `ApiFactory` de teste.
 
 ```csharp
 using System.Net;
 using FluentAssertions;
-using ProdutosAPI.Tests.Helpers;
+using FacShopAPI.Tests.Helpers;
 
-namespace ProdutosAPI.Tests.Integration;
+namespace FacShopAPI.Tests.Integration;
 
 public class RateLimitingTests : IClassFixture<ApiFactory>
 {
@@ -376,9 +376,9 @@ public class RateLimitingTests : IClassFixture<ApiFactory>
     public async Task GET_Produtos_QuandoExcedeLimit_Retorna429()
     {
         // Arrange: ApiFactory deve configurar PermitLimit=3 para "leitura" em Testing
-        // (ver seção 4.2)
+        // (ver seÃ§Ã£o 4.2)
 
-        // Act: disparar 4 requisições
+        // Act: disparar 4 requisiÃ§Ãµes
         HttpResponseMessage? lastResponse = null;
         for (int i = 0; i < 4; i++)
         {
@@ -417,7 +417,7 @@ public class RateLimitingTests : IClassFixture<ApiFactory>
         _client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var payload = new { nome = "P", preco = 1.0, estoque = 1, categoria = "Eletrônicos", descricao = "d" };
+        var payload = new { nome = "P", preco = 1.0, estoque = 1, categoria = "EletrÃ´nicos", descricao = "d" };
 
         // Act: 2 POSTs (limit=2 para "criacao-produto" em Testing) + 1 extra
         int okCount = 0, tooManyCount = 0;
@@ -433,9 +433,9 @@ public class RateLimitingTests : IClassFixture<ApiFactory>
 }
 ```
 
-### 4.2 — `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs` — override de rate limit para testes
+### 4.2 â€” `tests/FacShopAPI.Tests/Integration/ApiFactory.cs` â€” override de rate limit para testes
 
-No método `CreateHost` ou via `ConfigureServices`, adicionar um override de rate limit quando `Environment = "Testing"`:
+No mÃ©todo `CreateHost` ou via `ConfigureServices`, adicionar um override de rate limit quando `Environment = "Testing"`:
 
 ```csharp
 // Em ApiFactory.cs, dentro de ConfigureWebHost:
@@ -443,7 +443,7 @@ builder.ConfigureServices(services =>
 {
     // Remove rate limiter registrado pelo AddCatalogoRateLimiting()
     var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(RateLimiterOptions));
-    // Como RateLimiterOptions é configurado via IOptions, usar:
+    // Como RateLimiterOptions Ã© configurado via IOptions, usar:
     services.Configure<RateLimiterOptions>(options =>
     {
         options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -486,23 +486,23 @@ builder.ConfigureServices(services =>
 
 ---
 
-## Ordem de execução
+## Ordem de execuÃ§Ã£o
 
-1. Task 1 — criar `RateLimitingExtensions.cs`
-2. Task 1.3 — atualizar `Program.cs`
-3. Task 2 — adicionar `RequireRateLimiting()` nos 5 grupos de endpoints
-4. Task 3 — criar projeto `Catalogo.ClientDemo` (4 arquivos)
-5. Task 4 — criar `RateLimitingTests.cs` e atualizar `ApiFactory.cs`
+1. Task 1 â€” criar `RateLimitingExtensions.cs`
+2. Task 1.3 â€” atualizar `Program.cs`
+3. Task 2 â€” adicionar `RequireRateLimiting()` nos 5 grupos de endpoints
+4. Task 3 â€” criar projeto `Catalogo.ClientDemo` (4 arquivos)
+5. Task 4 â€” criar `RateLimitingTests.cs` e atualizar `ApiFactory.cs`
 6. Rodar `dotnet build` e `dotnet test`
-7. Commit: `feat: rate limiting com 3 políticas e cliente resiliente`
+7. Commit: `feat: rate limiting com 3 polÃ­ticas e cliente resiliente`
 
 ---
 
-## Checklist de validação
+## Checklist de validaÃ§Ã£o
 
-- [ ] `GET /api/v1/catalogo/produtos` retorna 429 após exceder limite de leitura
-- [ ] Resposta 429 contém header `Retry-After`
+- [ ] `GET /api/v1/catalogo/produtos` retorna 429 apÃ³s exceder limite de leitura
+- [ ] Resposta 429 contÃ©m header `Retry-After`
 - [ ] `POST /api/v1/catalogo/produtos` atinge limite antes de `GET`
-- [ ] `dotnet run --project src/Catalogo/Catalogo.ClientDemo` executa sem erros de compilação
-- [ ] `dotnet test` — todos os testes existentes ainda passam
-- [ ] Testes de rate limiting passam (podem ser frágeis por timing — isolar com `[Trait("Category", "RateLimit")]` se necessário)
+- [ ] `dotnet run --project src/Catalogo/Catalogo.ClientDemo` executa sem erros de compilaÃ§Ã£o
+- [ ] `dotnet test` â€” todos os testes existentes ainda passam
+- [ ] Testes de rate limiting passam (podem ser frÃ¡geis por timing â€” isolar com `[Trait("Category", "RateLimit")]` se necessÃ¡rio)

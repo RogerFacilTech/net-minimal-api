@@ -1,30 +1,30 @@
-# Melhorias .NET 10 - Minimal API
+﻿# Melhorias .NET 10 - Minimal API
 
-## 📌 Visão Geral
+## ðŸ“Œ VisÃ£o Geral
 
-Este documento descreve as melhorias implementadas no projeto **ProdutosAPI** para aproveitar os novos recursos do **.NET 10 LTS** com foco em **Minimal API** patterns modernos e best practices.
+Este documento descreve as melhorias implementadas no projeto **FacShopAPI** para aproveitar os novos recursos do **.NET 10 LTS** com foco em **Minimal API** patterns modernos e best practices.
 
-**Versão do Projeto**: 3.1.0  
+**VersÃ£o do Projeto**: 3.1.0  
 **Framework**: .NET 10.0  
-**Data de Atualização**: 2026-03-04
+**Data de AtualizaÃ§Ã£o**: 2026-03-04
 
 ---
 
-## 🎯 Principais Melhorias do .NET 10
+## ðŸŽ¯ Principais Melhorias do .NET 10
 
 ### 1. **Typed Results para Type-Safety**
 
-#### ❌ Antes (IResult não tipado)
+#### âŒ Antes (IResult nÃ£o tipado)
 
 ```csharp
 private static async Task<IResult> ObterProduto(int id, IProdutoService service)
 {
     var produto = await service.ObterProdutoAsync(id);
-    return Results.Ok(produto);  // Tipo não é verificado em compile-time
+    return Results.Ok(produto);  // Tipo nÃ£o Ã© verificado em compile-time
 }
 ```
 
-#### ✅ Depois (.NET 10 - Typed Results)
+#### âœ… Depois (.NET 10 - Typed Results)
 
 ```csharp
 private static async Task<Results<Ok<ProdutoResponse>, NotFound<ErrorResponse>>> ObterProduto(
@@ -43,19 +43,19 @@ private static async Task<Results<Ok<ProdutoResponse>, NotFound<ErrorResponse>>>
 }
 ```
 
-**Benefícios**:
+**BenefÃ­cios**:
 
-- ✅ Verificação de tipo em compile-time
-- ✅ IntelliSense melhorado em IDEs
-- ✅ Documentação automática mais precisa
-- ✅ Melhor performance (sem boxing de ValueTypes)
-- ✅ Melhor suporte do Swagger/OpenAPI
+- âœ… VerificaÃ§Ã£o de tipo em compile-time
+- âœ… IntelliSense melhorado em IDEs
+- âœ… DocumentaÃ§Ã£o automÃ¡tica mais precisa
+- âœ… Melhor performance (sem boxing de ValueTypes)
+- âœ… Melhor suporte do Swagger/OpenAPI
 
 ---
 
 ### 2. **Discriminated Union Results**
 
-O .NET 10 introduz tipos discriminados para representar múltiplos resultados possíveis:
+O .NET 10 introduz tipos discriminados para representar mÃºltiplos resultados possÃ­veis:
 
 ```csharp
 // Representa que o endpoint pode retornar:
@@ -67,23 +67,23 @@ private static async Task<Results<
     NotFound<ErrorResponse>,
     UnprocessableEntity<ErrorResponse>>> AtualizarProduto(...)
 {
-    // Agora o compilador força tratamento de todos os casos
-    // Swagger gera documentação precisa com todos os status codes
+    // Agora o compilador forÃ§a tratamento de todos os casos
+    // Swagger gera documentaÃ§Ã£o precisa com todos os status codes
 }
 ```
 
 **Vantagens**:
 
-- ✅ Força tratamento de todos os cenários de erro possíveis
-- ✅ OpenAPI gerado automaticamente com todos os status codes
-- ✅ Type-safe routing baseado em resultado
-- ✅ Melhor documentação automática
+- âœ… ForÃ§a tratamento de todos os cenÃ¡rios de erro possÃ­veis
+- âœ… OpenAPI gerado automaticamente com todos os status codes
+- âœ… Type-safe routing baseado em resultado
+- âœ… Melhor documentaÃ§Ã£o automÃ¡tica
 
 ---
 
 ### 3. **MapGroup com Prefix - DRY Principle**
 
-#### ❌ Antes (Duplicação de rota)
+#### âŒ Antes (DuplicaÃ§Ã£o de rota)
 
 ```csharp
 app.MapGet("/api/v1/produtos", Handler1).WithName("...").WithOpenApi();
@@ -91,7 +91,7 @@ app.MapGet("/api/v1/produtos/{id}", Handler2).WithName("...").WithOpenApi();
 app.MapPost("/api/v1/produtos", Handler3).WithName("...").WithOpenApi();
 ```
 
-#### ✅ Depois (.NET 10 MapGroup)
+#### âœ… Depois (.NET 10 MapGroup)
 
 ```csharp
 var group = app.MapGroup("/api/v1/produtos")
@@ -105,21 +105,21 @@ group.MapGet("/{id}", Handler2);
 group.MapPost("/", Handler3);
 ```
 
-**Benefícios**:
+**BenefÃ­cios**:
 
-- ✅ Reduz duplicação de configuração
-- ✅ Facilita manutenção (mudança de versão de API em um lugar)
-- ✅ Melhor organização visual do código
-- ✅ Configurações compartilhadas aplicadas a todos endpoints
+- âœ… Reduz duplicaÃ§Ã£o de configuraÃ§Ã£o
+- âœ… Facilita manutenÃ§Ã£o (mudanÃ§a de versÃ£o de API em um lugar)
+- âœ… Melhor organizaÃ§Ã£o visual do cÃ³digo
+- âœ… ConfiguraÃ§Ãµes compartilhadas aplicadas a todos endpoints
 
 ---
 
-### 4. **Métodos Typed Results Explícitos**
+### 4. **MÃ©todos Typed Results ExplÃ­citos**
 
 O .NET 10 introduz `TypedResults` factory methods:
 
 ````csharp
-// ✅ .NET 10 - Type-safe factories
+// âœ… .NET 10 - Type-safe factories
 return TypedResults.Ok(produto);           // Results<Ok<T>>
 return TypedResults.Created(uri, produto); // Results<Created<T>>
 return TypedResults.NoContent();           // Results<NoContent>
@@ -128,7 +128,7 @@ return TypedResults.BadRequest(error);     // Results<BadRequest<T>>
 
 ---
 
-### 5. **Resiliência HTTP Padrão para Clientes**
+### 5. **ResiliÃªncia HTTP PadrÃ£o para Clientes**
 
 A trilha PIX aplica os recursos modernos de cliente HTTP do ecossistema .NET:
 
@@ -137,19 +137,19 @@ builder.Services.AddHttpClient<PixProcessingClient>(...)
     .AddStandardResilienceHandler();
 ````
 
-**Benefícios**:
+**BenefÃ­cios**:
 
-- ✅ Retry e timeout padronizados sem código repetido
-- ✅ Menor risco de chamadas frágeis em integrações externas
-- ✅ Configuração centralizada por cliente tipado
+- âœ… Retry e timeout padronizados sem cÃ³digo repetido
+- âœ… Menor risco de chamadas frÃ¡geis em integraÃ§Ãµes externas
+- âœ… ConfiguraÃ§Ã£o centralizada por cliente tipado
 
-**Implementação**: `samples/Pix/Pix.ClientDemo/Program.cs`
+**ImplementaÃ§Ã£o**: `samples/Pix/Pix.ClientDemo/Program.cs`
 
 ---
 
 ### 6. **JSON Source Generation**
 
-No servidor mock PIX, o fingerprint de idempotência usa serialização com `JsonSerializerContext`:
+No servidor mock PIX, o fingerprint de idempotÃªncia usa serializaÃ§Ã£o com `JsonSerializerContext`:
 
 ```csharp
 [JsonSerializable(typeof(CriarCobrancaRequest))]
@@ -158,23 +158,23 @@ internal partial class JsonContext : JsonSerializerContext
 }
 ```
 
-**Benefícios**:
+**BenefÃ­cios**:
 
-- ✅ Menor custo de reflexão em serialização
-- ✅ Contratos JSON mais explícitos
-- ✅ Performance e previsibilidade em payloads complexos
+- âœ… Menor custo de reflexÃ£o em serializaÃ§Ã£o
+- âœ… Contratos JSON mais explÃ­citos
+- âœ… Performance e previsibilidade em payloads complexos
 
-**Implementação**: `samples/Pix/Pix.MockServer/Application/JsonContext.cs`
+**ImplementaÃ§Ã£o**: `samples/Pix/Pix.MockServer/Application/JsonContext.cs`
 return TypedResults.UnprocessableEntity(error); // Results<UnprocessableEntity<T>>
 
-// vs. IResult genérico (não tipado)
+// vs. IResult genÃ©rico (nÃ£o tipado)
 return Results.Ok(produto);
 
 ````
 
 ---
 
-### 5. **Melhor Integração com OpenAPI/Swagger**
+### 5. **Melhor IntegraÃ§Ã£o com OpenAPI/Swagger**
 
 #### Antes
 ```csharp
@@ -183,7 +183,7 @@ group.MapGet("/{id}", Handler)
     .Produces<ErrorResponse>(404);
 ````
 
-#### Depois (.NET 10 - Automático)
+#### Depois (.NET 10 - AutomÃ¡tico)
 
 ```csharp
 group.MapGet("/{id}", Handler)
@@ -191,21 +191,21 @@ group.MapGet("/{id}", Handler)
     .Accepts<CriarProdutoRequest>("application/json")
     .Produces<ProdutoResponse>(StatusCodes.Status200OK)
     .Produces<ErrorResponse>(StatusCodes.Status404NotFound)
-    .WithDescription("Obtém um produto")
+    .WithDescription("ObtÃ©m um produto")
     .WithSummary("Obter produto");
 
-// Swagger gera documentação PRECISA com:
-// ✅ Request/Response schemas tipados
-// ✅ Todos os status codes listados
-// ✅ Descrições detalhadas
-// ✅ Exemplos de valores
+// Swagger gera documentaÃ§Ã£o PRECISA com:
+// âœ… Request/Response schemas tipados
+// âœ… Todos os status codes listados
+// âœ… DescriÃ§Ãµes detalhadas
+// âœ… Exemplos de valores
 ```
 
 ---
 
 ### 6. **`WithParameterValidation()`**
 
-Novo atributo do .NET 10 para validação de parâmetros:
+Novo atributo do .NET 10 para validaÃ§Ã£o de parÃ¢metros:
 
 ```csharp
 group.MapGet("/", ListarProdutos)
@@ -216,30 +216,30 @@ group.MapGet("/", ListarProdutos)
 
 ---
 
-## 📋 Mudanças Implementadas no Projeto
+## ðŸ“‹ MudanÃ§as Implementadas no Projeto
 
 ### Arquivo: `src/Produtos/Produtos.API/Endpoints/ProdutoEndpoints.cs`
 
-#### **Assinatura de Método - Antes**
+#### **Assinatura de MÃ©todo - Antes**
 
 ```csharp
 private static async Task<IResult> ListarProdutos(
     IProdutoService service, ...)
 ```
 
-#### **Assinatura de Método - Depois**
+#### **Assinatura de MÃ©todo - Depois**
 
 ```csharp
 private static async Task<Results<Ok<PaginatedResponse<ProdutoResponse>>, BadRequest<ErrorResponse>>>
 ListarProdutos(IProdutoService service, ...)
 ```
 
-**Mudanças em cada endpoint**:
+**MudanÃ§as em cada endpoint**:
 
-| Endpoint     | Antes         | Depois                                                           | Benefício                         |
+| Endpoint     | Antes         | Depois                                                           | BenefÃ­cio                         |
 | ------------ | ------------- | ---------------------------------------------------------------- | --------------------------------- |
-| GET /        | Task<IResult> | Task<Results<Ok<...>, BadRequest<...>>>                          | Type-safe, múltiplos return types |
-| GET /{id}    | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Força tratamento de 404           |
+| GET /        | Task<IResult> | Task<Results<Ok<...>, BadRequest<...>>>                          | Type-safe, mÃºltiplos return types |
+| GET /{id}    | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | ForÃ§a tratamento de 404           |
 | POST /       | Task<IResult> | Task<Results<Created<...>, BadRequest<...>, Unprocessable<...>>> | Previne erros                     |
 | PUT /{id}    | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Exaustivo                         |
 | PATCH /{id}  | Task<IResult> | Task<Results<Ok<...>, NotFound<...>>>                            | Exaustivo                         |
@@ -262,17 +262,17 @@ group.MapGet("/", ListarProdutos)
     .AllowAnonymous();
 ```
 
-### 🚀 Recursos Facilitadores para Vertical Slice
+### ðŸš€ Recursos Facilitadores para Vertical Slice
 
 A nova arquitetura de **Vertical Slice** utilizada em `src/Pedidos/` se beneficia das melhorias do .NET 10:
 
-- **IEndpoint scan automático**: o método de extensão `AddEndpointsFromAssembly()` elimina a necessidade de registrar cada rota manualmente, permitindo que slices sejam registrados somente por estarem na assembly.
+- **IEndpoint scan automÃ¡tico**: o mÃ©todo de extensÃ£o `AddEndpointsFromAssembly()` elimina a necessidade de registrar cada rota manualmente, permitindo que slices sejam registrados somente por estarem na assembly.
 
     ```csharp
     builder.Services.AddEndpointsFromAssembly(typeof(CreatePedidoEndpoint).Assembly);
     ```
 
-- **Primary constructors para handlers**: handlers de comandos podem declarar dependências diretamente no construtor de registro conciso.
+- **Primary constructors para handlers**: handlers de comandos podem declarar dependÃªncias diretamente no construtor de registro conciso.
 
     ```csharp
     public sealed class CreatePedidoHandler(IAppDbContext db, ILogger<CreatePedidoHandler> log)
@@ -281,27 +281,27 @@ A nova arquitetura de **Vertical Slice** utilizada em `src/Pedidos/` se benefici
     }
     ```
 
-- **Collection expressions** tornam o mapeamento de múltiplos endpoints mais conciso quando agrupados dinamicamente.
+- **Collection expressions** tornam o mapeamento de mÃºltiplos endpoints mais conciso quando agrupados dinamicamente.
     ```csharp
     var slices = new[] { typeof(CreatePedidoEndpoint), typeof(CancelPedidoEndpoint) };
     foreach(var type in slices) builder.Services.AddEndpoints(type);
     ```
 
-Estas facilidades tornam o desenvolvimento de cada slice extremamente leve e eliminam boilerplate que antes era inevitável em APIs de grande escala.
+Estas facilidades tornam o desenvolvimento de cada slice extremamente leve e eliminam boilerplate que antes era inevitÃ¡vel em APIs de grande escala.
 
 ---
 
-## 📊 Comparativa: Antes vs Depois
+## ðŸ“Š Comparativa: Antes vs Depois
 
 ### Handlers HTTP
 
-**Antes - IResult genérico**
+**Antes - IResult genÃ©rico**
 
 ```csharp
 private static async Task<IResult> CriarProduto(CriarProdutoRequest req, ...)
 {
-    // Swagger não sabe quais status códigos são possíveis
-    // Verificação de tipo apenas em runtime
+    // Swagger nÃ£o sabe quais status cÃ³digos sÃ£o possÃ­veis
+    // VerificaÃ§Ã£o de tipo apenas em runtime
     var produto = await service.CriarProdutoAsync(req);
     return Results.Created($"...", produto);
 }
@@ -315,7 +315,7 @@ CriarProduto(CriarProdutoRequest req, ...)
 {
     try
     {
-        // Compilador força tratamento de todos os cenários
+        // Compilador forÃ§a tratamento de todos os cenÃ¡rios
         var produto = await service.CriarProdutoAsync(req);
         return TypedResults.Created($"...", produto);
     }
@@ -328,7 +328,7 @@ CriarProduto(CriarProdutoRequest req, ...)
 
 ---
 
-## 🛡️ Benefícios de Type-Safety
+## ðŸ›¡ï¸ BenefÃ­cios de Type-Safety
 
 ### Antes: Swagger impreciso
 
@@ -339,7 +339,7 @@ CriarProduto(CriarProdutoRequest req, ...)
             "description": "Success",
             "content": {
                 "application/json": {
-                    "schema": {} // ❌ Schema vazio, tipo desconhecido
+                    "schema": {} // âŒ Schema vazio, tipo desconhecido
                 }
             }
         }
@@ -356,7 +356,7 @@ CriarProduto(CriarProdutoRequest req, ...)
             "description": "Success",
             "content": {
                 "application/json": {
-                    "schema": { "$ref": "#/components/schemas/ProdutoResponse" } // ✅ Schema completo
+                    "schema": { "$ref": "#/components/schemas/ProdutoResponse" } // âœ… Schema completo
                 }
             }
         },
@@ -364,7 +364,7 @@ CriarProduto(CriarProdutoRequest req, ...)
             "description": "Not Found",
             "content": {
                 "application/json": {
-                    "schema": { "$ref": "#/components/schemas/ErrorResponse" } // ✅ Listado
+                    "schema": { "$ref": "#/components/schemas/ErrorResponse" } // âœ… Listado
                 }
             }
         }
@@ -374,29 +374,29 @@ CriarProduto(CriarProdutoRequest req, ...)
 
 ---
 
-## 🧪 Testes do .NET 10
+## ðŸ§ª Testes do .NET 10
 
 O projeto inclui testes abrangentes validando:
 
-✅ **Unit Tests** (ProdutoServiceTests.cs)
+âœ… **Unit Tests** (ProdutoServiceTests.cs)
 
 - Testes de service com mocking
-- 16+ cases cobrindo todos os cenários
+- 16+ cases cobrindo todos os cenÃ¡rios
 
-✅ **Integration Tests** (ProdutoEndpointsTests.cs)
+âœ… **Integration Tests** (ProdutoEndpointsTests.cs)
 
 - Testes de HTTP status codes
-- Testes de validação
+- Testes de validaÃ§Ã£o
 - 18+ cases
 
-✅ **Validator Tests** (ProdutoValidatorTests.cs)
+âœ… **Validator Tests** (ProdutoValidatorTests.cs)
 
-- Testes de regras de negócio
+- Testes de regras de negÃ³cio
 - 20+ cases
 
 ---
 
-## 🚀 Como Executar e Testar
+## ðŸš€ Como Executar e Testar
 
 ### Build the Project
 
@@ -414,21 +414,21 @@ dotnet test
 ### Run Specific Test Category
 
 ```bash
-dotnet test --filter "FullyQualifiedName~ProdutosAPI.Tests.Services"
-dotnet test --filter "FullyQualifiedName~ProdutosAPI.Tests.Endpoints"
+dotnet test --filter "FullyQualifiedName~FacShopAPI.Tests.Services"
+dotnet test --filter "FullyQualifiedName~FacShopAPI.Tests.Endpoints"
 ```
 
 ### Run Application
 
 ```bash
-dotnet run --project ProdutosAPI.csproj
+dotnet run --project FacShopAPI.csproj
 # Acesse: http://localhost:5000
 # Swagger UI: http://localhost:5000/swagger
 ```
 
 ---
 
-## 📦 Dependências Atualizadas para .NET 10
+## ðŸ“¦ DependÃªncias Atualizadas para .NET 10
 
 ```xml
 <PropertyGroup>
@@ -452,23 +452,23 @@ dotnet run --project ProdutosAPI.csproj
 
 ---
 
-## 🎓 Recursos de Aprendizado
+## ðŸŽ“ Recursos de Aprendizado
 
-### Documentação Oficial
+### DocumentaÃ§Ã£o Oficial
 
 - [.NET 10 Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis)
 - [Typed Results in .NET 10](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses)
 - [OpenAPI with Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/openapi)
 
-### Referências do Projeto
+### ReferÃªncias do Projeto
 
 - [Melhores Praticas API](./MELHORES-PRATICAS-API.md)
-- [Estratégia de Testes](./ESTRATEGIA-DE-TESTES.md)
+- [EstratÃ©gia de Testes](./ESTRATEGIA-DE-TESTES.md)
 - [Code Structure](./ESTRUTURA-DO-CODIGO.md)
 
 ---
 
-## 🔄 Próximos Passos Opcionais
+## ðŸ”„ PrÃ³ximos Passos Opcionais
 
 1. **API Versioning**
     - Implementar header-based versioning
@@ -492,35 +492,35 @@ dotnet run --project ProdutosAPI.csproj
 
 ---
 
-## 📝 Checklist de Migração Completa
+## ðŸ“ Checklist de MigraÃ§Ã£o Completa
 
-✅ Framework atualizado para .NET 10.0  
-✅ Pacotes NuGet atualizados para compatibilidade .NET 10  
-✅ Typed Results implementados em todos endpoints  
-✅ Discriminated Union Results para múltiplas respostas  
-✅ MapGroup com prefix consolidado  
-✅ OpenAPI/Swagger enhancements aplicadas  
-✅ Testes unitários criados (xUnit, Moq)  
-✅ Testes de integração criados  
-✅ Documentação atualizada  
-✅ Versionamento de projeto: 1.0.0 → 3.1.0
+âœ… Framework atualizado para .NET 10.0  
+âœ… Pacotes NuGet atualizados para compatibilidade .NET 10  
+âœ… Typed Results implementados em todos endpoints  
+âœ… Discriminated Union Results para mÃºltiplas respostas  
+âœ… MapGroup com prefix consolidado  
+âœ… OpenAPI/Swagger enhancements aplicadas  
+âœ… Testes unitÃ¡rios criados (xUnit, Moq)  
+âœ… Testes de integraÃ§Ã£o criados  
+âœ… DocumentaÃ§Ã£o atualizada  
+âœ… Versionamento de projeto: 1.0.0 â†’ 3.1.0
 
 ---
 
-## 🏆 Conclusão
+## ðŸ† ConclusÃ£o
 
-O projeto **ProdutosAPI v3.1.0** agora demonstra as melhores práticas modernas do **.NET 10 LTS** com:
+O projeto **FacShopAPI v3.1.0** agora demonstra as melhores prÃ¡ticas modernas do **.NET 10 LTS** com:
 
-🎯 **Type-Safety** através de Typed Results  
-🎯 **Documentação Precisa** com OpenAPI automático  
-🎯 **Code Organization** com MapGroup  
-🎯 **Comprehensive Testing** com xUnit e Moq  
-🎯 **Production-Ready** patterns e practices
+ðŸŽ¯ **Type-Safety** atravÃ©s de Typed Results  
+ðŸŽ¯ **DocumentaÃ§Ã£o Precisa** com OpenAPI automÃ¡tico  
+ðŸŽ¯ **Code Organization** com MapGroup  
+ðŸŽ¯ **Comprehensive Testing** com xUnit e Moq  
+ðŸŽ¯ **Production-Ready** patterns e practices
 
-É um recurso educacional excelente para aprender Minimal API no .NET 10!
+Ã‰ um recurso educacional excelente para aprender Minimal API no .NET 10!
 
 ---
 
 **Autor**: GitHub Copilot  
-**Última Atualização**: 2026-03-04  
-**Status**: ✅ Completo para .NET 10 LTS
+**Ãšltima AtualizaÃ§Ã£o**: 2026-03-04  
+**Status**: âœ… Completo para .NET 10 LTS

@@ -1,23 +1,23 @@
-# Melhores Práticas de Minimal API em .NET - Guia de Implementação
+﻿# Melhores PrÃ¡ticas de Minimal API em .NET - Guia de ImplementaÃ§Ã£o
 
-## Introdução
+## IntroduÃ§Ã£o
 
-Este documento explica como as melhores práticas de API REST apresentadas em `MELHORES-PRATICAS-API.md` foram implementadas no projeto de exemplo usando .NET 10 e Minimal API.
+Este documento explica como as melhores prÃ¡ticas de API REST apresentadas em `MELHORES-PRATICAS-API.md` foram implementadas no projeto de exemplo usando .NET 10 e Minimal API.
 
-## Versão do .NET
+## VersÃ£o do .NET
 
-- **.NET 10.0** - Versão LTS mais moderna com suporte estendido
+- **.NET 10.0** - VersÃ£o LTS mais moderna com suporte estendido
 - **Minimal API** - Abordagem simplificada para criar APIs sem controllers
 
 ### Por que Minimal API?
 
-A Minimal API é ideal para:
+A Minimal API Ã© ideal para:
 
-- ✅ APIs simples e diretas
-- ✅ Microserviços
-- ✅ APIs com poucos endpoints
-- ✅ Prototipagem rápida
-- ✅ Menor overhead de framework
+- âœ… APIs simples e diretas
+- âœ… MicroserviÃ§os
+- âœ… APIs com poucos endpoints
+- âœ… Prototipagem rÃ¡pida
+- âœ… Menor overhead de framework
 
 ---
 
@@ -25,65 +25,65 @@ A Minimal API é ideal para:
 
 ```
 net-minimal-api/
-├── src/
-│   ├── Catalogo/                           # Bounded Context 1 — Clean Architecture híbrida
-│   │   ├── Catalogo.Domain/                # Entidades, value objects, interfaces de repositório
-│   │   │   ├── Produto.cs                  # Aggregate com Produto.Criar() → Result<Produto>
-│   │   │   ├── Categoria.cs               # Slug gerado, hierarquia pai/filho
-│   │   │   ├── Variante.cs                # SKU value object
-│   │   │   ├── Atributo.cs / Midia.cs     # CRUD simples (anêmico)
-│   │   │   └── Common/                    # PrecoProduto, EstoqueProduto, DomainResult
-│   │   ├── Catalogo.Application/
-│   │   │   ├── Services/                  # Orquestração — ProdutoService, etc.
-│   │   │   ├── DTOs/                      # Produto/, Categoria/, Variante/, etc.
-│   │   │   ├── Validators/                # FluentValidation por recurso
-│   │   │   ├── Repositories/              # Interfaces Query/Command (CQRS leve)
-│   │   │   └── Mappings/                  # AutoMapper profiles
-│   │   ├── Catalogo.Infrastructure/       # Repositórios EF Core, DbSeeder
-│   │   ├── Catalogo.API/
-│   │   │   ├── Endpoints/                 # Um arquivo por recurso
-│   │   │   │   ├── Produtos/ProdutoEndpoints.cs
-│   │   │   │   ├── Categorias/CategoriaEndpoints.cs
-│   │   │   │   ├── Variantes/VarianteEndpoints.cs
-│   │   │   │   ├── Atributos/AtributoEndpoints.cs
-│   │   │   │   ├── Midias/MidiaEndpoints.cs
-│   │   │   │   └── Auth/AuthEndpoints.cs
-│   │   │   └── Extensions/
-│   │   │       └── RateLimitingExtensions.cs  # 3 políticas
-│   │   └── Catalogo.ClientDemo/           # Console app — resiliência Polly v8
-│   │
-│   ├── Pedidos/                           # Bounded Context 2 — Vertical Slice + Domínio Rico
-│   │   ├── Domain/                        # Pedido aggregate, Result<T>
-│   │   └── Features/                      # CreatePedido/, GetPedido/, etc.
-│   │
-│   ├── Pix/                               # Bounded Context 3 — Mock + Cliente HTTP
-│   │   ├── Pix.MockServer/                # Simula BCB Pix (OAuth2 + mTLS)
-│   │   └── Pix.ClientDemo/                # HttpClient tipado com resiliência
-│   │
-│   └── Shared/
-│       ├── Common/                        # IEndpoint, Result<T>, EndpointExtensions
-│       ├── Data/                          # AppDbContext + Migrations + DbSeeder
-│       └── Middleware/                    # ExceptionHandling, Idempotency
-│
-└── tests/
-    ├── ProdutosAPI.Tests/                 # 143 testes — Catálogo e Pedidos
-    └── Pix.MockServer.Tests/              # 7 testes — integração PIX
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ Catalogo/                           # Bounded Context 1 â€” Clean Architecture hÃ­brida
+â”‚   â”‚   â”œâ”€â”€ Catalogo.Domain/                # Entidades, value objects, interfaces de repositÃ³rio
+â”‚   â”‚   â”‚   â”œâ”€â”€ Produto.cs                  # Aggregate com Produto.Criar() â†’ Result<Produto>
+â”‚   â”‚   â”‚   â”œâ”€â”€ Categoria.cs               # Slug gerado, hierarquia pai/filho
+â”‚   â”‚   â”‚   â”œâ”€â”€ Variante.cs                # SKU value object
+â”‚   â”‚   â”‚   â”œâ”€â”€ Atributo.cs / Midia.cs     # CRUD simples (anÃªmico)
+â”‚   â”‚   â”‚   â””â”€â”€ Common/                    # PrecoProduto, EstoqueProduto, DomainResult
+â”‚   â”‚   â”œâ”€â”€ Catalogo.Application/
+â”‚   â”‚   â”‚   â”œâ”€â”€ Services/                  # OrquestraÃ§Ã£o â€” ProdutoService, etc.
+â”‚   â”‚   â”‚   â”œâ”€â”€ DTOs/                      # Produto/, Categoria/, Variante/, etc.
+â”‚   â”‚   â”‚   â”œâ”€â”€ Validators/                # FluentValidation por recurso
+â”‚   â”‚   â”‚   â”œâ”€â”€ Repositories/              # Interfaces Query/Command (CQRS leve)
+â”‚   â”‚   â”‚   â””â”€â”€ Mappings/                  # AutoMapper profiles
+â”‚   â”‚   â”œâ”€â”€ Catalogo.Infrastructure/       # RepositÃ³rios EF Core, DbSeeder
+â”‚   â”‚   â”œâ”€â”€ Catalogo.API/
+â”‚   â”‚   â”‚   â”œâ”€â”€ Endpoints/                 # Um arquivo por recurso
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Produtos/ProdutoEndpoints.cs
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Categorias/CategoriaEndpoints.cs
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Variantes/VarianteEndpoints.cs
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Atributos/AtributoEndpoints.cs
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Midias/MidiaEndpoints.cs
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ Auth/AuthEndpoints.cs
+â”‚   â”‚   â”‚   â””â”€â”€ Extensions/
+â”‚   â”‚   â”‚       â””â”€â”€ RateLimitingExtensions.cs  # 3 polÃ­ticas
+â”‚   â”‚   â””â”€â”€ Catalogo.ClientDemo/           # Console app â€” resiliÃªncia Polly v8
+â”‚   â”‚
+â”‚   â”œâ”€â”€ Pedidos/                           # Bounded Context 2 â€” Vertical Slice + DomÃ­nio Rico
+â”‚   â”‚   â”œâ”€â”€ Domain/                        # Pedido aggregate, Result<T>
+â”‚   â”‚   â””â”€â”€ Features/                      # CreatePedido/, GetPedido/, etc.
+â”‚   â”‚
+â”‚   â”œâ”€â”€ Pix/                               # Bounded Context 3 â€” Mock + Cliente HTTP
+â”‚   â”‚   â”œâ”€â”€ Pix.MockServer/                # Simula BCB Pix (OAuth2 + mTLS)
+â”‚   â”‚   â””â”€â”€ Pix.ClientDemo/                # HttpClient tipado com resiliÃªncia
+â”‚   â”‚
+â”‚   â””â”€â”€ Shared/
+â”‚       â”œâ”€â”€ Common/                        # IEndpoint, Result<T>, EndpointExtensions
+â”‚       â”œâ”€â”€ Data/                          # AppDbContext + Migrations + DbSeeder
+â”‚       â””â”€â”€ Middleware/                    # ExceptionHandling, Idempotency
+â”‚
+â””â”€â”€ tests/
+    â”œâ”€â”€ FacShopAPI.Tests/                 # 143 testes â€” CatÃ¡logo e Pedidos
+    â””â”€â”€ Pix.MockServer.Tests/              # 7 testes â€” integraÃ§Ã£o PIX
 ```
 
 ---
 
-## Implementação das Melhores Práticas
+## ImplementaÃ§Ã£o das Melhores PrÃ¡ticas
 
-### Boas práticas de cliente HTTP (integrações externas)
+### Boas prÃ¡ticas de cliente HTTP (integraÃ§Ãµes externas)
 
-Além dos endpoints internos, o projeto também demonstra consumo de API externa simulada:
+AlÃ©m dos endpoints internos, o projeto tambÃ©m demonstra consumo de API externa simulada:
 
 - `HttpClientFactory` com cliente tipado (`PixProcessingClient`);
 - `AddStandardResilienceHandler` para retry e timeout;
 - `DelegatingHandler` para `X-Correlation-Id`, `Idempotency-Key` e logging;
 - `AuthTokenProvider` com cache de token OAuth2 mock.
 
-Referências:
+ReferÃªncias:
 
 - [samples/Pix/Pix.ClientDemo/Program.cs](../samples/Pix/Pix.ClientDemo/Program.cs)
 - [samples/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs](../samples/Pix/Pix.ClientDemo/Client/PixProcessingClient.cs)
@@ -91,33 +91,33 @@ Referências:
 
 ### 1. RESTful Design
 
-#### ✅ Identificação de Recursos
+#### âœ… IdentificaÃ§Ã£o de Recursos
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "RESTful Design"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "RESTful Design"
 
-Os endpoints seguem a convenção REST com recursos bem definidos:
+Os endpoints seguem a convenÃ§Ã£o REST com recursos bem definidos:
 
 ```csharp
 // src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
-// prefixo definido no MapGroup do Catálogo: /api/v1/catalogo/produtos
+// prefixo definido no MapGroup do CatÃ¡logo: /api/v1/catalogo/produtos
 
 // Recursos identificados por URI
-GET    /api/v1/catalogo/produtos              → Listar produtos
-GET    /api/v1/catalogo/produtos/{id}         → Obter específico
-POST   /api/v1/catalogo/produtos              → Criar novo
-PUT    /api/v1/catalogo/produtos/{id}         → Atualizar completo
-PATCH  /api/v1/catalogo/produtos/{id}         → Atualizar parcial
-DELETE /api/v1/catalogo/produtos/{id}         → Deletar
+GET    /api/v1/catalogo/produtos              â†’ Listar produtos
+GET    /api/v1/catalogo/produtos/{id}         â†’ Obter especÃ­fico
+POST   /api/v1/catalogo/produtos              â†’ Criar novo
+PUT    /api/v1/catalogo/produtos/{id}         â†’ Atualizar completo
+PATCH  /api/v1/catalogo/produtos/{id}         â†’ Atualizar parcial
+DELETE /api/v1/catalogo/produtos/{id}         â†’ Deletar
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L15-L20)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L15-L20)
 
-#### ✅ Operações Padrão HTTP
+#### âœ… OperaÃ§Ãµes PadrÃ£o HTTP
 
 Cada endpoint usa o verbo HTTP correto:
 
 ```csharp
-// POST - Criar (custo alto → política mais restritiva)
+// POST - Criar (custo alto â†’ polÃ­tica mais restritiva)
 group.MapPost("/", CriarProduto)
     .WithName("CriarProduto")
     .Produces<ProdutoResponse>(StatusCodes.Status201Created)
@@ -125,7 +125,7 @@ group.MapPost("/", CriarProduto)
     .RequireAuthorization()
     .RequireRateLimiting("criacao-produto");    // TokenBucket, 5 req/min
 
-// GET - Recuperar (idempotente, anônimo, rate limit suave)
+// GET - Recuperar (idempotente, anÃ´nimo, rate limit suave)
 group.MapGet("/{id}", ObterProduto)
     .WithName("ObterProduto")
     .Produces<ProdutoResponse>(StatusCodes.Status200OK)
@@ -152,11 +152,11 @@ group.MapDelete("/{id}", DeletarProduto)
     .RequireRateLimiting("escrita");
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L29-L60)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L29-L60)
 
-#### ✅ Representação Padronizada
+#### âœ… RepresentaÃ§Ã£o Padronizada
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Representação de Recursos"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "RepresentaÃ§Ã£o de Recursos"
 
 Respostas padronizadas em JSON usando DTOs:
 
@@ -177,15 +177,15 @@ public class ProdutoResponse
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs](../src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs#L25)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs](../src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs#L25)
 
-#### ✅ Statelessness
+#### âœ… Statelessness
 
-Cada requisição deve conter todas as informações necessárias:
+Cada requisiÃ§Ã£o deve conter todas as informaÃ§Ãµes necessÃ¡rias:
 
 ```csharp
-// Não mantém estado de sessão
-// Autenticação futura: JWT token em header Authorization
+// NÃ£o mantÃ©m estado de sessÃ£o
+// AutenticaÃ§Ã£o futura: JWT token em header Authorization
 
 private static async Task<IResult> ListarProdutos(
     IProdutoService produtoService,
@@ -194,7 +194,7 @@ private static async Task<IResult> ListarProdutos(
     string? categoria = null,
     string? search = null)
 {
-    // Toda informação está na requisição
+    // Toda informaÃ§Ã£o estÃ¡ na requisiÃ§Ã£o
     var resultado = await produtoService.ListarProdutosAsync(
         page, pageSize, categoria, search);
 
@@ -202,39 +202,39 @@ private static async Task<IResult> ListarProdutos(
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L70-L80)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L70-L80)
 
 ---
 
 ### 2. Design de Endpoints
 
-#### ✅ Nomenclatura de URLs
+#### âœ… Nomenclatura de URLs
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Nomenclatura de URLs"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Nomenclatura de URLs"
 
 ```csharp
-// ✅ CORRETO: Nomes em plural
+// âœ… CORRETO: Nomes em plural
 GET /api/v1/catalogo/produtos
 
-// ✅ CORRETO: Minúsculas
+// âœ… CORRETO: MinÃºsculas
 GET /api/v1/catalogo/produtos/123
 
-// ✅ CORRETO: Hífens para separar palavras
+// âœ… CORRETO: HÃ­fens para separar palavras
 GET /api/v1/catalogo/produtos?status=produto-ativo
 
-// ❌ EVITAR: Verbos nas URLs
+// âŒ EVITAR: Verbos nas URLs
 // GET /api/v1/obter-produtos
 // GET /api/v1/deletar-produto/123
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L14-L15)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L14-L15)
 
-#### ✅ Paginação
+#### âœ… PaginaÃ§Ã£o
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Paginação"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "PaginaÃ§Ã£o"
 
 ```csharp
-// Requisição com paginação
+// RequisiÃ§Ã£o com paginaÃ§Ã£o
 GET /api/v1/catalogo/produtos?page=1&pageSize=20&sortBy=nome
 
 // Resposta paginada
@@ -249,11 +249,11 @@ GET /api/v1/catalogo/produtos?page=1&pageSize=20&sortBy=nome
 }
 ```
 
-**Implementação da resposta**: [src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs](../src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs#L46-L57)
+**ImplementaÃ§Ã£o da resposta**: [src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs](../src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs#L46-L57)
 
-**Implementação do endpoint**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L70-L86)
+**ImplementaÃ§Ã£o do endpoint**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L70-L86)
 
-**Implementação do serviço**:
+**ImplementaÃ§Ã£o do serviÃ§o**:
 
 ```csharp
 // src/Catalogo/Catalogo.Application/Services/ProdutoService.cs
@@ -261,7 +261,7 @@ public async Task<PaginatedResponse<ProdutoResponse>> ListarProdutosAsync(
     int page, int pageSize, string? categoria = null, string? search = null)
 {
     if (page < 1) page = 1;
-    if (pageSize < 1 || pageSize > 100) pageSize = 20; // Máximo 100
+    if (pageSize < 1 || pageSize > 100) pageSize = 20; // MÃ¡ximo 100
 
     var query = _context.Produtos.Where(p => p.Ativo).AsQueryable();
 
@@ -288,17 +288,17 @@ public async Task<PaginatedResponse<ProdutoResponse>> ListarProdutosAsync(
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L32-L75)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L32-L75)
 
-#### ✅ Filtros e Busca
+#### âœ… Filtros e Busca
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Filtros e Busca"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Filtros e Busca"
 
 ```csharp
-// Suporte a filtros e busca na mesma requisição
-GET /api/v1/catalogo/produtos?categoria=eletrônicos&search=notebook
+// Suporte a filtros e busca na mesma requisiÃ§Ã£o
+GET /api/v1/catalogo/produtos?categoria=eletrÃ´nicos&search=notebook
 
-// No serviço:
+// No serviÃ§o:
 if (!string.IsNullOrEmpty(categoria))
 {
     query = query.Where(p => p.Categoria == categoria);
@@ -311,45 +311,45 @@ if (!string.IsNullOrEmpty(search))
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L48-L55)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L48-L55)
 
 ---
 
 ### 3. Versionamento
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Versionamento"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Versionamento"
 
-#### ✅ URL Path Versionamento (Recomendado)
+#### âœ… URL Path Versionamento (Recomendado)
 
 ```csharp
 // Program.cs
-// prefixo definido no MapGroup do Catálogo: /api/v1/catalogo/produtos
+// prefixo definido no MapGroup do CatÃ¡logo: /api/v1/catalogo/produtos
 
-// Endpoints começam com /api/v1/
-// Fácil evoluir para /api/v2/ no futuro
+// Endpoints comeÃ§am com /api/v1/
+// FÃ¡cil evoluir para /api/v2/ no futuro
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L14)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L14)
 
-#### ✅ Versionamento Semântico do Projeto
+#### âœ… Versionamento SemÃ¢ntico do Projeto
 
 ```xml
-<!-- ProdutosAPI.csproj -->
+<!-- FacShopAPI.csproj -->
 <Version>1.0.0</Version>
 <Description>API REST de Produtos com Minimal API e .NET 10</Description>
 ```
 
-**Implementação**: [ProdutosAPI.csproj](ProdutosAPI.csproj#L8-L9)
+**ImplementaÃ§Ã£o**: [FacShopAPI.csproj](FacShopAPI.csproj#L8-L9)
 
 ---
 
-### 4. Segurança
+### 4. SeguranÃ§a
 
-#### ✅ Validação de Inputs
+#### âœ… ValidaÃ§Ã£o de Inputs
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Segurança - Validação"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "SeguranÃ§a - ValidaÃ§Ã£o"
 
-Usando **FluentValidation** para validações robustas:
+Usando **FluentValidation** para validaÃ§Ãµes robustas:
 
 ```csharp
 // src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs
@@ -359,25 +359,25 @@ public class CriarProdutoValidator : AbstractValidator<CriarProdutoRequest>
     {
         RuleFor(p => p.Nome)
             .NotEmpty()
-            .WithMessage("Nome é obrigatório")
+            .WithMessage("Nome Ã© obrigatÃ³rio")
             .MinimumLength(3)
-            .WithMessage("Nome deve ter no mínimo 3 caracteres")
+            .WithMessage("Nome deve ter no mÃ­nimo 3 caracteres")
             .MaximumLength(100)
-            .WithMessage("Nome não pode exceder 100 caracteres");
+            .WithMessage("Nome nÃ£o pode exceder 100 caracteres");
 
         RuleFor(p => p.Preco)
             .GreaterThan(0)
-            .WithMessage("Preço deve ser maior que zero");
+            .WithMessage("PreÃ§o deve ser maior que zero");
 
         RuleFor(p => p.ContatoEmail)
             .NotEmpty()
             .EmailAddress()
-            .WithMessage("Email de contato inválido");
+            .WithMessage("Email de contato invÃ¡lido");
     }
 }
 ```
 
-**Implementação do validador**: [src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)
+**ImplementaÃ§Ã£o do validador**: [src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)
 
 **Uso no endpoint**:
 
@@ -399,30 +399,30 @@ private static async Task<IResult> CriarProduto(
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L125-L145)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L125-L145)
 
-#### ✅ Proteção contra SQL Injection
+#### âœ… ProteÃ§Ã£o contra SQL Injection
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Segurança - SQL Injection"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "SeguranÃ§a - SQL Injection"
 
-Usando **Entity Framework Core** (ORM) ao invés de SQL raw:
+Usando **Entity Framework Core** (ORM) ao invÃ©s de SQL raw:
 
 ```csharp
-// ✅ SEGURO: Usando EF Core com queries LINQ
+// âœ… SEGURO: Usando EF Core com queries LINQ
 var produtos = await _context.Produtos
     .Where(p => p.Nome.Contains(search)) // Parametrizado automaticamente
     .ToListAsync();
 
-// ❌ NÃO FAZER: Raw SQL sem parametrização
+// âŒ NÃƒO FAZER: Raw SQL sem parametrizaÃ§Ã£o
 // var produtos = _context.Produtos.FromSqlRaw(
 //     $"SELECT * FROM Produtos WHERE Nome LIKE '%{search}%'");
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L48)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L48)
 
-#### ✅ CORS Configurado
+#### âœ… CORS Configurado
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Segurança - CORS"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "SeguranÃ§a - CORS"
 
 ```csharp
 // Program.cs
@@ -441,15 +441,15 @@ builder.Services.AddCors(options =>
 app.UseCors("AllowAll");
 ```
 
-**Implementação**: [Program.cs](Program.cs#L42-L51)
+**ImplementaÃ§Ã£o**: [Program.cs](Program.cs#L42-L51)
 
 ---
 
-### 5. Validação de Dados
+### 5. ValidaÃ§Ã£o de Dados
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Validação de Dados"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "ValidaÃ§Ã£o de Dados"
 
-#### ✅ Input Validation
+#### âœ… Input Validation
 
 Campos validados conforme business rules:
 
@@ -460,32 +460,32 @@ public class Produto
     public int Id { get; set; }
     public string Nome { get; set; } = string.Empty;     // Min 3 caracteres
     public decimal Preco { get; set; }                   // Deve ser > 0
-    public int Estoque { get; set; }                     // Não pode ser negativo
-    public string ContatoEmail { get; set; } = string.Empty; // Email válido
+    public int Estoque { get; set; }                     // NÃ£o pode ser negativo
+    public string ContatoEmail { get; set; } = string.Empty; // Email vÃ¡lido
     public bool Ativo { get; set; } = true;              // Status soft delete
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Domain/Produto.cs](../src/Catalogo/Catalogo.Domain/Produto.cs)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Domain/Produto.cs](../src/Catalogo/Catalogo.Domain/Produto.cs)
 
-#### ✅ Mensagens de Erro de Validação
+#### âœ… Mensagens de Erro de ValidaÃ§Ã£o
 
 ```csharp
-// Resposta de validação
+// Resposta de validaÃ§Ã£o
 {
   "errors": {
-    "nome": ["Campo obrigatório", "Mínimo 3 caracteres"],
+    "nome": ["Campo obrigatÃ³rio", "MÃ­nimo 3 caracteres"],
     "preco": ["Deve ser maior que 0"],
-    "email": ["Email inválido"]
+    "email": ["Email invÃ¡lido"]
   }
 }
 ```
 
-**Implementação**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L47-L60)
+**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L47-L60)
 
-#### ✅ Sanitização
+#### âœ… SanitizaÃ§Ã£o
 
-AutoMapper e FluentValidation garantem sanitização:
+AutoMapper e FluentValidation garantem sanitizaÃ§Ã£o:
 
 ```csharp
 // AutoMapper mapeia e converte tipos
@@ -494,18 +494,18 @@ CreateMap<CriarProdutoRequest, Produto>();
 // FluentValidation valida formato
 RuleFor(p => p.ContatoEmail)
     .EmailAddress()
-    .WithMessage("Email de contato inválido");
+    .WithMessage("Email de contato invÃ¡lido");
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Mappings/ProdutoMappingProfile.cs](../src/Catalogo/Catalogo.Application/Mappings/ProdutoMappingProfile.cs)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Mappings/ProdutoMappingProfile.cs](../src/Catalogo/Catalogo.Application/Mappings/ProdutoMappingProfile.cs)
 
 ---
 
 ### 6. Tratamento de Erros
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Tratamento de Erros"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Tratamento de Erros"
 
-#### ✅ HTTP Status Codes Corretos
+#### âœ… HTTP Status Codes Corretos
 
 ```csharp
 // GET - 200 OK
@@ -526,11 +526,11 @@ Results.UnprocessableEntity(...) // 422
 // Middleware captura e retorna 500
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L88-L180)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L88-L180)
 
-#### ✅ Respostas de Erro Padronizadas
+#### âœ… Respostas de Erro Padronizadas
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Resposta de Erro Padronizada"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Resposta de Erro Padronizada"
 
 ```csharp
 // src/Catalogo/Catalogo.Application/DTOs/ProdutoDTO.cs
@@ -555,15 +555,15 @@ public class ErrorResponse
     "detail": "One or more validation errors occurred.",
     "instance": "/api/v1/catalogo/produtos",
     "errors": {
-        "nome": ["Campo obrigatório"],
+        "nome": ["Campo obrigatÃ³rio"],
         "preco": ["Deve ser maior que 0"]
     }
 }
 ```
 
-**Implementação**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L35-L75)
+**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L35-L75)
 
-#### ✅ Middleware Global de Tratamento de Erros
+#### âœ… Middleware Global de Tratamento de Erros
 
 ```csharp
 // src/Shared/Middleware/ExceptionHandlingMiddleware.cs
@@ -577,7 +577,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exceção não tratada");
+            _logger.LogError(ex, "ExceÃ§Ã£o nÃ£o tratada");
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -587,15 +587,15 @@ public class ExceptionHandlingMiddleware
 app.UseExceptionHandling();
 ```
 
-**Implementação**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)
+**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)
 
 ---
 
-### 7. Documentação
+### 7. DocumentaÃ§Ã£o
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Documentação"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "DocumentaÃ§Ã£o"
 
-#### ✅ OpenAPI/Swagger
+#### âœ… OpenAPI/Swagger
 
 ```csharp
 // Program.cs
@@ -617,15 +617,15 @@ if (app.Environment.IsDevelopment())
 }
 ```
 
-**Implementação**: [Program.cs](Program.cs#L80-L100)
+**ImplementaÃ§Ã£o**: [Program.cs](Program.cs#L80-L100)
 
-#### ✅ Endpoints com Descrição
+#### âœ… Endpoints com DescriÃ§Ã£o
 
 ```csharp
 // src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
 group.MapGet("/", ListarProdutos)
     .WithName("ListarProdutos")
-    .WithDescription("Lista todos os produtos com paginação")
+    .WithDescription("Lista todos os produtos com paginaÃ§Ã£o")
     .WithSummary("Listar produtos")
     .Produces<PaginatedResponse<ProdutoResponse>>(StatusCodes.Status200OK)
     .AllowAnonymous();
@@ -633,50 +633,50 @@ group.MapGet("/", ListarProdutos)
 
 **Acesso**: http://localhost:5001 (Swagger UI)
 
-**Implementação**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L22-L27)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs#L22-L27)
 
-#### ✅ XML Comments
+#### âœ… XML Comments
 
 ```csharp
 // src/Catalogo/Catalogo.Domain/Produto.cs
 /// <summary>
 /// Entidade Produto
-/// Referência: MELHORES-PRATICAS-API.md - Seção "Design de Endpoints"
+/// ReferÃªncia: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Design de Endpoints"
 /// Representa um produto no sistema
 /// </summary>
 public class Produto
 {
     /// <summary>
-    /// Identificador único do produto (PK)
+    /// Identificador Ãºnico do produto (PK)
     /// </summary>
     public int Id { get; set; }
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Domain/Produto.cs](../src/Catalogo/Catalogo.Domain/Produto.cs#L1)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Domain/Produto.cs](../src/Catalogo/Catalogo.Domain/Produto.cs#L1)
 
 ---
 
 ### 8. Performance
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Performance"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Performance"
 
-#### ✅ Paginação Obrigatória
+#### âœ… PaginaÃ§Ã£o ObrigatÃ³ria
 
 ```csharp
-// Máximo 100 itens por página
+// MÃ¡ximo 100 itens por pÃ¡gina
 if (pageSize < 1 || pageSize > 100) pageSize = 20;
 
-// Padrão: 20 itens
+// PadrÃ£o: 20 itens
 int pageSize = 20
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L41-L42)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L41-L42)
 
-#### ✅ Async/Await
+#### âœ… Async/Await
 
 ```csharp
-// Todas as operações I/O são assíncronas
+// Todas as operaÃ§Ãµes I/O sÃ£o assÃ­ncronas
 public async Task<PaginatedResponse<ProdutoResponse>> ListarProdutosAsync(...)
 {
     var totalItems = await query.CountAsync();
@@ -685,9 +685,9 @@ public async Task<PaginatedResponse<ProdutoResponse>> ListarProdutosAsync(...)
 }
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L32)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L32)
 
-#### ✅ Índices de Banco de Dados
+#### âœ… Ãndices de Banco de Dados
 
 ```csharp
 // src/Shared/Data/AppDbContext.cs
@@ -698,15 +698,15 @@ entity.HasIndex(p => p.Categoria)
     .HasName("idx_produto_categoria");
 ```
 
-**Implementação**: [src/Shared/Data/AppDbContext.cs](../src/Shared/Data/AppDbContext.cs#L26-L30)
+**ImplementaÃ§Ã£o**: [src/Shared/Data/AppDbContext.cs](../src/Shared/Data/AppDbContext.cs#L26-L30)
 
 ---
 
 ### 9. Logging e Monitoramento
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Logging e Monitoramento"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Logging e Monitoramento"
 
-#### ✅ Structured Logging com Serilog
+#### âœ… Structured Logging com Serilog
 
 ```csharp
 // Program.cs
@@ -725,53 +725,53 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 ```
 
-**Implementação**: [Program.cs](Program.cs#L17-L33)
+**ImplementaÃ§Ã£o**: [Program.cs](Program.cs#L17-L33)
 
-#### ✅ Logging em Serviços
+#### âœ… Logging em ServiÃ§os
 
 ```csharp
 // src/Catalogo/Catalogo.Application/Services/ProdutoService.cs
 _logger.LogInformation("Listando produtos - Page: {Page}, PageSize: {PageSize}",
     page, pageSize);
 
-_logger.LogWarning("Produto com ID {ProductId} não encontrado", id);
+_logger.LogWarning("Produto com ID {ProductId} nÃ£o encontrado", id);
 
 _logger.LogError(ex, "Erro ao listar produtos");
 ```
 
-**Implementação**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L34)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs#L34)
 
-#### ✅ Correlação de Requisições
+#### âœ… CorrelaÃ§Ã£o de RequisiÃ§Ãµes
 
 ```csharp
 // Middleware captura request ID
 var requestId = context.TraceIdentifier;
 
-// Disponível em logs
-_logger.LogInformation("Requisição: {RequestId}", requestId);
+// DisponÃ­vel em logs
+_logger.LogInformation("RequisiÃ§Ã£o: {RequestId}", requestId);
 ```
 
 ---
 
 ### 10. Testes
 
-**Referência**: MELHORES-PRATICAS-API.md - Seção "Testes"
+**ReferÃªncia**: MELHORES-PRATICAS-API.md - SeÃ§Ã£o "Testes"
 
 Para implementar testes, crie um projeto de teste:
 
 ```bash
 # Criar projeto de teste
-dotnet new xunit --name ProdutosAPI.Tests
+dotnet new xunit --name FacShopAPI.Tests
 
-# Adicionar referências
+# Adicionar referÃªncias
 dotnet add package Moq
 dotnet add package FluentAssertions
 ```
 
-#### ✅ Exemplo de Teste Unitário
+#### âœ… Exemplo de Teste UnitÃ¡rio
 
 ```csharp
-// tests/ProdutosAPI.Tests/Services/ProdutoServiceTests.cs
+// tests/FacShopAPI.Tests/Services/ProdutoServiceTests.cs
 [Fact]
 public async Task ListarProdutos_DeveRetornarPaginado()
 {
@@ -795,12 +795,12 @@ public async Task ListarProdutos_DeveRetornarPaginado()
 
 ## Como Executar o Projeto
 
-### Pré-requisitos
+### PrÃ©-requisitos
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- SQLite é gerenciado automaticamente pelo EF Core
+- SQLite Ã© gerenciado automaticamente pelo EF Core
 
-### Trilha Catálogo (API principal)
+### Trilha CatÃ¡logo (API principal)
 
 ```bash
 # 1. Restaurar e executar
@@ -815,7 +815,7 @@ TOKEN=$(curl -s -X POST http://localhost:5001/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","senha":"senha123"}' | jq -r .token)
 
-# 4. Listar produtos (anônimo)
+# 4. Listar produtos (anÃ´nimo)
 curl "http://localhost:5001/api/v1/catalogo/produtos?page=1&pageSize=10"
 
 # 5. Criar produto (requer JWT)
@@ -826,19 +826,19 @@ curl -X POST "http://localhost:5001/api/v1/catalogo/produtos" \
     "nome": "Notebook Dell",
     "descricao": "Notebook de alto desempenho, 16GB RAM",
     "preco": 3500.00,
-    "categoria": "Eletrônicos",
+    "categoria": "EletrÃ´nicos",
     "estoque": 5,
     "contatoEmail": "vendas@dell.com"
   }'
 
-# 6. Soft delete (produto vira 404 após deleção)
+# 6. Soft delete (produto vira 404 apÃ³s deleÃ§Ã£o)
 curl -X DELETE "http://localhost:5001/api/v1/catalogo/produtos/1" \
   -H "Authorization: Bearer $TOKEN"
 
-# 7. GET após soft delete → 404
+# 7. GET apÃ³s soft delete â†’ 404
 curl "http://localhost:5001/api/v1/catalogo/produtos/1"
 
-# 8. Observar rate limiting (após 5 POSTs rápidos na política criacao-produto → 429)
+# 8. Observar rate limiting (apÃ³s 5 POSTs rÃ¡pidos na polÃ­tica criacao-produto â†’ 429)
 for i in {1..6}; do
   curl -s -o /dev/null -w "Request $i: %{http_code}\n" \
     -X POST "http://localhost:5001/api/v1/catalogo/produtos" \
@@ -846,16 +846,16 @@ for i in {1..6}; do
     -H "Content-Type: application/json" \
     -d '{"nome":"Produto '$i'","descricao":"Desc produto '$i'","preco":10,"categoria":"Outros","estoque":1,"contatoEmail":"t@t.com"}'
 done
-# Primeiras 5: 201 Created; 6ª: 429 Too Many Requests + header Retry-After
+# Primeiras 5: 201 Created; 6Âª: 429 Too Many Requests + header Retry-After
 ```
 
-### Trilha PIX (integração externa)
+### Trilha PIX (integraÃ§Ã£o externa)
 
 ```bash
-# Terminal 1 — servidor mock
+# Terminal 1 â€” servidor mock
 dotnet run --project samples/Pix/Pix.MockServer/Pix.MockServer.csproj
 
-# Terminal 2 — cliente didático
+# Terminal 2 â€” cliente didÃ¡tico
 dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ```
 
@@ -863,107 +863,107 @@ dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 
 ```bash
 dotnet test FacShopAPI.slnx -v minimal            # todos os 150 testes
-dotnet test tests/ProdutosAPI.Tests/ \
-  --filter "FullyQualifiedName~RateLimitingTests"  # só rate limiting
+dotnet test tests/FacShopAPI.Tests/ \
+  --filter "FullyQualifiedName~RateLimitingTests"  # sÃ³ rate limiting
 ```
 
 ---
 
-## Estrutura de Pastas (Catálogo)
+## Estrutura de Pastas (CatÃ¡logo)
 
 ```
 src/Catalogo/
-├── Catalogo.Domain/
-│   ├── Produto.cs                  ← Aggregate rico: Produto.Criar() → Result<Produto>
-│   ├── Categoria.cs               ← Hierarquia + slug auto-gerado
-│   ├── Variante.cs                ← SKU value object (sealed record)
-│   ├── Atributo.cs / Midia.cs     ← CRUD simples (anêmico, sem invariantes)
-│   └── Common/
-│       ├── PrecoProduto.cs        ← Value object: preço não negativo
-│       ├── EstoqueProduto.cs      ← Value object: estoque não negativo
-│       └── DomainResult.cs        ← Result<T> do domínio
-│
-├── Catalogo.Application/
-│   ├── Services/
-│   │   ├── IProdutoService.cs     ← Interface do serviço
-│   │   └── ProdutoService.cs      ← Orquestração + logging + paginação
-│   ├── DTOs/
-│   │   └── Produto/
-│   │       └── ProdutoDTO.cs      ← CriarProdutoRequest, AtualizarProdutoRequest, ProdutoResponse
-│   ├── Validators/
-│   │   └── ProdutoValidator.cs    ← CriarProdutoValidator, AtualizarProdutoValidator
-│   ├── Repositories/
-│   │   ├── IProdutoQueryRepository.cs   ← Retorna DTOs diretamente (leitura)
-│   │   └── IProdutoCommandRepository.cs ← Opera sobre entidades (escrita)
-│   └── Mappings/
-│       └── ProdutoMappingProfile.cs
-│
-├── Catalogo.Infrastructure/
-│   ├── Repositories/              ← Implementações EF Core das interfaces
-│   └── Data/DbSeeder.cs           ← 8 produtos e 5 categorias (IDs 1-8 / 1-5 reservados)
-│
-└── Catalogo.API/
-    ├── Endpoints/
-    │   └── Produtos/ProdutoEndpoints.cs   ← 6 rotas com RequireRateLimiting
-    └── Extensions/
-        └── RateLimitingExtensions.cs      ← leitura / escrita / criacao-produto
+â”œâ”€â”€ Catalogo.Domain/
+â”‚   â”œâ”€â”€ Produto.cs                  â† Aggregate rico: Produto.Criar() â†’ Result<Produto>
+â”‚   â”œâ”€â”€ Categoria.cs               â† Hierarquia + slug auto-gerado
+â”‚   â”œâ”€â”€ Variante.cs                â† SKU value object (sealed record)
+â”‚   â”œâ”€â”€ Atributo.cs / Midia.cs     â† CRUD simples (anÃªmico, sem invariantes)
+â”‚   â””â”€â”€ Common/
+â”‚       â”œâ”€â”€ PrecoProduto.cs        â† Value object: preÃ§o nÃ£o negativo
+â”‚       â”œâ”€â”€ EstoqueProduto.cs      â† Value object: estoque nÃ£o negativo
+â”‚       â””â”€â”€ DomainResult.cs        â† Result<T> do domÃ­nio
+â”‚
+â”œâ”€â”€ Catalogo.Application/
+â”‚   â”œâ”€â”€ Services/
+â”‚   â”‚   â”œâ”€â”€ IProdutoService.cs     â† Interface do serviÃ§o
+â”‚   â”‚   â””â”€â”€ ProdutoService.cs      â† OrquestraÃ§Ã£o + logging + paginaÃ§Ã£o
+â”‚   â”œâ”€â”€ DTOs/
+â”‚   â”‚   â””â”€â”€ Produto/
+â”‚   â”‚       â””â”€â”€ ProdutoDTO.cs      â† CriarProdutoRequest, AtualizarProdutoRequest, ProdutoResponse
+â”‚   â”œâ”€â”€ Validators/
+â”‚   â”‚   â””â”€â”€ ProdutoValidator.cs    â† CriarProdutoValidator, AtualizarProdutoValidator
+â”‚   â”œâ”€â”€ Repositories/
+â”‚   â”‚   â”œâ”€â”€ IProdutoQueryRepository.cs   â† Retorna DTOs diretamente (leitura)
+â”‚   â”‚   â””â”€â”€ IProdutoCommandRepository.cs â† Opera sobre entidades (escrita)
+â”‚   â””â”€â”€ Mappings/
+â”‚       â””â”€â”€ ProdutoMappingProfile.cs
+â”‚
+â”œâ”€â”€ Catalogo.Infrastructure/
+â”‚   â”œâ”€â”€ Repositories/              â† ImplementaÃ§Ãµes EF Core das interfaces
+â”‚   â””â”€â”€ Data/DbSeeder.cs           â† 8 produtos e 5 categorias (IDs 1-8 / 1-5 reservados)
+â”‚
+â””â”€â”€ Catalogo.API/
+    â”œâ”€â”€ Endpoints/
+    â”‚   â””â”€â”€ Produtos/ProdutoEndpoints.cs   â† 6 rotas com RequireRateLimiting
+    â””â”€â”€ Extensions/
+        â””â”€â”€ RateLimitingExtensions.cs      â† leitura / escrita / criacao-produto
 ```
 
 ---
 
-## Referências Cruzadas
+## ReferÃªncias Cruzadas
 
-| Aspecto                       | Guia teórico                                                   | Implementação                                                                                                                                                                               |
+| Aspecto                       | Guia teÃ³rico                                                   | ImplementaÃ§Ã£o                                                                                                                                                                               |
 | ----------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RESTful Design                | [Seção 2 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)                                                                                                  |
-| HTTP Verbs + Rate Limiting    | [Seções 3 e 8](MELHORES-PRATICAS-API.md)                       | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
-| Paginação                     | [Seção 2](MELHORES-PRATICAS-API.md)                            | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
-| Versionamento                 | [Seção 6](MELHORES-PRATICAS-API.md)                            | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
-| Segurança JWT                 | [Seção 4](MELHORES-PRATICAS-API.md)                            | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
-| Validação FluentValidation    | [Seção 7](MELHORES-PRATICAS-API.md)                            | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
-| Tratamento de Erros           | [Seção 5](MELHORES-PRATICAS-API.md)                            | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
-| Idempotência                  | [Seção 3](MELHORES-PRATICAS-API.md)                            | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
-| Logging                       | [Seção 9 — MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
-| Rate Limiting                 | [Seção 8](MELHORES-PRATICAS-API.md)                            | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
-| Domínio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                    | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
+| RESTful Design                | [SeÃ§Ã£o 2 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)                                                                                                  |
+| HTTP Verbs + Rate Limiting    | [SeÃ§Ãµes 3 e 8](MELHORES-PRATICAS-API.md)                       | [ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs) + [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs) |
+| PaginaÃ§Ã£o                     | [SeÃ§Ã£o 2](MELHORES-PRATICAS-API.md)                            | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Versionamento                 | [SeÃ§Ã£o 6](MELHORES-PRATICAS-API.md)                            | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
+| SeguranÃ§a JWT                 | [SeÃ§Ã£o 4](MELHORES-PRATICAS-API.md)                            | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
+| ValidaÃ§Ã£o FluentValidation    | [SeÃ§Ã£o 7](MELHORES-PRATICAS-API.md)                            | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
+| Tratamento de Erros           | [SeÃ§Ã£o 5](MELHORES-PRATICAS-API.md)                            | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
+| IdempotÃªncia                  | [SeÃ§Ã£o 3](MELHORES-PRATICAS-API.md)                            | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
+| Logging                       | [SeÃ§Ã£o 9 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
+| Rate Limiting                 | [SeÃ§Ã£o 8](MELHORES-PRATICAS-API.md)                            | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
+| DomÃ­nio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                    | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
 
 ---
 
 ## Checklist Final
 
-Verificar se todas as práticas foram implementadas:
+Verificar se todas as prÃ¡ticas foram implementadas:
 
-- ✅ Endpoints seguem convenção RESTful (`/api/v1/catalogo/produtos`, substantivos no plural)
-- ✅ Versionamento em URL (`/api/v1/`)
-- ✅ Autenticação JWT Bearer (escrita exige token, leitura é anônima)
-- ✅ Validação com FluentValidation (CriarProdutoValidator, AtualizarProdutoValidator)
-- ✅ Erros retornam status codes corretos (200, 201, 204, 400, 401, 404, 409, 422, 429, 500)
-- ✅ Tratamento global de exceções (ExceptionHandlingMiddleware)
-- ✅ Logging estruturado com Serilog
-- ✅ Documentação com Swagger/OpenAPI
-- ✅ Async/Await em todas as operações I/O
-- ✅ Paginação implementada (page, pageSize, TotalPages no envelope)
-- ✅ CORS configurado
-- ✅ DTOs separados de entidades (CriarProdutoRequest ≠ Produto ≠ ProdutoResponse)
-- ✅ Repositórios abstraídos por interfaces (Query/Command segregados)
-- ✅ EF Core com LINQ parametrizado (proteção contra SQL Injection)
-- ✅ **Rate limiting com 3 políticas** (leitura/escrita/criacao-produto)
-- ✅ **Soft delete** (DELETE seta `Ativo = false`; produto inativo → 404 em todos os endpoints)
-- ✅ **Idempotência** via `IdempotencyMiddleware` + header `Idempotency-Key`
-- ✅ **Domínio rico no Catálogo** (Produto.Criar(), Categoria, Variante com value objects)
-- ✅ **Result pattern** em Pedidos (sem exceptions para erros de negócio)
-
----
+- âœ… Endpoints seguem convenÃ§Ã£o RESTful (`/api/v1/catalogo/produtos`, substantivos no plural)
+- âœ… Versionamento em URL (`/api/v1/`)
+- âœ… AutenticaÃ§Ã£o JWT Bearer (escrita exige token, leitura Ã© anÃ´nima)
+- âœ… ValidaÃ§Ã£o com FluentValidation (CriarProdutoValidator, AtualizarProdutoValidator)
+- âœ… Erros retornam status codes corretos (200, 201, 204, 400, 401, 404, 409, 422, 429, 500)
+- âœ… Tratamento global de exceÃ§Ãµes (ExceptionHandlingMiddleware)
+- âœ… Logging estruturado com Serilog
+- âœ… DocumentaÃ§Ã£o com Swagger/OpenAPI
+- âœ… Async/Await em todas as operaÃ§Ãµes I/O
+- âœ… PaginaÃ§Ã£o implementada (page, pageSize, TotalPages no envelope)
+- âœ… CORS configurado
+- âœ… DTOs separados de entidades (CriarProdutoRequest â‰  Produto â‰  ProdutoResponse)
+- âœ… RepositÃ³rios abstraÃ­dos por interfaces (Query/Command segregados)
+- âœ… EF Core com LINQ parametrizado (proteÃ§Ã£o contra SQL Injection)
+- âœ… **Rate limiting com 3 polÃ­ticas** (leitura/escrita/criacao-produto)
+- âœ… **Soft delete** (DELETE seta `Ativo = false`; produto inativo â†’ 404 em todos os endpoints)
+- âœ… **IdempotÃªncia** via `IdempotencyMiddleware` + header `Idempotency-Key`
+- âœ… **DomÃ­nio rico no CatÃ¡logo** (Produto.Criar(), Categoria, Variante com value objects)
+- âœ… **Result pattern** em Pedidos (sem exceptions para erros de negÃ³cio)
 
 ---
 
-## 10.1 Rate Limiting — Implementação no Catálogo
+---
 
-**Referência**: [MELHORES-PRATICAS-API.md — Seção 8](MELHORES-PRATICAS-API.md)
+## 10.1 Rate Limiting â€” ImplementaÃ§Ã£o no CatÃ¡logo
 
-O Catálogo usa três políticas com algoritmos distintos para diferentes perfis de operação:
+**ReferÃªncia**: [MELHORES-PRATICAS-API.md â€” SeÃ§Ã£o 8](MELHORES-PRATICAS-API.md)
 
-### Registro das políticas
+O CatÃ¡logo usa trÃªs polÃ­ticas com algoritmos distintos para diferentes perfis de operaÃ§Ã£o:
+
+### Registro das polÃ­ticas
 
 ```csharp
 // src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs
@@ -1009,7 +1009,7 @@ public static IServiceCollection AddCatalogoRateLimiting(this IServiceCollection
 }
 ```
 
-### Por que não registrar em `Testing`?
+### Por que nÃ£o registrar em `Testing`?
 
 ```csharp
 // Program.cs
@@ -1017,12 +1017,12 @@ if (!app.Environment.IsEnvironment("Testing"))
     app.AddCatalogoRateLimiting();
 ```
 
-O `WebApplicationFactory` chama `CreateHost()` depois que a aplicação já foi construída. Se `Program.cs` registrasse as políticas e depois a factory tentasse registrá-las novamente com outros limites, ocorreria `InvalidOperationException` por chave duplicada. A solução é não registrar em Testing e deixar cada factory definir suas próprias políticas.
+O `WebApplicationFactory` chama `CreateHost()` depois que a aplicaÃ§Ã£o jÃ¡ foi construÃ­da. Se `Program.cs` registrasse as polÃ­ticas e depois a factory tentasse registrÃ¡-las novamente com outros limites, ocorreria `InvalidOperationException` por chave duplicada. A soluÃ§Ã£o Ã© nÃ£o registrar em Testing e deixar cada factory definir suas prÃ³prias polÃ­ticas.
 
 ### Factory de testes de rate limiting
 
 ```csharp
-// tests/ProdutosAPI.Tests/Integration/RateLimitingApiFactory.cs
+// tests/FacShopAPI.Tests/Integration/RateLimitingApiFactory.cs
 public class RateLimitingApiFactory : ApiFactory
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -1030,7 +1030,7 @@ public class RateLimitingApiFactory : ApiFactory
         base.ConfigureWebHost(builder);
         builder.ConfigureServices(services =>
         {
-            // Substitui o registro padrão por limites baixos para testes
+            // Substitui o registro padrÃ£o por limites baixos para testes
             services.AddCatalogoRateLimitingWithLimits(
                 leituraLimit: 3,
                 escritaLimit: 3,
@@ -1044,7 +1044,7 @@ public class RateLimitingApiFactory : ApiFactory
 ### Teste de rate limiting
 
 ```csharp
-// tests/ProdutosAPI.Tests/Integration/RateLimitingTests.cs
+// tests/FacShopAPI.Tests/Integration/RateLimitingTests.cs
 public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
 {
     [Fact]
@@ -1052,11 +1052,11 @@ public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
     {
         var client = await CriarClienteAutenticadoAsync();
 
-        // Política criacao-produto tem limite 2 no RateLimitingApiFactory
+        // PolÃ­tica criacao-produto tem limite 2 no RateLimitingApiFactory
         for (var i = 0; i < 2; i++)
             await client.PostAsJsonAsync("/api/v1/catalogo/produtos", ProdutoValido(i));
 
-        // 3ª requisição deve ser rejeitada
+        // 3Âª requisiÃ§Ã£o deve ser rejeitada
         var response = await client.PostAsJsonAsync("/api/v1/catalogo/produtos", ProdutoValido(99));
         response.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
         response.Headers.Contains("Retry-After").Should().BeTrue();
@@ -1066,30 +1066,30 @@ public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
 
 ---
 
-## Capítulo Extra: Vertical Slice + Domínio Rico (Pedidos)
+## CapÃ­tulo Extra: Vertical Slice + DomÃ­nio Rico (Pedidos)
 
-O projeto utiliza **Vertical Slice Architecture** para o caso de uso de Pedidos, um padrão em que cada operação é auto-contida em sua própria pasta com
-componente Command/Handler/Validator/Endpoint. O objetivo é reduzir acoplamento e melhorar a navegabilidade em APIs mais complexas.
+O projeto utiliza **Vertical Slice Architecture** para o caso de uso de Pedidos, um padrÃ£o em que cada operaÃ§Ã£o Ã© auto-contida em sua prÃ³pria pasta com
+componente Command/Handler/Validator/Endpoint. O objetivo Ã© reduzir acoplamento e melhorar a navegabilidade em APIs mais complexas.
 
 ### Anatomia de um Slice
 
-Cada slice está localizado em `src/Pedidos/<Operação>/`:
+Cada slice estÃ¡ localizado em `src/Pedidos/<OperaÃ§Ã£o>/`:
 
 ```
 src/Pedidos/CreatePedido/
-├─ CreatePedidoCommand.cs      # DTO de entrada
-├─ CreatePedidoValidator.cs    # FluentValidation do comando
-├─ CreatePedidoHandler.cs      # Lógica de negócio (usa domínio rico)
-└─ CreatePedidoEndpoint.cs     # Mapeia rota e resultados
+â”œâ”€ CreatePedidoCommand.cs      # DTO de entrada
+â”œâ”€ CreatePedidoValidator.cs    # FluentValidation do comando
+â”œâ”€ CreatePedidoHandler.cs      # LÃ³gica de negÃ³cio (usa domÃ­nio rico)
+â””â”€ CreatePedidoEndpoint.cs     # Mapeia rota e resultados
 ```
 
-Os endpoints são registrados automaticamente por scan de `IEndpoint` no startup:
+Os endpoints sÃ£o registrados automaticamente por scan de `IEndpoint` no startup:
 
 ```csharp
 builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 ```
 
-### Domínio Rico
+### DomÃ­nio Rico
 
 O agregado `Pedido` reside em `src/Pedidos/Domain/` e encapsula regras:
 
@@ -1099,7 +1099,7 @@ public sealed class Pedido
     private readonly List<PedidoItem> _itens = new();
     public Result AddItem(PedidoItem novo)
     {
-        if (novo.Preco <= 0) return Result.Fail("Preço inválido");
+        if (novo.Preco <= 0) return Result.Fail("PreÃ§o invÃ¡lido");
         if (_itens.Sum(i => i.Total) + novo.Total > Limite)
             return Result.Fail("Total excede limite");
         _itens.Add(novo);
@@ -1109,12 +1109,12 @@ public sealed class Pedido
 }
 ```
 
-Todos os métodos retornam `Result<T>` em vez de lançar exceções, seguindo a **Result Pattern**.
+Todos os mÃ©todos retornam `Result<T>` em vez de lanÃ§ar exceÃ§Ãµes, seguindo a **Result Pattern**.
 
-### Quando usar este padrão?
+### Quando usar este padrÃ£o?
 
-- Recursos com várias operações independentes
-- Projetos que crescerão em escala
-- Deseja-se manter cada caso de uso isolado e testável
+- Recursos com vÃ¡rias operaÃ§Ãµes independentes
+- Projetos que crescerÃ£o em escala
+- Deseja-se manter cada caso de uso isolado e testÃ¡vel
 
 Os slices coexistem pacificamente com os endpoints de Produtos baseados em camadas; ambos compartilham o mesmo contexto de dados e pipeline de middleware.

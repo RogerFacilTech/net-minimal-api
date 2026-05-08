@@ -1,55 +1,55 @@
-# Estratégia de Testes
+﻿# EstratÃ©gia de Testes
 
 ## 1. Projetos de Teste
 
 | Projeto                | Testes  | Escopo                            |
 | ---------------------- | ------- | --------------------------------- |
-| `ProdutosAPI.Tests`    | 143     | Catálogo (integração + unitários) |
-| `Pix.MockServer.Tests` | 7       | Integração HTTP PIX               |
+| `FacShopAPI.Tests`    | 143     | CatÃ¡logo (integraÃ§Ã£o + unitÃ¡rios) |
+| `Pix.MockServer.Tests` | 7       | IntegraÃ§Ã£o HTTP PIX               |
 | **Total**              | **150** |                                   |
 
-> `Pedidos.Tests` existe no repositório mas tem uma dependência pendente de correção — não está incluído na contagem acima.
+> `Pedidos.Tests` existe no repositÃ³rio mas tem uma dependÃªncia pendente de correÃ§Ã£o â€” nÃ£o estÃ¡ incluÃ­do na contagem acima.
 
 ---
 
-## 2. Distribuição por Tipo — ProdutosAPI.Tests
+## 2. DistribuiÃ§Ã£o por Tipo â€” FacShopAPI.Tests
 
 | Tipo                  | Escopo                                               | Aprox. |
 | --------------------- | ---------------------------------------------------- | ------ |
-| Integração (Catálogo) | Endpoints HTTP completos via `HttpClient`            | ~80    |
-| Rate limiting         | Políticas de throttling via `RateLimitingApiFactory` | 3      |
-| Unitários (domínio)   | Entidades, value objects, invariantes                | ~30    |
+| IntegraÃ§Ã£o (CatÃ¡logo) | Endpoints HTTP completos via `HttpClient`            | ~80    |
+| Rate limiting         | PolÃ­ticas de throttling via `RateLimitingApiFactory` | 3      |
+| UnitÃ¡rios (domÃ­nio)   | Entidades, value objects, invariantes                | ~30    |
 | Validators            | Regras FluentValidation                              | ~30    |
 
 ---
 
 ## 3. ApiFactory e Isolamento de Rate Limiting
 
-Este é o ponto de maior atenção ao escrever novos testes de integração para o Catálogo.
+Este Ã© o ponto de maior atenÃ§Ã£o ao escrever novos testes de integraÃ§Ã£o para o CatÃ¡logo.
 
 ### `ApiFactory` (base)
 
-Factory base para todos os testes funcionais. Configura `Environment = "Testing"`, sobe o banco InMemory e executa o `DbSeeder`. Registra as três políticas de rate limiting com limite `10000` para que nunca interfiram nos testes de comportamento funcional.
+Factory base para todos os testes funcionais. Configura `Environment = "Testing"`, sobe o banco InMemory e executa o `DbSeeder`. Registra as trÃªs polÃ­ticas de rate limiting com limite `10000` para que nunca interfiram nos testes de comportamento funcional.
 
 ### `RateLimitingApiFactory`
 
 Estende `ApiFactory` e sobrescreve o registro de `AddRateLimiting()`, aplicando limites baixos propositalmente:
 
-| Política          | Limite       |
+| PolÃ­tica          | Limite       |
 | ----------------- | ------------ |
 | `leitura`         | 3 req/janela |
 | `escrita`         | 3 req/janela |
 | `criacao-produto` | 2 req/janela |
 
-O objetivo é permitir que os testes atinjam o limite `429` com poucas requisições, sem depender de timing real.
+O objetivo Ã© permitir que os testes atinjam o limite `429` com poucas requisiÃ§Ãµes, sem depender de timing real.
 
-### Por que o `Program.cs` não registra rate limiting em Testing
+### Por que o `Program.cs` nÃ£o registra rate limiting em Testing
 
-Em `Environment = "Testing"`, a chamada `AddCatalogoRateLimiting()` é omitida no `Program.cs`. Isso evita conflito de chave duplicada (`InvalidOperationException`) quando a factory tenta registrar suas próprias políticas durante o `WebApplicationFactory.CreateHost()`.
+Em `Environment = "Testing"`, a chamada `AddCatalogoRateLimiting()` Ã© omitida no `Program.cs`. Isso evita conflito de chave duplicada (`InvalidOperationException`) quando a factory tenta registrar suas prÃ³prias polÃ­ticas durante o `WebApplicationFactory.CreateHost()`.
 
 ### Isolamento entre classes de teste
 
-Cada classe de teste usa `IClassFixture<T>` com sua própria instância de factory. Isso garante que o estado interno do rate limiter (contadores de janela) não vaze entre classes de teste diferentes, evitando falhas intermitentes por ordem de execução.
+Cada classe de teste usa `IClassFixture<T>` com sua prÃ³pria instÃ¢ncia de factory. Isso garante que o estado interno do rate limiter (contadores de janela) nÃ£o vaze entre classes de teste diferentes, evitando falhas intermitentes por ordem de execuÃ§Ã£o.
 
 ---
 
@@ -57,10 +57,10 @@ Cada classe de teste usa `IClassFixture<T>` com sua própria instância de facto
 
 ```bash
 # Todos os testes funcionais
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj
 
 # Apenas testes de rate limiting
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~RateLimitingTests"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~RateLimitingTests"
 
 # Testes PIX
 dotnet test samples/Pix/Pix.MockServer.Tests/
@@ -68,68 +68,68 @@ dotnet test samples/Pix/Pix.MockServer.Tests/
 
 ---
 
-## 5. Cenários Críticos Cobertos
+## 5. CenÃ¡rios CrÃ­ticos Cobertos
 
-### Catálogo
+### CatÃ¡logo
 
-- CRUD completo para todos os 5 recursos (Produto, Categoria, Variante, Atributo, Mídia)
-- Paginação (tamanho de página, cursor/offset)
+- CRUD completo para todos os 5 recursos (Produto, Categoria, Variante, Atributo, MÃ­dia)
+- PaginaÃ§Ã£o (tamanho de pÃ¡gina, cursor/offset)
 - Soft delete: produto inativo retorna `404` em todos os endpoints, incluindo GET por ID
 - `422 Unprocessable Entity` para payloads que violam validators FluentValidation
 - `404 Not Found` para recursos inexistentes
-- Rate limiting: sequência de requisições que excede o limite retorna `429` com header `Retry-After`
+- Rate limiting: sequÃªncia de requisiÃ§Ãµes que excede o limite retorna `429` com header `Retry-After`
 
 ### Pedidos
 
 - Criar pedido, consultar por ID, listar
 - Adicionar item a pedido existente
 - Cancelar pedido
-- Invariantes de domínio: não é permitido adicionar item a pedido cancelado, nem cancelar pedido já entregue
+- Invariantes de domÃ­nio: nÃ£o Ã© permitido adicionar item a pedido cancelado, nem cancelar pedido jÃ¡ entregue
 
 ### PIX
 
-- Fluxo OAuth2: obtenção de token e uso em requisições subsequentes
-- Segurança mTLS: rejeição de requisições sem certificado cliente válido
+- Fluxo OAuth2: obtenÃ§Ã£o de token e uso em requisiÃ§Ãµes subsequentes
+- SeguranÃ§a mTLS: rejeiÃ§Ã£o de requisiÃ§Ãµes sem certificado cliente vÃ¡lido
 - Idempotency key: mesma chave retorna a resposta cacheada
-- Conflito `409`: payload divergente para a mesma chave de idempotência
-- Fluxo de liquidação: criação de cobrança, webhook de liquidação e consulta de status atualizado
+- Conflito `409`: payload divergente para a mesma chave de idempotÃªncia
+- Fluxo de liquidaÃ§Ã£o: criaÃ§Ã£o de cobranÃ§a, webhook de liquidaÃ§Ã£o e consulta de status atualizado
 
 ---
 
 ## 6. Diretrizes para Novos Testes
 
-| Situação                        | Diretriz                                                                        |
+| SituaÃ§Ã£o                        | Diretriz                                                                        |
 | ------------------------------- | ------------------------------------------------------------------------------- |
-| Novo endpoint                   | Cobrir: resposta `2xx` com sucesso, `4xx` de validação, `404` quando aplicável  |
-| Nova regra de domínio           | Escrever teste unitário no agregado **antes** do teste de integração            |
-| Endpoint de escrita no Catálogo | Obter token com `AuthHelper.ObterTokenAsync(client)` antes de chamar o endpoint |
-| Asserção de rate limiting       | Usar `RateLimitingApiFactory`, nunca `ApiFactory`                               |
-| Novos produtos criados em teste | IDs começam a partir de 9 (DbSeeder reserva 1–8)                                |
+| Novo endpoint                   | Cobrir: resposta `2xx` com sucesso, `4xx` de validaÃ§Ã£o, `404` quando aplicÃ¡vel  |
+| Nova regra de domÃ­nio           | Escrever teste unitÃ¡rio no agregado **antes** do teste de integraÃ§Ã£o            |
+| Endpoint de escrita no CatÃ¡logo | Obter token com `AuthHelper.ObterTokenAsync(client)` antes de chamar o endpoint |
+| AsserÃ§Ã£o de rate limiting       | Usar `RateLimitingApiFactory`, nunca `ApiFactory`                               |
+| Novos produtos criados em teste | IDs comeÃ§am a partir de 9 (DbSeeder reserva 1â€“8)                                |
 
 ---
 
-## 7. Comandos de Execução Detalhados
+## 7. Comandos de ExecuÃ§Ã£o Detalhados
 
 ```bash
-# Executar toda a suíte
+# Executar toda a suÃ­te
 dotnet test FacShopAPI.slnx -v minimal
 
 # Por projeto
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v minimal
 dotnet test samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj -v minimal
 
-# Por categoria — filtros de namespace
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Unit.Domain"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Unit.Common"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Services"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Endpoints"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Validators"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Integration.Catalogo"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~Integration.Pedidos"
-dotnet test tests/ProdutosAPI.Tests/ --filter "FullyQualifiedName~RateLimitingTests"
+# Por categoria â€” filtros de namespace
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Unit.Domain"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Unit.Common"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Services"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Endpoints"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Validators"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Integration.Catalogo"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~Integration.Pedidos"
+dotnet test tests/FacShopAPI.Tests/ --filter "FullyQualifiedName~RateLimitingTests"
 
 # Somente testes de rate limiting
-dotnet test tests/ProdutosAPI.Tests/ \
+dotnet test tests/FacShopAPI.Tests/ \
   --filter "FullyQualifiedName~RateLimitingTests" -v detailed
 
 # Com cobertura (requer dotnet-coverage ou coverlet)
@@ -138,12 +138,12 @@ dotnet test FacShopAPI.slnx --collect:"XPlat Code Coverage"
 
 ---
 
-## 8. Exemplos de Código de Teste
+## 8. Exemplos de CÃ³digo de Teste
 
-### Teste de integração HTTP — endpoint do Catálogo
+### Teste de integraÃ§Ã£o HTTP â€” endpoint do CatÃ¡logo
 
 ```csharp
-// tests/ProdutosAPI.Tests/Endpoints/ProdutoEndpointsTests.cs
+// tests/FacShopAPI.Tests/Endpoints/ProdutoEndpointsTests.cs
 public class ProdutoEndpointsTests : IClassFixture<ApiFactory>
 {
     private readonly ApiFactory _factory;
@@ -164,24 +164,24 @@ public class ProdutoEndpointsTests : IClassFixture<ApiFactory>
         var client = await CriarClienteAutenticadoAsync();
         var request = new CriarProdutoRequest
         {
-            Nome = "Teclado Mecânico",
+            Nome = "Teclado MecÃ¢nico",
             Descricao = "Switch blue, retroiluminado",
             Preco = 349.90m,
             Estoque = 50,
-            Categoria = "Eletrônicos"
+            Categoria = "EletrÃ´nicos"
         };
 
         var response = await client.PostAsJsonAsync("/api/v1/catalogo/produtos", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var produto = await response.Content.ReadFromJsonAsync<ProdutoResponse>();
-        produto!.Nome.Should().Be("Teclado Mecânico");
+        produto!.Nome.Should().Be("Teclado MecÃ¢nico");
     }
 
     [Fact]
     public async Task CriarProduto_SemToken_Retorna401()
     {
-        var client = _factory.CreateClient();      // sem autenticação
+        var client = _factory.CreateClient();      // sem autenticaÃ§Ã£o
         var response = await client.PostAsJsonAsync("/api/v1/catalogo/produtos",
             new { nome = "Teste" });
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -191,7 +191,7 @@ public class ProdutoEndpointsTests : IClassFixture<ApiFactory>
     public async Task DeletarProduto_TornaInativo_ERetorna404NoGet()
     {
         var client = await CriarClienteAutenticadoAsync();
-        // Soft delete — retorna 204
+        // Soft delete â€” retorna 204
         var del = await client.DeleteAsync("/api/v1/catalogo/produtos/1");
         del.StatusCode.Should().Be(HttpStatusCode.NoContent);
         // Produto inativo deve retornar 404
@@ -201,16 +201,16 @@ public class ProdutoEndpointsTests : IClassFixture<ApiFactory>
 }
 ```
 
-### Teste unitário de domínio — sem dependências de infraestrutura
+### Teste unitÃ¡rio de domÃ­nio â€” sem dependÃªncias de infraestrutura
 
 ```csharp
-// tests/ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs
+// tests/FacShopAPI.Tests/Unit/Domain/ProdutoTests.cs
 public class ProdutoTests
 {
     [Fact]
     public void Criar_ComDadosValidos_RetornaProduto()
     {
-        var result = Produto.Criar("Notebook", "Descrição completa", 1000m, "Eletrônicos", 5, "a@b.com");
+        var result = Produto.Criar("Notebook", "DescriÃ§Ã£o completa", 1000m, "EletrÃ´nicos", 5, "a@b.com");
         result.IsSuccess.Should().BeTrue();
         result.Value!.Nome.Should().Be("Notebook");
     }
@@ -220,7 +220,7 @@ public class ProdutoTests
     {
         var result = Produto.Criar("AB", "Desc", 100m, "Livros", 1, "a@b.com");
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().Contain("3");       // mensagem menciona mínimo de 3 chars
+        result.Error.Should().Contain("3");       // mensagem menciona mÃ­nimo de 3 chars
     }
 
     [Fact]
@@ -232,10 +232,10 @@ public class ProdutoTests
 }
 ```
 
-### Teste de rate limiting — usando `RateLimitingApiFactory`
+### Teste de rate limiting â€” usando `RateLimitingApiFactory`
 
 ```csharp
-// tests/ProdutosAPI.Tests/Integration/RateLimitingTests.cs
+// tests/FacShopAPI.Tests/Integration/RateLimitingTests.cs
 public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
 {
     private readonly RateLimitingApiFactory _factory;
@@ -250,7 +250,7 @@ public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
         for (var i = 0; i < 3; i++)
             await client.GetAsync("/api/v1/catalogo/produtos");
 
-        // 4ª requisição deve ser rejeitada
+        // 4Âª requisiÃ§Ã£o deve ser rejeitada
         var response = await client.GetAsync("/api/v1/catalogo/produtos");
         response.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
         response.Headers.Contains("Retry-After").Should().BeTrue();
@@ -258,42 +258,42 @@ public class RateLimitingTests : IClassFixture<RateLimitingApiFactory>
 }
 ```
 
-### Teste de domínio Pedido — invariante de agregado
+### Teste de domÃ­nio Pedido â€” invariante de agregado
 
 ```csharp
-// tests/ProdutosAPI.Tests/Unit/Domain/PedidoTests.cs
+// tests/FacShopAPI.Tests/Unit/Domain/PedidoTests.cs
 public class PedidoTests
 {
     [Fact]
     public void AddItem_PedidoCancelado_RetornaFalha()
     {
         var pedido = Pedido.Create("Cliente Teste").Value!;
-        pedido.Cancel();                             // pedido agora está Cancelado
+        pedido.Cancel();                             // pedido agora estÃ¡ Cancelado
 
         var produto = new Produto { Estoque = 10 };
         var result = pedido.AddItem(produto, 1);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().Contain("Pedido não está aberto");
+        result.Error.Should().Contain("Pedido nÃ£o estÃ¡ aberto");
     }
 }
 ```
 
 ---
 
-## 9. Distribuição de Testes por Arquivo
+## 9. DistribuiÃ§Ã£o de Testes por Arquivo
 
 | Arquivo                                           | Tipo                       | Aprox.     |
 | ------------------------------------------------- | -------------------------- | ---------- |
-| `Unit/Domain/ProdutoTests.cs`                     | Unitário — domínio         | ~15        |
-| `Unit/Domain/CategoriaTests.cs`                   | Unitário — domínio         | ~10        |
-| `Unit/Domain/PedidoTests.cs`                      | Unitário — domínio         | ~8         |
-| `Unit/Common/ResultTests.cs`                      | Unitário — tipos comuns    | ~5         |
-| `Services/ProdutoServiceTests.cs`                 | Unitário — serviço         | ~15        |
-| `Endpoints/ProdutoEndpointsTests.cs`              | Integração HTTP            | ~25        |
-| `Integration/Catalogo/CategoriaEndpointsTests.cs` | Integração HTTP            | ~20        |
-| `Integration/Pedidos/*.cs` (5 arquivos)           | Integração HTTP            | ~40        |
-| `Integration/RateLimitingTests.cs`                | Integração rate limiting   | 3          |
-| `Validators/*.cs`                                 | Validação FluentValidation | ~24        |
-| `Pix.MockServer.Tests/*.cs`                       | Integração HTTP (PIX)      | 7          |
+| `Unit/Domain/ProdutoTests.cs`                     | UnitÃ¡rio â€” domÃ­nio         | ~15        |
+| `Unit/Domain/CategoriaTests.cs`                   | UnitÃ¡rio â€” domÃ­nio         | ~10        |
+| `Unit/Domain/PedidoTests.cs`                      | UnitÃ¡rio â€” domÃ­nio         | ~8         |
+| `Unit/Common/ResultTests.cs`                      | UnitÃ¡rio â€” tipos comuns    | ~5         |
+| `Services/ProdutoServiceTests.cs`                 | UnitÃ¡rio â€” serviÃ§o         | ~15        |
+| `Endpoints/ProdutoEndpointsTests.cs`              | IntegraÃ§Ã£o HTTP            | ~25        |
+| `Integration/Catalogo/CategoriaEndpointsTests.cs` | IntegraÃ§Ã£o HTTP            | ~20        |
+| `Integration/Pedidos/*.cs` (5 arquivos)           | IntegraÃ§Ã£o HTTP            | ~40        |
+| `Integration/RateLimitingTests.cs`                | IntegraÃ§Ã£o rate limiting   | 3          |
+| `Validators/*.cs`                                 | ValidaÃ§Ã£o FluentValidation | ~24        |
+| `Pix.MockServer.Tests/*.cs`                       | IntegraÃ§Ã£o HTTP (PIX)      | 7          |
 | **Total**                                         |                            | **~150+7** |

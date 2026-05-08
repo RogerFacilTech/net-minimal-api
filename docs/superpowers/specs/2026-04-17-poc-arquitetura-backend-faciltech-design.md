@@ -1,4 +1,4 @@
-# POC Arquitetura Backend Faciltech — Design Spec
+﻿# POC Arquitetura Backend Faciltech â€” Design Spec
 
 **Data:** 2026-04-17  
 **Decisor:** Marco Mendes  
@@ -8,21 +8,21 @@
 
 ## Contexto
 
-Projeto educacional (`net-minimal-api`) demonstrando padrões arquiteturais coexistindo. Esta POC expande o projeto para cobrir:
+Projeto educacional (`net-minimal-api`) demonstrando padrÃµes arquiteturais coexistindo. Esta POC expande o projeto para cobrir:
 
-1. **Migração Produtos → Catálogo** com arquitetura híbrida (Clean Architecture nas camadas + Vertical Slice na API)
-2. **Recursos de domínio rico seletivo** — Categorias e Variantes com agregados, Atributos e Mídias como CRUD simples
-3. **Tratamento de erro 429** — rate limiting no servidor + resiliência no client
+1. **MigraÃ§Ã£o Produtos â†’ CatÃ¡logo** com arquitetura hÃ­brida (Clean Architecture nas camadas + Vertical Slice na API)
+2. **Recursos de domÃ­nio rico seletivo** â€” Categorias e Variantes com agregados, Atributos e MÃ­dias como CRUD simples
+3. **Tratamento de erro 429** â€” rate limiting no servidor + resiliÃªncia no client
 4. **Versionamento manual de API** via route groups
-5. **ADRs padronizadas** com template MADR, ciclo de vida e novas decisões
+5. **ADRs padronizadas** com template MADR, ciclo de vida e novas decisÃµes
 
 ---
 
-## Fase 1 — Fundação: Migração Produtos → Catálogo
+## Fase 1 â€” FundaÃ§Ã£o: MigraÃ§Ã£o Produtos â†’ CatÃ¡logo
 
 ### Roteamento e Versionamento
 
-A API de Produtos deixa de existir como conceito isolado. Tudo migra para o bounded context **Catálogo** com versionamento manual via route groups aninhados:
+A API de Produtos deixa de existir como conceito isolado. Tudo migra para o bounded context **CatÃ¡logo** com versionamento manual via route groups aninhados:
 
 ```
 /api/v1/catalogo/produtos
@@ -45,85 +45,85 @@ catalogo.MapMidiaEndpoints();
 
 Pedidos continua em `/api/v1/pedidos`. Auth em `/api/v1/auth`. Ambos intocados.
 
-### Arquitetura Interna — Híbrida
+### Arquitetura Interna â€” HÃ­brida
 
 Clean Architecture nas camadas Domain/Application/Infrastructure. Vertical Slice na camada API (um arquivo por endpoint).
 
 ```
 src/Catalogo/
-├── Catalogo.Domain/
-│   ├── Entities/
-│   │   ├── Produto.cs
-│   │   ├── Categoria.cs
-│   │   ├── Variante.cs
-│   │   ├── Atributo.cs
-│   │   └── Midia.cs
-│   ├── ValueObjects/
-│   │   ├── Preco.cs
-│   │   ├── Estoque.cs
-│   │   ├── SKU.cs
-│   │   └── UrlMidia.cs
-│   └── Common/
-│       └── Result.cs
-│
-├── Catalogo.Application/
-│   ├── DTOs/
-│   │   ├── Produto/
-│   │   ├── Categoria/
-│   │   ├── Variante/
-│   │   ├── Atributo/
-│   │   └── Midia/
-│   ├── Interfaces/
-│   │   └── ICatalogoContext.cs
-│   ├── Repositories/
-│   │   ├── IProdutoRepository.cs
-│   │   ├── ICategoriaRepository.cs
-│   │   ├── IVarianteRepository.cs
-│   │   ├── IAtributoRepository.cs
-│   │   └── IMidiaRepository.cs
-│   ├── Services/
-│   │   ├── ProdutoService.cs
-│   │   ├── CategoriaService.cs
-│   │   ├── VarianteService.cs
-│   │   ├── AtributoService.cs
-│   │   └── MidiaService.cs
-│   ├── Validators/
-│   └── Mappings/
-│
-├── Catalogo.Infrastructure/
-│   ├── Repositories/       ← EF Core (CQRS write)
-│   ├── Queries/            ← Dapper (CQRS read)
-│   └── Data/
-│       └── DbSeeder.cs
-│
-└── Catalogo.API/
-    ├── Endpoints/
-    │   ├── Produtos/       ← vertical slice por recurso
-    │   ├── Categorias/
-    │   ├── Variantes/
-    │   ├── Atributos/
-    │   └── Midias/
-    └── Extensions/
-        └── CatalogoServiceExtensions.cs
+â”œâ”€â”€ Catalogo.Domain/
+â”‚   â”œâ”€â”€ Entities/
+â”‚   â”‚   â”œâ”€â”€ Produto.cs
+â”‚   â”‚   â”œâ”€â”€ Categoria.cs
+â”‚   â”‚   â”œâ”€â”€ Variante.cs
+â”‚   â”‚   â”œâ”€â”€ Atributo.cs
+â”‚   â”‚   â””â”€â”€ Midia.cs
+â”‚   â”œâ”€â”€ ValueObjects/
+â”‚   â”‚   â”œâ”€â”€ Preco.cs
+â”‚   â”‚   â”œâ”€â”€ Estoque.cs
+â”‚   â”‚   â”œâ”€â”€ SKU.cs
+â”‚   â”‚   â””â”€â”€ UrlMidia.cs
+â”‚   â””â”€â”€ Common/
+â”‚       â””â”€â”€ Result.cs
+â”‚
+â”œâ”€â”€ Catalogo.Application/
+â”‚   â”œâ”€â”€ DTOs/
+â”‚   â”‚   â”œâ”€â”€ Produto/
+â”‚   â”‚   â”œâ”€â”€ Categoria/
+â”‚   â”‚   â”œâ”€â”€ Variante/
+â”‚   â”‚   â”œâ”€â”€ Atributo/
+â”‚   â”‚   â””â”€â”€ Midia/
+â”‚   â”œâ”€â”€ Interfaces/
+â”‚   â”‚   â””â”€â”€ ICatalogoContext.cs
+â”‚   â”œâ”€â”€ Repositories/
+â”‚   â”‚   â”œâ”€â”€ IProdutoRepository.cs
+â”‚   â”‚   â”œâ”€â”€ ICategoriaRepository.cs
+â”‚   â”‚   â”œâ”€â”€ IVarianteRepository.cs
+â”‚   â”‚   â”œâ”€â”€ IAtributoRepository.cs
+â”‚   â”‚   â””â”€â”€ IMidiaRepository.cs
+â”‚   â”œâ”€â”€ Services/
+â”‚   â”‚   â”œâ”€â”€ ProdutoService.cs
+â”‚   â”‚   â”œâ”€â”€ CategoriaService.cs
+â”‚   â”‚   â”œâ”€â”€ VarianteService.cs
+â”‚   â”‚   â”œâ”€â”€ AtributoService.cs
+â”‚   â”‚   â””â”€â”€ MidiaService.cs
+â”‚   â”œâ”€â”€ Validators/
+â”‚   â””â”€â”€ Mappings/
+â”‚
+â”œâ”€â”€ Catalogo.Infrastructure/
+â”‚   â”œâ”€â”€ Repositories/       â† EF Core (CQRS write)
+â”‚   â”œâ”€â”€ Queries/            â† Dapper (CQRS read)
+â”‚   â””â”€â”€ Data/
+â”‚       â””â”€â”€ DbSeeder.cs
+â”‚
+â””â”€â”€ Catalogo.API/
+    â”œâ”€â”€ Endpoints/
+    â”‚   â”œâ”€â”€ Produtos/       â† vertical slice por recurso
+    â”‚   â”œâ”€â”€ Categorias/
+    â”‚   â”œâ”€â”€ Variantes/
+    â”‚   â”œâ”€â”€ Atributos/
+    â”‚   â””â”€â”€ Midias/
+    â””â”€â”€ Extensions/
+        â””â”€â”€ CatalogoServiceExtensions.cs
 ```
 
-### Mapa de Mudanças
+### Mapa de MudanÃ§as
 
 | Antes | Depois |
 |-------|--------|
 | `src/Produtos/` (flat) | `src/Catalogo/` (4 sub-projetos) |
-| `ProdutosAPI.Produtos.*` | `ProdutosAPI.Catalogo.*` |
+| `FacShopAPI.Produtos.*` | `FacShopAPI.Catalogo.*` |
 | `/api/v1/produtos` | `/api/v1/catalogo/produtos` |
 | `IProdutoContext` | `ICatalogoContext` |
-| `docs/plans/2026-03-02-produtos-clean-architecture.md` | Superseded — absorvido por esta migração |
+| `docs/plans/2026-03-02-produtos-clean-architecture.md` | Superseded â€” absorvido por esta migraÃ§Ã£o |
 
 `AppDbContext` permanece em `src/Shared/Data/` e implementa `ICatalogoContext`. Pedidos, Shared e Pix: intocados.
 
 ---
 
-## Fase 2 — Domínio: Novos Recursos do Catálogo
+## Fase 2 â€” DomÃ­nio: Novos Recursos do CatÃ¡logo
 
-### Categorias — Domínio Rico com Hierarquia de Dois Níveis
+### Categorias â€” DomÃ­nio Rico com Hierarquia de Dois NÃ­veis
 
 ```csharp
 public class Categoria
@@ -140,22 +140,22 @@ public class Categoria
 }
 ```
 
-**Regras de domínio:**
-- Slug gerado a partir do nome (lowercase, sem acentos, hífens no lugar de espaços)
-- Categoria filha não pode ter filhas (máximo dois níveis — validado no domínio)
-- Não é possível desativar categoria com produtos ativos vinculados
+**Regras de domÃ­nio:**
+- Slug gerado a partir do nome (lowercase, sem acentos, hÃ­fens no lugar de espaÃ§os)
+- Categoria filha nÃ£o pode ter filhas (mÃ¡ximo dois nÃ­veis â€” validado no domÃ­nio)
+- NÃ£o Ã© possÃ­vel desativar categoria com produtos ativos vinculados
 
 **Endpoints** (`/api/v1/catalogo/categorias`):
 
-| Método | Rota | Descrição |
+| MÃ©todo | Rota | DescriÃ§Ã£o |
 |--------|------|-----------|
 | GET | `/` | Lista categorias raiz com subcategorias aninhadas |
-| GET | `/{id}` | Obtém categoria com subcategorias |
+| GET | `/{id}` | ObtÃ©m categoria com subcategorias |
 | POST | `/` | Cria categoria raiz ou subcategoria (`categoriaPaiId` opcional) |
 | PUT | `/{id}` | Renomeia categoria |
 | DELETE | `/{id}` | Desativa categoria (valida produtos ativos) |
 
-### Variantes — Domínio Rico com SKU
+### Variantes â€” DomÃ­nio Rico com SKU
 
 ```csharp
 public class Variante
@@ -177,44 +177,44 @@ public class Variante
 ```
 
 **Value Object SKU:**
-- 6–20 caracteres
-- Apenas letras maiúsculas, números e hífens (`^[A-Z0-9\-]+$`)
-- Único por produto (validado na camada Application)
+- 6â€“20 caracteres
+- Apenas letras maiÃºsculas, nÃºmeros e hÃ­fens (`^[A-Z0-9\-]+$`)
+- Ãšnico por produto (validado na camada Application)
 
 **Endpoints** (`/api/v1/catalogo/variantes`):
 
-| Método | Rota | Descrição |
+| MÃ©todo | Rota | DescriÃ§Ã£o |
 |--------|------|-----------|
 | GET | `/?produtoId={id}` | Lista variantes de um produto |
-| GET | `/{id}` | Obtém variante específica |
+| GET | `/{id}` | ObtÃ©m variante especÃ­fica |
 | POST | `/` | Cria variante (`produtoId` no body) |
-| PUT | `/{id}` | Atualiza preço adicional |
+| PUT | `/{id}` | Atualiza preÃ§o adicional |
 | PATCH | `/{id}/estoque` | Atualiza estoque da variante |
 | DELETE | `/{id}` | Desativa variante |
 
-### Atributos e Mídias — CRUD Simples
+### Atributos e MÃ­dias â€” CRUD Simples
 
-**Atributo:** chave-valor associado a produto (`"Cor": "Azul"`, `"Material": "Algodão"`). Sem regras de domínio complexas. CRUD completo em `/api/v1/catalogo/atributos`.
+**Atributo:** chave-valor associado a produto (`"Cor": "Azul"`, `"Material": "AlgodÃ£o"`). Sem regras de domÃ­nio complexas. CRUD completo em `/api/v1/catalogo/atributos`.
 
-**Mídia:** URL externa associada ao produto, com tipo (`Imagem`, `Video`, `Documento`) e ordem de exibição. Sem upload de arquivo — apenas referência de URL. CRUD completo em `/api/v1/catalogo/midias`.
+**MÃ­dia:** URL externa associada ao produto, com tipo (`Imagem`, `Video`, `Documento`) e ordem de exibiÃ§Ã£o. Sem upload de arquivo â€” apenas referÃªncia de URL. CRUD completo em `/api/v1/catalogo/midias`.
 
-Ambos demonstram que dentro do mesmo bounded context coexistem recursos de complexidade diferente — decisão documentada em ADR-0015.
+Ambos demonstram que dentro do mesmo bounded context coexistem recursos de complexidade diferente â€” decisÃ£o documentada em ADR-0015.
 
 ---
 
-## Fase 3 — Resiliência: Tratamento de Erro 429
+## Fase 3 â€” ResiliÃªncia: Tratamento de Erro 429
 
 ### Rate Limiting no Servidor
 
-Usar `Microsoft.AspNetCore.RateLimiting` (built-in .NET). Três políticas intencionalmente diferentes para fins educacionais:
+Usar `Microsoft.AspNetCore.RateLimiting` (built-in .NET). TrÃªs polÃ­ticas intencionalmente diferentes para fins educacionais:
 
-| Política | Onde aplica | Regra | Justificativa didática |
+| PolÃ­tica | Onde aplica | Regra | Justificativa didÃ¡tica |
 |----------|------------|-------|----------------------|
-| `fixed-window` | GET `/catalogo/*` | 60 req/min por IP | Leitura pública, janela fixa simples |
-| `sliding-window` | POST/PUT/PATCH/DELETE `/catalogo/*` | 20 req/min por IP | Escrita — janela deslizante mais justa |
-| `token-bucket` | POST `/catalogo/produtos` | 5 tokens, repõe 1/min | Criação cara — bucket demonstra burst |
+| `fixed-window` | GET `/catalogo/*` | 60 req/min por IP | Leitura pÃºblica, janela fixa simples |
+| `sliding-window` | POST/PUT/PATCH/DELETE `/catalogo/*` | 20 req/min por IP | Escrita â€” janela deslizante mais justa |
+| `token-bucket` | POST `/catalogo/produtos` | 5 tokens, repÃµe 1/min | CriaÃ§Ã£o cara â€” bucket demonstra burst |
 
-Resposta 429 inclui header `Retry-After` com segundos até o próximo slot.
+Resposta 429 inclui header `Retry-After` com segundos atÃ© o prÃ³ximo slot.
 
 ```csharp
 builder.Services.AddRateLimiter(options =>
@@ -228,17 +228,17 @@ builder.Services.AddRateLimiter(options =>
         await context.HttpContext.Response.WriteAsync(
             "Too many requests. Please try again later.", cancellationToken: token);
     };
-    // políticas configuradas aqui
+    // polÃ­ticas configuradas aqui
 });
 ```
 
-Middleware adicionado ao pipeline antes do roteamento. Endpoints declaram política com `.RequireRateLimiting("policy-name")`.
+Middleware adicionado ao pipeline antes do roteamento. Endpoints declaram polÃ­tica com `.RequireRateLimiting("policy-name")`.
 
-### Resiliência no Client
+### ResiliÃªncia no Client
 
-Novo projeto `src/Catalogo/Catalogo.ClientDemo/` seguindo o padrão já existente em `Pix.ClientDemo`.
+Novo projeto `src/Catalogo/Catalogo.ClientDemo/` seguindo o padrÃ£o jÃ¡ existente em `Pix.ClientDemo`.
 
-**Pipeline de resiliência:**
+**Pipeline de resiliÃªncia:**
 
 ```csharp
 builder.Services
@@ -246,7 +246,7 @@ builder.Services
         client.BaseAddress = new Uri("http://localhost:5000"))
     .AddResilienceHandler("catalogo", pipeline =>
     {
-        // 1. Retry com backoff exponencial — trata 429 e 5xx, respeita Retry-After
+        // 1. Retry com backoff exponencial â€” trata 429 e 5xx, respeita Retry-After
         pipeline.AddRetry(new HttpRetryStrategyOptions
         {
             MaxRetryAttempts = 3,
@@ -261,7 +261,7 @@ builder.Services
             }
         });
 
-        // 2. Circuit Breaker — abre após falhas consecutivas
+        // 2. Circuit Breaker â€” abre apÃ³s falhas consecutivas
         pipeline.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
         {
             SamplingDuration = TimeSpan.FromSeconds(30),
@@ -270,16 +270,16 @@ builder.Services
             BreakDuration = TimeSpan.FromSeconds(30)
         });
 
-        // 3. Timeout por requisição
+        // 3. Timeout por requisiÃ§Ã£o
         pipeline.AddTimeout(TimeSpan.FromSeconds(10));
     });
 ```
 
-O demo dispara 10 requisições sequenciais, exibe os 429 recebidos, os retries automáticos com backoff, e o circuit breaker abrindo.
+O demo dispara 10 requisiÃ§Ãµes sequenciais, exibe os 429 recebidos, os retries automÃ¡ticos com backoff, e o circuit breaker abrindo.
 
 ---
 
-## Fase 4 — Documentação: ADRs
+## Fase 4 â€” DocumentaÃ§Ã£o: ADRs
 
 ### Template MADR Padronizado
 
@@ -293,89 +293,89 @@ deciders: [Marco Mendes]
 superseded-by:
 ---
 
-# NNNNN — Título
+# NNNNN â€” TÃ­tulo
 
 ## Contexto e Problema
-## Decisão
-## Consequências
+## DecisÃ£o
+## ConsequÃªncias
 ### Positivas
 ### Negativas / Trade-offs
 ## Alternativas Consideradas
 ```
 
-### ADRs Existentes (0001–0010)
+### ADRs Existentes (0001â€“0010)
 
-Todas recebem `date` e `deciders`. Status permanece `accepted`. Nenhuma é deprecated — o plano `2026-03-02-produtos-clean-architecture.md` é marcado como superseded internamente pelas novas ADRs, não nas ADRs antigas.
+Todas recebem `date` e `deciders`. Status permanece `accepted`. Nenhuma Ã© deprecated â€” o plano `2026-03-02-produtos-clean-architecture.md` Ã© marcado como superseded internamente pelas novas ADRs, nÃ£o nas ADRs antigas.
 
 ### Novas ADRs
 
-| ADR | Título | Status |
+| ADR | TÃ­tulo | Status |
 |-----|--------|--------|
-| 0011 | Arquitetura Híbrida: Clean Architecture + Vertical Slices na API | `accepted` |
+| 0011 | Arquitetura HÃ­brida: Clean Architecture + Vertical Slices na API | `accepted` |
 | 0012 | Versionamento manual de API via route groups | `accepted` |
-| 0013 | Rate Limiting com AspNetCore.RateLimiting — três políticas | `accepted` |
-| 0014 | Resiliência no client HTTP com HttpResilienceHandler | `accepted` |
-| 0015 | Domínio Rico Seletivo dentro do mesmo bounded context | `accepted` |
+| 0013 | Rate Limiting com AspNetCore.RateLimiting â€” trÃªs polÃ­ticas | `accepted` |
+| 0014 | ResiliÃªncia no client HTTP com HttpResilienceHandler | `accepted` |
+| 0015 | DomÃ­nio Rico Seletivo dentro do mesmo bounded context | `accepted` |
 
 ---
 
 ## Testes
 
-### Estrutura (dentro de `ProdutosAPI.Tests/`)
+### Estrutura (dentro de `FacShopAPI.Tests/`)
 
 ```
 Unit/
-├── Domain/
-│   ├── ProdutoTests.cs          ← namespaces atualizados
-│   ├── CategoriaTests.cs
-│   └── VarianteTests.cs
-└── ValueObjects/
-    ├── SKUTests.cs
-    └── UrlMidiaTests.cs
+â”œâ”€â”€ Domain/
+â”‚   â”œâ”€â”€ ProdutoTests.cs          â† namespaces atualizados
+â”‚   â”œâ”€â”€ CategoriaTests.cs
+â”‚   â””â”€â”€ VarianteTests.cs
+â””â”€â”€ ValueObjects/
+    â”œâ”€â”€ SKUTests.cs
+    â””â”€â”€ UrlMidiaTests.cs
 
 Integration/
-├── Catalogo/
-│   ├── ProdutoEndpointsTests.cs ← rotas atualizadas
-│   ├── CategoriaEndpointsTests.cs
-│   ├── VarianteEndpointsTests.cs
-│   ├── AtributoEndpointsTests.cs
-│   └── MidiaEndpointsTests.cs
-└── RateLimiting/
-    └── RateLimitingTests.cs
+â”œâ”€â”€ Catalogo/
+â”‚   â”œâ”€â”€ ProdutoEndpointsTests.cs â† rotas atualizadas
+â”‚   â”œâ”€â”€ CategoriaEndpointsTests.cs
+â”‚   â”œâ”€â”€ VarianteEndpointsTests.cs
+â”‚   â”œâ”€â”€ AtributoEndpointsTests.cs
+â”‚   â””â”€â”€ MidiaEndpointsTests.cs
+â””â”€â”€ RateLimiting/
+    â””â”€â”€ RateLimitingTests.cs
 ```
 
-### Convenção de IDs no DbSeeder
+### ConvenÃ§Ã£o de IDs no DbSeeder
 
 | Entidade | IDs Reservados | Testes criam a partir de |
 |----------|---------------|--------------------------|
-| Produtos | 1–8 | ID 9+ |
-| Categorias | 1–5 | ID 6+ |
-| Variantes | 1–3 | ID 4+ |
-| Atributos | 1–4 | ID 5+ |
-| Mídias | 1–2 | ID 3+ |
+| Produtos | 1â€“8 | ID 9+ |
+| Categorias | 1â€“5 | ID 6+ |
+| Variantes | 1â€“3 | ID 4+ |
+| Atributos | 1â€“4 | ID 5+ |
+| MÃ­dias | 1â€“2 | ID 3+ |
 
 ### Cobertura de Rate Limiting
 
-- Dispara limite+1 requests, verifica que a última retorna 429
-- Verifica presença e valor numérico do header `Retry-After`
+- Dispara limite+1 requests, verifica que a Ãºltima retorna 429
+- Verifica presenÃ§a e valor numÃ©rico do header `Retry-After`
 - Verifica que POST atinge 429 antes do GET no mesmo intervalo de tempo
 
-### O que não muda
+### O que nÃ£o muda
 
-- `Pedidos.Tests/` — intocado
-- `AuthHelper.ObterTokenAsync(client)` — mesma autenticação nos testes
-- `WebApplicationFactory` — mesma factory base, seeder expandido
+- `Pedidos.Tests/` â€” intocado
+- `AuthHelper.ObterTokenAsync(client)` â€” mesma autenticaÃ§Ã£o nos testes
+- `WebApplicationFactory` â€” mesma factory base, seeder expandido
 - Ambiente `Testing` com SQLite in-memory
 
 ---
 
-## Abordagem de Execução
+## Abordagem de ExecuÃ§Ã£o
 
-**Abordagem A — Big Bang Coordenado** em 4 fases sequenciais:
+**Abordagem A â€” Big Bang Coordenado** em 4 fases sequenciais:
 
-1. **Fase 1 — Fundação:** Migrar Produtos → Catálogo com Clean Architecture + renomear rotas para `/api/v1/catalogo/*`
-2. **Fase 2 — Domínio:** Adicionar Categorias, Variantes, Atributos e Mídias
-3. **Fase 3 — Resiliência:** Rate limiting no servidor + `Catalogo.ClientDemo` com Polly
-4. **Fase 4 — Documentação:** Template MADR, atualizar 10 ADRs existentes, criar 5 novas ADRs
+1. **Fase 1 â€” FundaÃ§Ã£o:** Migrar Produtos â†’ CatÃ¡logo com Clean Architecture + renomear rotas para `/api/v1/catalogo/*`
+2. **Fase 2 â€” DomÃ­nio:** Adicionar Categorias, Variantes, Atributos e MÃ­dias
+3. **Fase 3 â€” ResiliÃªncia:** Rate limiting no servidor + `Catalogo.ClientDemo` com Polly
+4. **Fase 4 â€” DocumentaÃ§Ã£o:** Template MADR, atualizar 10 ADRs existentes, criar 5 novas ADRs
 
-Cada fase é um marco testável — testes devem passar integralmente ao final de cada fase antes de avançar.
+Cada fase Ã© um marco testÃ¡vel â€” testes devem passar integralmente ao final de cada fase antes de avanÃ§ar.

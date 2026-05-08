@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.Common</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.Common</RootNamespace>
     <AssemblyName>Catalogo.Common</AssemblyName>
   </PropertyGroup>
 </Project>

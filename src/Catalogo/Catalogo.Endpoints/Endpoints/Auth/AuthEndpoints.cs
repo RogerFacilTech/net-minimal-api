@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FacShopAPI.Catalogo.Endpoints.DTOs;
@@ -39,7 +39,7 @@ public static class AuthEndpoints
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"] ?? "ProdutosAPI",
+            issuer: configuration["Jwt:Issuer"] ?? "FacShopAPI",
             audience: configuration["Jwt:Audience"] ?? "TodosOsClientes",
             claims: claims,
             expires: DateTime.UtcNow.AddHours(2),

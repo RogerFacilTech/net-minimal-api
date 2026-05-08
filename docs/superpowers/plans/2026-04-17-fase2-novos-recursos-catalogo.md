@@ -1,9 +1,9 @@
-# Fase 2 — Novos Recursos do Catálogo
+﻿# Fase 2 â€” Novos Recursos do CatÃ¡logo
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
-> **Pré-requisito:** Fase 1 concluída — `src/Catalogo/` existindo com Produto funcionando em `/api/v1/catalogo/produtos`.
+> **PrÃ©-requisito:** Fase 1 concluÃ­da â€” `src/Catalogo/` existindo com Produto funcionando em `/api/v1/catalogo/produtos`.
 
-**Goal:** Adicionar quatro novos recursos ao bounded context Catálogo: `Categorias` (domínio rico, hierarquia 2 níveis), `Variantes` (domínio rico, SKU único), `Atributos` e `Mídias` (CRUD simples).
+**Goal:** Adicionar quatro novos recursos ao bounded context CatÃ¡logo: `Categorias` (domÃ­nio rico, hierarquia 2 nÃ­veis), `Variantes` (domÃ­nio rico, SKU Ãºnico), `Atributos` e `MÃ­dias` (CRUD simples).
 
 **Architecture:** Cada recurso segue a mesma estrutura: entidade em `Catalogo.Domain`, DTOs/repos/service em `Catalogo.Application`, repos EF+Dapper em `Catalogo.Infrastructure`, endpoints em `Catalogo.API/Endpoints/{Recurso}/`. `AppDbContext` recebe novo DbSet por recurso + migration por recurso.
 
@@ -11,7 +11,7 @@
 
 ---
 
-### Task 1: Categoria — Domain
+### Task 1: Categoria â€” Domain
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Domain/Categoria.cs`
@@ -24,9 +24,9 @@ Crie `src/Catalogo/Catalogo.Domain/Categoria.cs`:
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace FacShopAPI.Catalogo.Domain;
 
 public class Categoria
 {
@@ -45,7 +45,7 @@ public class Categoria
         if (string.IsNullOrWhiteSpace(nome) || nome.Length < 2)
             return Result<Categoria>.Fail("Nome deve ter ao menos 2 caracteres.");
         if (nome.Length > 100)
-            return Result<Categoria>.Fail("Nome não pode exceder 100 caracteres.");
+            return Result<Categoria>.Fail("Nome nÃ£o pode exceder 100 caracteres.");
 
         var agora = DateTime.UtcNow;
         return Result<Categoria>.Ok(new Categoria
@@ -64,7 +64,7 @@ public class Categoria
         if (string.IsNullOrWhiteSpace(novoNome) || novoNome.Length < 2)
             return Result.Fail("Nome deve ter ao menos 2 caracteres.");
         if (novoNome.Length > 100)
-            return Result.Fail("Nome não pode exceder 100 caracteres.");
+            return Result.Fail("Nome nÃ£o pode exceder 100 caracteres.");
         Nome = novoNome.Trim();
         Slug = GerarSlug(novoNome);
         DataAtualizacao = DateTime.UtcNow;
@@ -74,7 +74,7 @@ public class Categoria
     public Result Desativar()
     {
         if (!Ativa)
-            return Result.Fail("Categoria já está inativa.");
+            return Result.Fail("Categoria jÃ¡ estÃ¡ inativa.");
         Ativa = false;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -103,7 +103,7 @@ Esperado: `Build succeeded, 0 errors`.
 
 ---
 
-### Task 2: Categoria — Application
+### Task 2: Categoria â€” Application
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Application/DTOs/Categoria/CategoriaDTO.cs`
@@ -119,7 +119,7 @@ Esperado: `Build succeeded, 0 errors`.
 Crie `src/Catalogo/Catalogo.Application/DTOs/Categoria/CategoriaDTO.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Application.DTOs.Categoria;
+namespace FacShopAPI.Catalogo.Application.DTOs.Categoria;
 
 public class CriarCategoriaRequest
 {
@@ -149,9 +149,9 @@ public class CategoriaResponse
 Crie `src/Catalogo/Catalogo.Application/Repositories/ICategoriaCommandRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface ICategoriaCommandRepository
 {
@@ -168,9 +168,9 @@ public interface ICategoriaCommandRepository
 Crie `src/Catalogo/Catalogo.Application/Repositories/ICategoriaQueryRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface ICategoriaQueryRepository
 {
@@ -184,10 +184,10 @@ public interface ICategoriaQueryRepository
 Crie `src/Catalogo/Catalogo.Application/Services/ICategoriaService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface ICategoriaService
 {
@@ -205,12 +205,12 @@ Crie `src/Catalogo/Catalogo.Application/Services/CategoriaService.cs`:
 
 ```csharp
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class CategoriaService : ICategoriaService
 {
@@ -240,10 +240,10 @@ public class CategoriaService : ICategoriaService
         {
             var pai = await _commandRepo.ObterPorIdAsync(request.CategoriaPaiId.Value);
             if (pai is null)
-                return Result<CategoriaResponse>.Fail("Categoria pai não encontrada.");
+                return Result<CategoriaResponse>.Fail("Categoria pai nÃ£o encontrada.");
             if (pai.CategoriaPaiId.HasValue)
                 return Result<CategoriaResponse>.Fail(
-                    "Não é possível criar subcategoria de uma subcategoria. Máximo 2 níveis.");
+                    "NÃ£o Ã© possÃ­vel criar subcategoria de uma subcategoria. MÃ¡ximo 2 nÃ­veis.");
         }
 
         var result = Categoria.Criar(request.Nome, request.CategoriaPaiId);
@@ -268,7 +268,7 @@ public class CategoriaService : ICategoriaService
     {
         var categoria = await _commandRepo.ObterPorIdAsync(id);
         if (categoria is null)
-            return Result<CategoriaResponse>.Fail("Categoria não encontrada.");
+            return Result<CategoriaResponse>.Fail("Categoria nÃ£o encontrada.");
 
         var result = categoria.Renomear(request.Nome);
         if (!result.IsSuccess)
@@ -290,11 +290,11 @@ public class CategoriaService : ICategoriaService
     {
         var categoria = await _commandRepo.ObterPorIdAsync(id);
         if (categoria is null)
-            return Result.Fail("Categoria não encontrada.");
+            return Result.Fail("Categoria nÃ£o encontrada.");
 
         var temProdutos = await _commandRepo.TemProdutosAtivosAsync(id);
         if (temProdutos)
-            return Result.Fail("Não é possível desativar uma categoria com produtos ativos.");
+            return Result.Fail("NÃ£o Ã© possÃ­vel desativar uma categoria com produtos ativos.");
 
         var result = categoria.Desativar();
         if (!result.IsSuccess) return result;
@@ -311,18 +311,18 @@ Crie `src/Catalogo/Catalogo.Application/Validators/CategoriaValidator.cs`:
 
 ```csharp
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarCategoriaValidator : AbstractValidator<CriarCategoriaRequest>
 {
     public CriarCategoriaValidator()
     {
         RuleFor(c => c.Nome)
-            .NotEmpty().WithMessage("Nome é obrigatório.")
+            .NotEmpty().WithMessage("Nome Ã© obrigatÃ³rio.")
             .MinimumLength(2).WithMessage("Nome deve ter ao menos 2 caracteres.")
-            .MaximumLength(100).WithMessage("Nome não pode exceder 100 caracteres.");
+            .MaximumLength(100).WithMessage("Nome nÃ£o pode exceder 100 caracteres.");
     }
 }
 
@@ -331,21 +331,21 @@ public class RenomearCategoriaValidator : AbstractValidator<RenomearCategoriaReq
     public RenomearCategoriaValidator()
     {
         RuleFor(c => c.Nome)
-            .NotEmpty().WithMessage("Nome é obrigatório.")
+            .NotEmpty().WithMessage("Nome Ã© obrigatÃ³rio.")
             .MinimumLength(2).WithMessage("Nome deve ter ao menos 2 caracteres.")
-            .MaximumLength(100).WithMessage("Nome não pode exceder 100 caracteres.");
+            .MaximumLength(100).WithMessage("Nome nÃ£o pode exceder 100 caracteres.");
     }
 }
 ```
 
 - [ ] **Step 7: Atualizar ICatalogoContext**
 
-Adicione Categorias à interface `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`:
+Adicione Categorias Ã  interface `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Interfaces;
+namespace FacShopAPI.Catalogo.Application.Interfaces;
 
 public interface ICatalogoContext
 {
@@ -366,7 +366,7 @@ Esperado: `Build succeeded, 0 errors`.
 
 ---
 
-### Task 3: Categoria — Infrastructure + AppDbContext + Migration
+### Task 3: Categoria â€” Infrastructure + AppDbContext + Migration
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Infrastructure/Repositories/EfCategoriaCommandRepository.cs`
@@ -386,7 +386,7 @@ IQueryable<Categoria> ICatalogoContext.Categorias => Set<Categoria>();
 public void AddCategoria(Categoria categoria) => this.Add(categoria);
 ```
 
-No `OnModelCreating`, adicione configuração da entidade Categoria:
+No `OnModelCreating`, adicione configuraÃ§Ã£o da entidade Categoria:
 
 ```csharp
 modelBuilder.Entity<Categoria>(entity =>
@@ -433,11 +433,11 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Repositories/EfCategoriaCommandReposi
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfCategoriaCommandRepository(ICatalogoContext context) : ICategoriaCommandRepository
 {
@@ -461,9 +461,9 @@ public class EfCategoriaCommandRepository(ICatalogoContext context) : ICategoria
 }
 ```
 
-> **Nota sobre `TemProdutosAtivosAsync`:** A relação Produto ↔ Categoria hoje é por string (valor da CategoriaProduto). Para verificar se há produtos de uma categoria, precisamos de uma abordagem diferente. Considere adicionar `CategoriaId` (int?) como coluna em Produto e fazer a FK real na Fase 2 completa, OU simplesmente deixar a validação baseada no nome da categoria. Por ora, esta verificação é sempre `false` (nenhum produto tem FK para Categoria) e pode ser refinada após adicionar a FK real.
+> **Nota sobre `TemProdutosAtivosAsync`:** A relaÃ§Ã£o Produto â†” Categoria hoje Ã© por string (valor da CategoriaProduto). Para verificar se hÃ¡ produtos de uma categoria, precisamos de uma abordagem diferente. Considere adicionar `CategoriaId` (int?) como coluna em Produto e fazer a FK real na Fase 2 completa, OU simplesmente deixar a validaÃ§Ã£o baseada no nome da categoria. Por ora, esta verificaÃ§Ã£o Ã© sempre `false` (nenhum produto tem FK para Categoria) e pode ser refinada apÃ³s adicionar a FK real.
 >
-> Versão simplificada para a POC:
+> VersÃ£o simplificada para a POC:
 
 ```csharp
 public Task<bool> TemProdutosAtivosAsync(int categoriaId) =>
@@ -479,11 +479,11 @@ using System.Data;
 using System.Data.Common;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperCategoriaQueryRepository : ICategoriaQueryRepository
 {
@@ -581,7 +581,7 @@ FROM Categorias WHERE CategoriaPaiId = @Id AND Ativa = 1;";
 - [ ] **Step 4: Criar migration para Categorias**
 
 ```bash
-dotnet ef migrations add AddCategorias --project ProdutosAPI.csproj
+dotnet ef migrations add AddCategorias --project FacShopAPI.csproj
 ```
 Esperado: arquivo de migration gerado em `Migrations/`.
 
@@ -594,7 +594,7 @@ Esperado: `Build succeeded, 0 errors`.
 
 ---
 
-### Task 4: Categoria — API Endpoints
+### Task 4: Categoria â€” API Endpoints
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.API/Endpoints/Categorias/CategoriaEndpoints.cs`
@@ -609,18 +609,18 @@ Crie `src/Catalogo/Catalogo.API/Endpoints/Categorias/CategoriaEndpoints.cs`:
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.API.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.API.DTOs;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Categorias;
+namespace FacShopAPI.Catalogo.API.Endpoints.Categorias;
 
 public static class CategoriaEndpoints
 {
     public static void MapCategoriaEndpoints(this RouteGroupBuilder catalogoGroup)
     {
         var group = catalogoGroup.MapGroup("/categorias")
-            .WithTags("Catálogo - Categorias");
+            .WithTags("CatÃ¡logo - Categorias");
 
         group.MapGet("/", ListarCategorias).WithName("ListarCategorias")
             .Produces<List<CategoriaResponse>>(StatusCodes.Status200OK)
@@ -662,8 +662,8 @@ public static class CategoriaEndpoints
         if (categoria is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Categoria não encontrada",
-                Detail = $"Categoria com ID {id} não encontrada.",
+                Status = 404, Title = "Categoria nÃ£o encontrada",
+                Detail = $"Categoria com ID {id} nÃ£o encontrada.",
                 Instance = $"/api/v1/catalogo/categorias/{id}"
             });
         return Results.Ok(categoria);
@@ -677,7 +677,7 @@ public static class CategoriaEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422, Title = "ValidaÃ§Ã£o falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage))
             });
 
@@ -685,7 +685,7 @@ public static class CategoriaEndpoints
         if (!result.IsSuccess)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Regra de negócio violada", Detail = result.Error!
+                Status = 422, Title = "Regra de negÃ³cio violada", Detail = result.Error!
             });
 
         return Results.Created($"/api/v1/catalogo/categorias/{result.Value!.Id}", result.Value);
@@ -699,7 +699,7 @@ public static class CategoriaEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422, Title = "ValidaÃ§Ã£o falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage))
             });
 
@@ -707,7 +707,7 @@ public static class CategoriaEndpoints
         if (!result.IsSuccess)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Categoria não encontrada", Detail = result.Error!
+                Status = 404, Title = "Categoria nÃ£o encontrada", Detail = result.Error!
             });
 
         return Results.Ok(result.Value);
@@ -717,9 +717,9 @@ public static class CategoriaEndpoints
     {
         var result = await service.DesativarAsync(id);
         if (!result.IsSuccess)
-            return result.Error!.Contains("não encontrada")
-                ? Results.NotFound(new ErrorResponse { Status = 404, Title = "Categoria não encontrada", Detail = result.Error })
-                : Results.UnprocessableEntity(new ErrorResponse { Status = 422, Title = "Operação não permitida", Detail = result.Error });
+            return result.Error!.Contains("nÃ£o encontrada")
+                ? Results.NotFound(new ErrorResponse { Status = 404, Title = "Categoria nÃ£o encontrada", Detail = result.Error })
+                : Results.UnprocessableEntity(new ErrorResponse { Status = 422, Title = "OperaÃ§Ã£o nÃ£o permitida", Detail = result.Error });
 
         return Results.NoContent();
     }
@@ -731,16 +731,16 @@ public static class CategoriaEndpoints
 Em `src/Catalogo/Catalogo.API/Extensions/CatalogoServiceExtensions.cs`, adicione:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Application.Services;
-using ProdutosAPI.Catalogo.Application.Validators;
-using ProdutosAPI.Catalogo.Infrastructure.Queries;
-using ProdutosAPI.Catalogo.Infrastructure.Repositories;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Application.Validators;
+using FacShopAPI.Catalogo.Infrastructure.Queries;
+using FacShopAPI.Catalogo.Infrastructure.Repositories;
 // ... outros usings existentes
 
 public static IServiceCollection AddCatalogo(this IServiceCollection services)
 {
-    // Produto (já existente)
+    // Produto (jÃ¡ existente)
     services.AddScoped<IProdutoService, ProdutoService>();
     services.AddScoped<IProdutoQueryRepository, DapperProdutoQueryRepository>();
     services.AddScoped<IProdutoCommandRepository, EfProdutoCommandRepository>();
@@ -757,53 +757,53 @@ public static IServiceCollection AddCatalogo(this IServiceCollection services)
 
 - [ ] **Step 3: Registrar endpoint em Program.cs**
 
-Adicione após `catalogo.MapProdutoEndpoints()`:
+Adicione apÃ³s `catalogo.MapProdutoEndpoints()`:
 
 ```csharp
 catalogo.MapCategoriaEndpoints();
 ```
 
-Adicione o `using` necessário:
+Adicione o `using` necessÃ¡rio:
 
 ```csharp
-using ProdutosAPI.Catalogo.API.Endpoints.Categorias;
+using FacShopAPI.Catalogo.API.Endpoints.Categorias;
 ```
 
 - [ ] **Step 4: Build do projeto principal**
 
 ```bash
-dotnet build ProdutosAPI.csproj
+dotnet build FacShopAPI.csproj
 ```
 Esperado: `Build succeeded, 0 errors`.
 
 ---
 
-### Task 5: Categoria — Testes
+### Task 5: Categoria â€” Testes
 
 **Files:**
-- Create: `tests/ProdutosAPI.Tests/Unit/Domain/CategoriaTests.cs`
-- Create: `tests/ProdutosAPI.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`
+- Create: `tests/FacShopAPI.Tests/Unit/Domain/CategoriaTests.cs`
+- Create: `tests/FacShopAPI.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`
 
-- [ ] **Step 1: Escrever testes de domínio**
+- [ ] **Step 1: Escrever testes de domÃ­nio**
 
-Crie `tests/ProdutosAPI.Tests/Unit/Domain/CategoriaTests.cs`:
+Crie `tests/FacShopAPI.Tests/Unit/Domain/CategoriaTests.cs`:
 
 ```csharp
 using FluentAssertions;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 using Xunit;
 
-namespace ProdutosAPI.Tests.Unit.Domain;
+namespace FacShopAPI.Tests.Unit.Domain;
 
 public class CategoriaTests
 {
     [Fact]
     public void Criar_NomeValido_RetornaSucesso()
     {
-        var result = Categoria.Criar("Eletrônicos");
+        var result = Categoria.Criar("EletrÃ´nicos");
 
         result.IsSuccess.Should().BeTrue();
-        result.Value!.Nome.Should().Be("Eletrônicos");
+        result.Value!.Nome.Should().Be("EletrÃ´nicos");
         result.Value.Slug.Should().Be("eletronicos");
         result.Value.Ativa.Should().BeTrue();
         result.Value.CategoriaPaiId.Should().BeNull();
@@ -841,19 +841,19 @@ public class CategoriaTests
     [Fact]
     public void Renomear_NomeValido_AtualizaNomeESlug()
     {
-        var categoria = Categoria.Criar("Eletrônicos").Value!;
+        var categoria = Categoria.Criar("EletrÃ´nicos").Value!;
 
-        var result = categoria.Renomear("Computadores & Periféricos");
+        var result = categoria.Renomear("Computadores & PerifÃ©ricos");
 
         result.IsSuccess.Should().BeTrue();
-        categoria.Nome.Should().Be("Computadores & Periféricos");
+        categoria.Nome.Should().Be("Computadores & PerifÃ©ricos");
         categoria.Slug.Should().Be("computadores-perifericos");
     }
 
     [Fact]
     public void Desativar_CategoriaAtiva_DesativaComSucesso()
     {
-        var categoria = Categoria.Criar("Eletrônicos").Value!;
+        var categoria = Categoria.Criar("EletrÃ´nicos").Value!;
 
         var result = categoria.Desativar();
 
@@ -864,7 +864,7 @@ public class CategoriaTests
     [Fact]
     public void Desativar_CategoriaJaInativa_RetornaFalha()
     {
-        var categoria = Categoria.Criar("Eletrônicos").Value!;
+        var categoria = Categoria.Criar("EletrÃ´nicos").Value!;
         categoria.Desativar();
 
         var result = categoria.Desativar();
@@ -873,7 +873,7 @@ public class CategoriaTests
     }
 
     [Theory]
-    [InlineData("Café & Chá", "cafe-cha")]
+    [InlineData("CafÃ© & ChÃ¡", "cafe-cha")]
     [InlineData("Roupas Femininas", "roupas-femininas")]
     [InlineData("  Livros  ", "livros")]
     public void Criar_SlugGeradoCorretamente(string nome, string slugEsperado)
@@ -886,28 +886,28 @@ public class CategoriaTests
 }
 ```
 
-- [ ] **Step 2: Rodar testes de domínio**
+- [ ] **Step 2: Rodar testes de domÃ­nio**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj \
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj \
     --filter "FullyQualifiedName~CategoriaTests" -v minimal
 ```
 Esperado: todos os testes passando.
 
-- [ ] **Step 3: Escrever testes de integração**
+- [ ] **Step 3: Escrever testes de integraÃ§Ã£o**
 
-Crie `tests/ProdutosAPI.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`:
+Crie `tests/FacShopAPI.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`:
 
 ```csharp
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
-using ProdutosAPI.Catalogo.Application.DTOs.Categoria;
-using ProdutosAPI.Tests.Integration;
+using FacShopAPI.Catalogo.Application.DTOs.Categoria;
+using FacShopAPI.Tests.Integration;
 using Xunit;
 
-namespace ProdutosAPI.Tests.Integration.Catalogo;
+namespace FacShopAPI.Tests.Integration.Catalogo;
 
 public class CategoriaEndpointsTests : IClassFixture<ApiFactory>
 {
@@ -943,11 +943,11 @@ public class CategoriaEndpointsTests : IClassFixture<ApiFactory>
         var client = await CriarClienteAutenticadoAsync();
 
         var response = await client.PostAsJsonAsync("/api/v1/catalogo/categorias",
-            new CriarCategoriaRequest { Nome = "Eletrônicos Teste" });
+            new CriarCategoriaRequest { Nome = "EletrÃ´nicos Teste" });
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var result = await response.Content.ReadFromJsonAsync<CategoriaResponse>();
-        result!.Nome.Should().Be("Eletrônicos Teste");
+        result!.Nome.Should().Be("EletrÃ´nicos Teste");
         result.Slug.Should().Be("eletronicos-teste");
         response.Headers.Location.Should().NotBeNull();
     }
@@ -984,7 +984,7 @@ public class CategoriaEndpointsTests : IClassFixture<ApiFactory>
             new CriarCategoriaRequest { Nome = "Filha", CategoriaPaiId = pai!.Id });
         var filha = await filhaResp.Content.ReadFromJsonAsync<CategoriaResponse>();
 
-        // Tenta criar neto — deve falhar
+        // Tenta criar neto â€” deve falhar
         var netoResp = await client.PostAsJsonAsync("/api/v1/catalogo/categorias",
             new CriarCategoriaRequest { Nome = "Neto", CategoriaPaiId = filha!.Id });
 
@@ -1028,10 +1028,10 @@ public class CategoriaEndpointsTests : IClassFixture<ApiFactory>
 }
 ```
 
-- [ ] **Step 4: Rodar testes de integração**
+- [ ] **Step 4: Rodar testes de integraÃ§Ã£o**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj \
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj \
     --filter "FullyQualifiedName~CategoriaEndpointsTests" -v minimal
 ```
 Esperado: todos os testes passando.
@@ -1040,19 +1040,19 @@ Esperado: todos os testes passando.
 
 ```bash
 git add -A
-git commit -m "feat: adicionar recurso Categoria ao Catálogo
+git commit -m "feat: adicionar recurso Categoria ao CatÃ¡logo
 
-- Categoria.cs com hierarquia de 2 níveis e geração automática de slug
+- Categoria.cs com hierarquia de 2 nÃ­veis e geraÃ§Ã£o automÃ¡tica de slug
 - CQRS: EfCategoriaCommandRepository + DapperCategoriaQueryRepository
-- CategoriaService valida: máx 2 níveis hierárquicos, produtos ativos
+- CategoriaService valida: mÃ¡x 2 nÃ­veis hierÃ¡rquicos, produtos ativos
 - 5 endpoints em /api/v1/catalogo/categorias
 - Migration AddCategorias
-- Testes: domínio (7) + integração (7)"
+- Testes: domÃ­nio (7) + integraÃ§Ã£o (7)"
 ```
 
 ---
 
-### Task 6: Variante — Domain
+### Task 6: Variante â€” Domain
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Domain/ValueObjects/SKU.cs`
@@ -1064,9 +1064,9 @@ Crie `src/Catalogo/Catalogo.Domain/ValueObjects/SKU.cs`:
 
 ```csharp
 using System.Text.RegularExpressions;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace FacShopAPI.Catalogo.Domain.ValueObjects;
 
 public sealed record SKU
 {
@@ -1078,12 +1078,12 @@ public sealed record SKU
     public static Result<SKU> Criar(string valor)
     {
         if (string.IsNullOrWhiteSpace(valor))
-            return Result<SKU>.Fail("SKU não pode ser vazio.");
+            return Result<SKU>.Fail("SKU nÃ£o pode ser vazio.");
         valor = valor.Trim().ToUpperInvariant();
         if (valor.Length < 6 || valor.Length > 20)
             return Result<SKU>.Fail("SKU deve ter entre 6 e 20 caracteres.");
         if (!FormatoValido.IsMatch(valor))
-            return Result<SKU>.Fail("SKU deve conter apenas letras maiúsculas, números e hífens.");
+            return Result<SKU>.Fail("SKU deve conter apenas letras maiÃºsculas, nÃºmeros e hÃ­fens.");
         return Result<SKU>.Ok(new SKU(valor));
     }
 
@@ -1097,10 +1097,10 @@ public sealed record SKU
 Crie `src/Catalogo/Catalogo.Domain/Variante.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using FacShopAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.ValueObjects;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace FacShopAPI.Catalogo.Domain;
 
 public class Variante
 {
@@ -1121,9 +1121,9 @@ public class Variante
         decimal precoAdicional, int estoque)
     {
         if (produtoId <= 0)
-            return Result<Variante>.Fail("ProdutoId inválido.");
+            return Result<Variante>.Fail("ProdutoId invÃ¡lido.");
         if (string.IsNullOrWhiteSpace(descricao) || descricao.Length > 200)
-            return Result<Variante>.Fail("Descrição deve ter entre 1 e 200 caracteres.");
+            return Result<Variante>.Fail("DescriÃ§Ã£o deve ter entre 1 e 200 caracteres.");
 
         var skuResult = SKU.Criar(sku);
         if (!skuResult.IsSuccess)
@@ -1171,7 +1171,7 @@ public class Variante
 
     public Result Desativar()
     {
-        if (!Ativa) return Result.Fail("Variante já está inativa.");
+        if (!Ativa) return Result.Fail("Variante jÃ¡ estÃ¡ inativa.");
         Ativa = false;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -1188,7 +1188,7 @@ Esperado: `Build succeeded, 0 errors`.
 
 ---
 
-### Task 7: Variante — Application + Infrastructure + API + Tests
+### Task 7: Variante â€” Application + Infrastructure + API + Tests
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Application/DTOs/Variante/VarianteDTO.cs`
@@ -1200,8 +1200,8 @@ Esperado: `Build succeeded, 0 errors`.
 - Create: `src/Catalogo/Catalogo.Infrastructure/Repositories/EfVarianteCommandRepository.cs`
 - Create: `src/Catalogo/Catalogo.Infrastructure/Queries/DapperVarianteQueryRepository.cs`
 - Create: `src/Catalogo/Catalogo.API/Endpoints/Variantes/VarianteEndpoints.cs`
-- Create: `tests/ProdutosAPI.Tests/Unit/Domain/VarianteTests.cs`
-- Create: `tests/ProdutosAPI.Tests/Integration/Catalogo/VarianteEndpointsTests.cs`
+- Create: `tests/FacShopAPI.Tests/Unit/Domain/VarianteTests.cs`
+- Create: `tests/FacShopAPI.Tests/Integration/Catalogo/VarianteEndpointsTests.cs`
 - Modify: `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`
 - Modify: `src/Shared/Data/AppDbContext.cs`
 - Modify: `src/Catalogo/Catalogo.API/Extensions/CatalogoServiceExtensions.cs`
@@ -1212,7 +1212,7 @@ Esperado: `Build succeeded, 0 errors`.
 Crie `src/Catalogo/Catalogo.Application/DTOs/Variante/VarianteDTO.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Application.DTOs.Variante;
+namespace FacShopAPI.Catalogo.Application.DTOs.Variante;
 
 public class CriarVarianteRequest
 {
@@ -1252,9 +1252,9 @@ public class VarianteResponse
 Crie `src/Catalogo/Catalogo.Application/Repositories/IVarianteCommandRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IVarianteCommandRepository
 {
@@ -1268,9 +1268,9 @@ public interface IVarianteCommandRepository
 Crie `src/Catalogo/Catalogo.Application/Repositories/IVarianteQueryRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IVarianteQueryRepository
 {
@@ -1284,10 +1284,10 @@ public interface IVarianteQueryRepository
 Crie `src/Catalogo/Catalogo.Application/Services/IVarianteService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IVarianteService
 {
@@ -1304,12 +1304,12 @@ Crie `src/Catalogo/Catalogo.Application/Services/VarianteService.cs`:
 
 ```csharp
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class VarianteService : IVarianteService
 {
@@ -1336,7 +1336,7 @@ public class VarianteService : IVarianteService
     {
         var skuExiste = await _commandRepo.SkuExisteParaProdutoAsync(request.ProdutoId, request.Sku);
         if (skuExiste)
-            return Result<VarianteResponse>.Fail($"SKU '{request.Sku}' já existe para este produto.");
+            return Result<VarianteResponse>.Fail($"SKU '{request.Sku}' jÃ¡ existe para este produto.");
 
         var result = Variante.Criar(request.ProdutoId, request.Sku, request.Descricao,
             request.PrecoAdicional, request.Estoque);
@@ -1350,7 +1350,7 @@ public class VarianteService : IVarianteService
     public async Task<Result<VarianteResponse>> AtualizarPrecoAsync(int id, AtualizarPrecoVarianteRequest request)
     {
         var variante = await _commandRepo.ObterPorIdAsync(id);
-        if (variante is null) return Result<VarianteResponse>.Fail("Variante não encontrada.");
+        if (variante is null) return Result<VarianteResponse>.Fail("Variante nÃ£o encontrada.");
         var r = variante.AtualizarPreco(request.PrecoAdicional);
         if (!r.IsSuccess) return Result<VarianteResponse>.Fail(r.Error!);
         await _commandRepo.SaveChangesAsync();
@@ -1360,7 +1360,7 @@ public class VarianteService : IVarianteService
     public async Task<Result<VarianteResponse>> AtualizarEstoqueAsync(int id, AtualizarEstoqueVarianteRequest request)
     {
         var variante = await _commandRepo.ObterPorIdAsync(id);
-        if (variante is null) return Result<VarianteResponse>.Fail("Variante não encontrada.");
+        if (variante is null) return Result<VarianteResponse>.Fail("Variante nÃ£o encontrada.");
         var r = variante.AtualizarEstoque(request.Estoque);
         if (!r.IsSuccess) return Result<VarianteResponse>.Fail(r.Error!);
         await _commandRepo.SaveChangesAsync();
@@ -1370,7 +1370,7 @@ public class VarianteService : IVarianteService
     public async Task<Result> DesativarAsync(int id)
     {
         var variante = await _commandRepo.ObterPorIdAsync(id);
-        if (variante is null) return Result.Fail("Variante não encontrada.");
+        if (variante is null) return Result.Fail("Variante nÃ£o encontrada.");
         var r = variante.Desativar();
         if (!r.IsSuccess) return r;
         await _commandRepo.SaveChangesAsync();
@@ -1393,23 +1393,23 @@ Crie `src/Catalogo/Catalogo.Application/Validators/VarianteValidator.cs`:
 
 ```csharp
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarVarianteValidator : AbstractValidator<CriarVarianteRequest>
 {
     public CriarVarianteValidator()
     {
-        RuleFor(v => v.ProdutoId).GreaterThan(0).WithMessage("ProdutoId inválido.");
-        RuleFor(v => v.Sku).NotEmpty().WithMessage("SKU é obrigatório.")
+        RuleFor(v => v.ProdutoId).GreaterThan(0).WithMessage("ProdutoId invÃ¡lido.");
+        RuleFor(v => v.Sku).NotEmpty().WithMessage("SKU Ã© obrigatÃ³rio.")
             .MinimumLength(6).WithMessage("SKU deve ter ao menos 6 caracteres.")
-            .MaximumLength(20).WithMessage("SKU não pode exceder 20 caracteres.")
-            .Matches(@"^[A-Z0-9\-]+$").WithMessage("SKU deve conter apenas letras maiúsculas, números e hífens.");
-        RuleFor(v => v.Descricao).NotEmpty().WithMessage("Descrição é obrigatória.")
-            .MaximumLength(200).WithMessage("Descrição não pode exceder 200 caracteres.");
-        RuleFor(v => v.PrecoAdicional).GreaterThan(0).WithMessage("Preço adicional deve ser maior que zero.");
-        RuleFor(v => v.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque não pode ser negativo.");
+            .MaximumLength(20).WithMessage("SKU nÃ£o pode exceder 20 caracteres.")
+            .Matches(@"^[A-Z0-9\-]+$").WithMessage("SKU deve conter apenas letras maiÃºsculas, nÃºmeros e hÃ­fens.");
+        RuleFor(v => v.Descricao).NotEmpty().WithMessage("DescriÃ§Ã£o Ã© obrigatÃ³ria.")
+            .MaximumLength(200).WithMessage("DescriÃ§Ã£o nÃ£o pode exceder 200 caracteres.");
+        RuleFor(v => v.PrecoAdicional).GreaterThan(0).WithMessage("PreÃ§o adicional deve ser maior que zero.");
+        RuleFor(v => v.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque nÃ£o pode ser negativo.");
     }
 }
 ```
@@ -1419,9 +1419,9 @@ public class CriarVarianteValidator : AbstractValidator<CriarVarianteRequest>
 Em `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Interfaces;
+namespace FacShopAPI.Catalogo.Application.Interfaces;
 
 public interface ICatalogoContext
 {
@@ -1488,11 +1488,11 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Repositories/EfVarianteCommandReposit
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfVarianteCommandRepository(ICatalogoContext context) : IVarianteCommandRepository
 {
@@ -1522,11 +1522,11 @@ using System.Data;
 using System.Data.Common;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperVarianteQueryRepository : IVarianteQueryRepository
 {
@@ -1597,18 +1597,18 @@ Crie `src/Catalogo/Catalogo.API/Endpoints/Variantes/VarianteEndpoints.cs`:
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.API.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Variante;
-using ProdutosAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.API.DTOs;
+using FacShopAPI.Catalogo.Application.DTOs.Variante;
+using FacShopAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Variantes;
+namespace FacShopAPI.Catalogo.API.Endpoints.Variantes;
 
 public static class VarianteEndpoints
 {
     public static void MapVarianteEndpoints(this RouteGroupBuilder catalogoGroup)
     {
         var group = catalogoGroup.MapGroup("/variantes")
-            .WithTags("Catálogo - Variantes");
+            .WithTags("CatÃ¡logo - Variantes");
 
         group.MapGet("/", ListarVariantes).WithName("ListarVariantes")
             .Produces<List<VarianteResponse>>(StatusCodes.Status200OK)
@@ -1654,7 +1654,7 @@ public static class VarianteEndpoints
         var variante = await service.ObterAsync(id);
         if (variante is null)
             return Results.NotFound(new ErrorResponse
-            { Status = 404, Title = "Variante não encontrada", Detail = $"Variante {id} não encontrada." });
+            { Status = 404, Title = "Variante nÃ£o encontrada", Detail = $"Variante {id} nÃ£o encontrada." });
         return Results.Ok(variante);
     }
 
@@ -1664,13 +1664,13 @@ public static class VarianteEndpoints
         var validation = await validator.ValidateAsync(request);
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
-            { Status = 422, Title = "Validação falhou",
+            { Status = 422, Title = "ValidaÃ§Ã£o falhou",
               Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)) });
 
         var result = await service.CriarAsync(request);
         if (!result.IsSuccess)
             return Results.UnprocessableEntity(new ErrorResponse
-            { Status = 422, Title = "Regra de negócio violada", Detail = result.Error! });
+            { Status = 422, Title = "Regra de negÃ³cio violada", Detail = result.Error! });
 
         return Results.Created($"/api/v1/catalogo/variantes/{result.Value!.Id}", result.Value);
     }
@@ -1679,7 +1679,7 @@ public static class VarianteEndpoints
     {
         var result = await service.AtualizarPrecoAsync(id, request);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante não encontrada", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante nÃ£o encontrada", Detail = result.Error! });
         return Results.Ok(result.Value);
     }
 
@@ -1687,7 +1687,7 @@ public static class VarianteEndpoints
     {
         var result = await service.AtualizarEstoqueAsync(id, request);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante não encontrada", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante nÃ£o encontrada", Detail = result.Error! });
         return Results.Ok(result.Value);
     }
 
@@ -1695,7 +1695,7 @@ public static class VarianteEndpoints
     {
         var result = await service.DesativarAsync(id);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante não encontrada", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Variante nÃ£o encontrada", Detail = result.Error! });
         return Results.NoContent();
     }
 }
@@ -1711,10 +1711,10 @@ services.AddScoped<IVarianteQueryRepository, DapperVarianteQueryRepository>();
 services.AddScoped<IVarianteCommandRepository, EfVarianteCommandRepository>();
 ```
 
-Em `Program.cs`, adicione após `catalogo.MapCategoriaEndpoints()`:
+Em `Program.cs`, adicione apÃ³s `catalogo.MapCategoriaEndpoints()`:
 
 ```csharp
-using ProdutosAPI.Catalogo.API.Endpoints.Variantes;
+using FacShopAPI.Catalogo.API.Endpoints.Variantes;
 // ...
 catalogo.MapVarianteEndpoints();
 ```
@@ -1722,21 +1722,21 @@ catalogo.MapVarianteEndpoints();
 - [ ] **Step 11: Migration e build**
 
 ```bash
-dotnet ef migrations add AddVariantes --project ProdutosAPI.csproj
-dotnet build ProdutosAPI.csproj
+dotnet ef migrations add AddVariantes --project FacShopAPI.csproj
+dotnet build FacShopAPI.csproj
 ```
 Esperado: migration criada, `Build succeeded, 0 errors`.
 
-- [ ] **Step 12: Testes de domínio Variante**
+- [ ] **Step 12: Testes de domÃ­nio Variante**
 
-Crie `tests/ProdutosAPI.Tests/Unit/Domain/VarianteTests.cs`:
+Crie `tests/FacShopAPI.Tests/Unit/Domain/VarianteTests.cs`:
 
 ```csharp
 using FluentAssertions;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 using Xunit;
 
-namespace ProdutosAPI.Tests.Unit.Domain;
+namespace FacShopAPI.Tests.Unit.Domain;
 
 public class VarianteTests
 {
@@ -1754,10 +1754,10 @@ public class VarianteTests
     [Theory]
     [InlineData("abc")]        // muito curto
     [InlineData("PRODUTO-SKU-MUITO-LONGO-DEMAIS")]  // muito longo
-    [InlineData("sku_minusculo")]  // caractere inválido
+    [InlineData("sku_minusculo")]  // caractere invÃ¡lido
     public void Criar_SkuInvalido_RetornaFalha(string sku)
     {
-        var result = Variante.Criar(1, sku, "Descrição", 10m, 5);
+        var result = Variante.Criar(1, sku, "DescriÃ§Ã£o", 10m, 5);
 
         result.IsSuccess.Should().BeFalse();
     }
@@ -1765,7 +1765,7 @@ public class VarianteTests
     [Fact]
     public void Criar_PrecoZero_RetornaFalha()
     {
-        var result = Variante.Criar(1, "SKU-001", "Descrição", 0m, 5);
+        var result = Variante.Criar(1, "SKU-001", "DescriÃ§Ã£o", 0m, 5);
 
         result.IsSuccess.Should().BeFalse();
     }
@@ -1773,7 +1773,7 @@ public class VarianteTests
     [Fact]
     public void Criar_EstoqueNegativo_RetornaFalha()
     {
-        var result = Variante.Criar(1, "SKU-001", "Descrição", 10m, -1);
+        var result = Variante.Criar(1, "SKU-001", "DescriÃ§Ã£o", 10m, -1);
 
         result.IsSuccess.Should().BeFalse();
     }
@@ -1781,7 +1781,7 @@ public class VarianteTests
     [Fact]
     public void AtualizarPreco_PrecoValido_AtualizaComSucesso()
     {
-        var variante = Variante.Criar(1, "SKU-001", "Descrição", 10m, 5).Value!;
+        var variante = Variante.Criar(1, "SKU-001", "DescriÃ§Ã£o", 10m, 5).Value!;
 
         var result = variante.AtualizarPreco(20m);
 
@@ -1792,7 +1792,7 @@ public class VarianteTests
     [Fact]
     public void AtualizarEstoque_EstoqueValido_AtualizaComSucesso()
     {
-        var variante = Variante.Criar(1, "SKU-001", "Descrição", 10m, 5).Value!;
+        var variante = Variante.Criar(1, "SKU-001", "DescriÃ§Ã£o", 10m, 5).Value!;
 
         var result = variante.AtualizarEstoque(100);
 
@@ -1803,7 +1803,7 @@ public class VarianteTests
     [Fact]
     public void Desativar_VarianteAtiva_DesativaComSucesso()
     {
-        var variante = Variante.Criar(1, "SKU-001", "Descrição", 10m, 5).Value!;
+        var variante = Variante.Criar(1, "SKU-001", "DescriÃ§Ã£o", 10m, 5).Value!;
 
         var result = variante.Desativar();
 
@@ -1816,7 +1816,7 @@ public class VarianteTests
 - [ ] **Step 13: Rodar todos os testes**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v minimal
 ```
 Esperado: todos os testes passando.
 
@@ -1824,10 +1824,10 @@ Esperado: todos os testes passando.
 
 ```bash
 git add -A
-git commit -m "feat: adicionar recurso Variante ao Catálogo
+git commit -m "feat: adicionar recurso Variante ao CatÃ¡logo
 
 - Variante.cs com SKU (value object), PrecoAdicional, Estoque
-- SKU.cs: ^[A-Z0-9\\-]+$, 6-20 chars, único por produto
+- SKU.cs: ^[A-Z0-9\\-]+$, 6-20 chars, Ãºnico por produto
 - VarianteService valida unicidade de SKU por produto
 - 6 endpoints em /api/v1/catalogo/variantes
 - Migration AddVariantes"
@@ -1835,7 +1835,7 @@ git commit -m "feat: adicionar recurso Variante ao Catálogo
 
 ---
 
-### Task 8: Atributo e Mídia — CRUD Simples
+### Task 8: Atributo e MÃ­dia â€” CRUD Simples
 
 **Files:**
 - Create: `src/Catalogo/Catalogo.Domain/Atributo.cs`
@@ -1857,16 +1857,16 @@ git commit -m "feat: adicionar recurso Variante ao Catálogo
 - Modify: `src/Catalogo/Catalogo.API/Extensions/CatalogoServiceExtensions.cs`
 - Modify: `Program.cs`
 
-> **Nota:** Atributo e Mídia são recursos mais simples — sem CQRS separado (repositório único, sem Dapper separado). O valor didático aqui é mostrar que nem todo recurso do mesmo bounded context precisa de domínio rico.
+> **Nota:** Atributo e MÃ­dia sÃ£o recursos mais simples â€” sem CQRS separado (repositÃ³rio Ãºnico, sem Dapper separado). O valor didÃ¡tico aqui Ã© mostrar que nem todo recurso do mesmo bounded context precisa de domÃ­nio rico.
 
 - [ ] **Step 1: Criar Atributo.cs**
 
 Crie `src/Catalogo/Catalogo.Domain/Atributo.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace FacShopAPI.Catalogo.Domain;
 
 public class Atributo
 {
@@ -1880,7 +1880,7 @@ public class Atributo
 
     public static Result<Atributo> Criar(int produtoId, string chave, string valor)
     {
-        if (produtoId <= 0) return Result<Atributo>.Fail("ProdutoId inválido.");
+        if (produtoId <= 0) return Result<Atributo>.Fail("ProdutoId invÃ¡lido.");
         if (string.IsNullOrWhiteSpace(chave) || chave.Length > 50)
             return Result<Atributo>.Fail("Chave deve ter entre 1 e 50 caracteres.");
         if (string.IsNullOrWhiteSpace(valor) || valor.Length > 200)
@@ -1913,9 +1913,9 @@ public class Atributo
 Crie `src/Catalogo/Catalogo.Domain/Midia.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace FacShopAPI.Catalogo.Domain;
 
 public enum TipoMidia { Imagem, Video, Documento }
 
@@ -1932,11 +1932,11 @@ public class Midia
 
     public static Result<Midia> Criar(int produtoId, string url, TipoMidia tipo, int ordem = 0)
     {
-        if (produtoId <= 0) return Result<Midia>.Fail("ProdutoId inválido.");
+        if (produtoId <= 0) return Result<Midia>.Fail("ProdutoId invÃ¡lido.");
         if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            return Result<Midia>.Fail("URL inválida. Deve ser uma URL absoluta.");
-        if (url.Length > 500) return Result<Midia>.Fail("URL não pode exceder 500 caracteres.");
-        if (ordem < 0) return Result<Midia>.Fail("Ordem não pode ser negativa.");
+            return Result<Midia>.Fail("URL invÃ¡lida. Deve ser uma URL absoluta.");
+        if (url.Length > 500) return Result<Midia>.Fail("URL nÃ£o pode exceder 500 caracteres.");
+        if (ordem < 0) return Result<Midia>.Fail("Ordem nÃ£o pode ser negativa.");
 
         return Result<Midia>.Ok(new Midia
         {
@@ -1948,7 +1948,7 @@ public class Midia
 
     public Result AtualizarOrdem(int novaOrdem)
     {
-        if (novaOrdem < 0) return Result.Fail("Ordem não pode ser negativa.");
+        if (novaOrdem < 0) return Result.Fail("Ordem nÃ£o pode ser negativa.");
         Ordem = novaOrdem;
         return Result.Ok();
     }
@@ -1960,7 +1960,7 @@ public class Midia
 Crie `src/Catalogo/Catalogo.Application/DTOs/Atributo/AtributoDTO.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Application.DTOs.Atributo;
+namespace FacShopAPI.Catalogo.Application.DTOs.Atributo;
 
 public class CriarAtributoRequest
 {
@@ -1988,9 +1988,9 @@ public class AtributoResponse
 Crie `src/Catalogo/Catalogo.Application/DTOs/Midia/MidiaDTO.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.DTOs.Midia;
+namespace FacShopAPI.Catalogo.Application.DTOs.Midia;
 
 public class CriarMidiaRequest
 {
@@ -2021,10 +2021,10 @@ public class MidiaResponse
 Crie `src/Catalogo/Catalogo.Application/Repositories/IAtributoRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IAtributoRepository
 {
@@ -2039,10 +2039,10 @@ public interface IAtributoRepository
 Crie `src/Catalogo/Catalogo.Application/Repositories/IMidiaRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IMidiaRepository
 {
@@ -2059,10 +2059,10 @@ public interface IMidiaRepository
 Crie `src/Catalogo/Catalogo.Application/Services/IAtributoService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IAtributoService
 {
@@ -2076,12 +2076,12 @@ public interface IAtributoService
 Crie `src/Catalogo/Catalogo.Application/Services/AtributoService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class AtributoService : IAtributoService
 {
@@ -2103,7 +2103,7 @@ public class AtributoService : IAtributoService
     public async Task<Result<AtributoResponse>> AtualizarAsync(int id, AtualizarAtributoRequest request)
     {
         var atributo = await _repo.ObterPorIdAsync(id);
-        if (atributo is null) return Result<AtributoResponse>.Fail("Atributo não encontrado.");
+        if (atributo is null) return Result<AtributoResponse>.Fail("Atributo nÃ£o encontrado.");
         var r = atributo.Atualizar(request.Chave, request.Valor);
         if (!r.IsSuccess) return Result<AtributoResponse>.Fail(r.Error!);
         await _repo.SaveChangesAsync();
@@ -2113,7 +2113,7 @@ public class AtributoService : IAtributoService
     public async Task<Result> RemoverAsync(int id)
     {
         var atributo = await _repo.ObterPorIdAsync(id);
-        if (atributo is null) return Result.Fail("Atributo não encontrado.");
+        if (atributo is null) return Result.Fail("Atributo nÃ£o encontrado.");
         await _repo.RemoverAsync(id);
         return Result.Ok();
     }
@@ -2126,10 +2126,10 @@ public class AtributoService : IAtributoService
 Crie `src/Catalogo/Catalogo.Application/Services/IMidiaService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IMidiaService
 {
@@ -2143,12 +2143,12 @@ public interface IMidiaService
 Crie `src/Catalogo/Catalogo.Application/Services/MidiaService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class MidiaService : IMidiaService
 {
@@ -2170,7 +2170,7 @@ public class MidiaService : IMidiaService
     public async Task<Result<MidiaResponse>> AtualizarOrdemAsync(int id, AtualizarOrdemMidiaRequest request)
     {
         var midia = await _repo.ObterPorIdAsync(id);
-        if (midia is null) return Result<MidiaResponse>.Fail("Mídia não encontrada.");
+        if (midia is null) return Result<MidiaResponse>.Fail("MÃ­dia nÃ£o encontrada.");
         var r = midia.AtualizarOrdem(request.Ordem);
         if (!r.IsSuccess) return Result<MidiaResponse>.Fail(r.Error!);
         await _repo.SaveChangesAsync();
@@ -2180,7 +2180,7 @@ public class MidiaService : IMidiaService
     public async Task<Result> RemoverAsync(int id)
     {
         var midia = await _repo.ObterPorIdAsync(id);
-        if (midia is null) return Result.Fail("Mídia não encontrada.");
+        if (midia is null) return Result.Fail("MÃ­dia nÃ£o encontrada.");
         await _repo.RemoverAsync(id);
         return Result.Ok();
     }
@@ -2254,12 +2254,12 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Repositories/EfAtributoRepository.cs`
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfAtributoRepository(ICatalogoContext context) : IAtributoRepository
 {
@@ -2305,12 +2305,12 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Repositories/EfMidiaRepository.cs`:
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfMidiaRepository(ICatalogoContext context) : IMidiaRepository
 {
@@ -2359,17 +2359,17 @@ Crie `src/Catalogo/Catalogo.API/Endpoints/Atributos/AtributoEndpoints.cs`:
 ```csharp
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.API.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Atributo;
-using ProdutosAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.API.DTOs;
+using FacShopAPI.Catalogo.Application.DTOs.Atributo;
+using FacShopAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Atributos;
+namespace FacShopAPI.Catalogo.API.Endpoints.Atributos;
 
 public static class AtributoEndpoints
 {
     public static void MapAtributoEndpoints(this RouteGroupBuilder catalogoGroup)
     {
-        var group = catalogoGroup.MapGroup("/atributos").WithTags("Catálogo - Atributos");
+        var group = catalogoGroup.MapGroup("/atributos").WithTags("CatÃ¡logo - Atributos");
 
         group.MapGet("/", Listar).WithName("ListarAtributos")
             .Produces<List<AtributoResponse>>(StatusCodes.Status200OK).AllowAnonymous();
@@ -2407,7 +2407,7 @@ public static class AtributoEndpoints
     {
         var result = await service.AtualizarAsync(id, request);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Não encontrado", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "NÃ£o encontrado", Detail = result.Error! });
         return Results.Ok(result.Value);
     }
 
@@ -2415,7 +2415,7 @@ public static class AtributoEndpoints
     {
         var result = await service.RemoverAsync(id);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Não encontrado", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "NÃ£o encontrado", Detail = result.Error! });
         return Results.NoContent();
     }
 }
@@ -2426,17 +2426,17 @@ Crie `src/Catalogo/Catalogo.API/Endpoints/Midias/MidiaEndpoints.cs`:
 ```csharp
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.API.DTOs;
-using ProdutosAPI.Catalogo.Application.DTOs.Midia;
-using ProdutosAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.API.DTOs;
+using FacShopAPI.Catalogo.Application.DTOs.Midia;
+using FacShopAPI.Catalogo.Application.Services;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Midias;
+namespace FacShopAPI.Catalogo.API.Endpoints.Midias;
 
 public static class MidiaEndpoints
 {
     public static void MapMidiaEndpoints(this RouteGroupBuilder catalogoGroup)
     {
-        var group = catalogoGroup.MapGroup("/midias").WithTags("Catálogo - Mídias");
+        var group = catalogoGroup.MapGroup("/midias").WithTags("CatÃ¡logo - MÃ­dias");
 
         group.MapGet("/", Listar).WithName("ListarMidias")
             .Produces<List<MidiaResponse>>(StatusCodes.Status200OK).AllowAnonymous();
@@ -2474,7 +2474,7 @@ public static class MidiaEndpoints
     {
         var result = await service.AtualizarOrdemAsync(id, request);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Não encontrado", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "NÃ£o encontrado", Detail = result.Error! });
         return Results.Ok(result.Value);
     }
 
@@ -2482,13 +2482,13 @@ public static class MidiaEndpoints
     {
         var result = await service.RemoverAsync(id);
         if (!result.IsSuccess)
-            return Results.NotFound(new ErrorResponse { Status = 404, Title = "Não encontrado", Detail = result.Error! });
+            return Results.NotFound(new ErrorResponse { Status = 404, Title = "NÃ£o encontrado", Detail = result.Error! });
         return Results.NoContent();
     }
 }
 ```
 
-- [ ] **Step 10: Atualizar CatalogoServiceExtensions com Atributo e Mídia**
+- [ ] **Step 10: Atualizar CatalogoServiceExtensions com Atributo e MÃ­dia**
 
 ```csharp
 services.AddScoped<IAtributoService, AtributoService>();
@@ -2501,8 +2501,8 @@ services.AddScoped<IMidiaRepository, EfMidiaRepository>();
 - [ ] **Step 11: Atualizar Program.cs**
 
 ```csharp
-using ProdutosAPI.Catalogo.API.Endpoints.Atributos;
-using ProdutosAPI.Catalogo.API.Endpoints.Midias;
+using FacShopAPI.Catalogo.API.Endpoints.Atributos;
+using FacShopAPI.Catalogo.API.Endpoints.Midias;
 // ...
 catalogo.MapAtributoEndpoints();
 catalogo.MapMidiaEndpoints();
@@ -2511,22 +2511,22 @@ catalogo.MapMidiaEndpoints();
 - [ ] **Step 12: Migration e build**
 
 ```bash
-dotnet ef migrations add AddAtributosEMidias --project ProdutosAPI.csproj
-dotnet build ProdutosAPI.csproj
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
+dotnet ef migrations add AddAtributosEMidias --project FacShopAPI.csproj
+dotnet build FacShopAPI.csproj
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v minimal
 ```
 Esperado: migration criada, build OK, todos os testes passando.
 
-- [ ] **Step 13: Commit Atributo + Mídia**
+- [ ] **Step 13: Commit Atributo + MÃ­dia**
 
 ```bash
 git add -A
-git commit -m "feat: adicionar Atributo e Midia ao Catálogo (CRUD simples)
+git commit -m "feat: adicionar Atributo e Midia ao CatÃ¡logo (CRUD simples)
 
 - Atributo: chave-valor por produto, CRUD completo
 - Midia: URL externa com tipo e ordem por produto, CRUD completo
 - Demonstra que no mesmo bounded context coexistem recursos
-  de complexidade diferente (sem domínio rico)
+  de complexidade diferente (sem domÃ­nio rico)
 - Migration AddAtributosEMidias"
 ```
 
@@ -2536,19 +2536,19 @@ git commit -m "feat: adicionar Atributo e Midia ao Catálogo (CRUD simples)
 
 **Files:**
 - Modify: `src/Catalogo/Catalogo.Infrastructure/Data/DbSeeder.cs`
-- Modify: `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs`
+- Modify: `tests/FacShopAPI.Tests/Integration/ApiFactory.cs`
 
 - [ ] **Step 1: Atualizar DbSeeder**
 
-O seeder atual só popula Produtos. Adicione seed de Categorias para os testes terem IDs reservados consistentes.
+O seeder atual sÃ³ popula Produtos. Adicione seed de Categorias para os testes terem IDs reservados consistentes.
 
 Em `src/Catalogo/Catalogo.Infrastructure/Data/DbSeeder.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Data;
+namespace FacShopAPI.Catalogo.Infrastructure.Data;
 
 public static class DbSeeder
 {
@@ -2564,14 +2564,14 @@ public static class DbSeeder
 
         var produtos = new[]
         {
-            Produto.Criar("Notebook Dell XPS 13", "Notebook de alta performance com processador Intel Core i7, 16GB RAM e 512GB SSD", 4500.00m, "Eletrônicos", 5, "vendas@dell.com").Value!,
-            Produto.Criar("Mouse Logitech MX Master 3S", "Mouse wireless de precisão profissional com múltiplos botões e rastreamento avançado", 450.00m, "Eletrônicos", 25, "suporte@logitech.com").Value!,
-            Produto.Criar("Teclado Mecânico RGB", "Teclado mecânico com iluminação RGB, switches Cherry MX e design compacto", 350.00m, "Eletrônicos", 15, "contato@keyboards.com.br").Value!,
-            Produto.Criar("Clean Code", "Guia prático para escrever código limpo e manutenível. Essencial para todo desenvolvedor", 89.90m, "Livros", 30, "vendas@books.com").Value!,
-            Produto.Criar("Design Patterns", "Padrões de design reutilizáveis para desenvolvimento de software. Referência obrigatória", 75.00m, "Livros", 20, "vendas@books.com").Value!,
-            Produto.Criar("Camiseta técnica Azul", "Camiseta de poliéster com tecnologia anti-transpiração, disponível em vários tamanhos", 79.90m, "Roupas", 50, "vendas@clothing.com.br").Value!,
-            Produto.Criar("Café Gourmet 500g", "Café gourmet especial com grãos selecionados de plantações premium da região", 45.00m, "Alimentos", 100, "vendas@coffee.com.br").Value!,
-            Produto.Criar("Monitor LG UltraWide 34\"", "Monitor curvo ultrawide com resolução 3440x1440, ideal para produtividade e games", 1899.00m, "Eletrônicos", 3, "suporte@lg.com.br").Value!
+            Produto.Criar("Notebook Dell XPS 13", "Notebook de alta performance com processador Intel Core i7, 16GB RAM e 512GB SSD", 4500.00m, "EletrÃ´nicos", 5, "vendas@dell.com").Value!,
+            Produto.Criar("Mouse Logitech MX Master 3S", "Mouse wireless de precisÃ£o profissional com mÃºltiplos botÃµes e rastreamento avanÃ§ado", 450.00m, "EletrÃ´nicos", 25, "suporte@logitech.com").Value!,
+            Produto.Criar("Teclado MecÃ¢nico RGB", "Teclado mecÃ¢nico com iluminaÃ§Ã£o RGB, switches Cherry MX e design compacto", 350.00m, "EletrÃ´nicos", 15, "contato@keyboards.com.br").Value!,
+            Produto.Criar("Clean Code", "Guia prÃ¡tico para escrever cÃ³digo limpo e manutenÃ­vel. Essencial para todo desenvolvedor", 89.90m, "Livros", 30, "vendas@books.com").Value!,
+            Produto.Criar("Design Patterns", "PadrÃµes de design reutilizÃ¡veis para desenvolvimento de software. ReferÃªncia obrigatÃ³ria", 75.00m, "Livros", 20, "vendas@books.com").Value!,
+            Produto.Criar("Camiseta tÃ©cnica Azul", "Camiseta de poliÃ©ster com tecnologia anti-transpiraÃ§Ã£o, disponÃ­vel em vÃ¡rios tamanhos", 79.90m, "Roupas", 50, "vendas@clothing.com.br").Value!,
+            Produto.Criar("CafÃ© Gourmet 500g", "CafÃ© gourmet especial com grÃ£os selecionados de plantaÃ§Ãµes premium da regiÃ£o", 45.00m, "Alimentos", 100, "vendas@coffee.com.br").Value!,
+            Produto.Criar("Monitor LG UltraWide 34\"", "Monitor curvo ultrawide com resoluÃ§Ã£o 3440x1440, ideal para produtividade e games", 1899.00m, "EletrÃ´nicos", 3, "suporte@lg.com.br").Value!
         };
 
         foreach (var p in produtos) context.AddProduto(p);
@@ -2585,7 +2585,7 @@ public static class DbSeeder
         // IDs 1-5 reservados: testes de Categoria criam a partir de ID 6
         var raiz = new[]
         {
-            Categoria.Criar("Eletrônicos").Value!,
+            Categoria.Criar("EletrÃ´nicos").Value!,
             Categoria.Criar("Livros").Value!,
             Categoria.Criar("Roupas").Value!,
             Categoria.Criar("Alimentos").Value!,
@@ -2601,7 +2601,7 @@ public static class DbSeeder
 - [ ] **Step 2: Rodar testes completos**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v minimal
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v minimal
 ```
 Esperado: todos os testes passando.
 
@@ -2609,7 +2609,7 @@ Esperado: todos os testes passando.
 
 ```bash
 git add -A
-git commit -m "feat: seed de Categorias no DbSeeder — IDs 1-5 reservados
+git commit -m "feat: seed de Categorias no DbSeeder â€” IDs 1-5 reservados
 
 Testes de Categoria criam a partir do ID 6."
 ```

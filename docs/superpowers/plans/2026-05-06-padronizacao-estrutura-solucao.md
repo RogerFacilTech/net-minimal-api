@@ -1,71 +1,71 @@
-# Plano — Padronização da Estrutura de Pastas
+﻿# Plano â€” PadronizaÃ§Ã£o da Estrutura de Pastas
 
-**Objetivo:** Fazer a estrutura de pastas da solução espelhar o padrão definido em `docs/Estrutura-desejada.md`, tratando Catalogo e Pedidos como **microserviços independentes** que não se referenciam diretamente. Cada bounded context tem seu próprio host, suas próprias camadas e nunca importa tipos do outro contexto. A comunicação futura entre eles ocorre por API HTTP.
+**Objetivo:** Fazer a estrutura de pastas da soluÃ§Ã£o espelhar o padrÃ£o definido em `docs/Estrutura-desejada.md`, tratando Catalogo e Pedidos como **microserviÃ§os independentes** que nÃ£o se referenciam diretamente. Cada bounded context tem seu prÃ³prio host, suas prÃ³prias camadas e nunca importa tipos do outro contexto. A comunicaÃ§Ã£o futura entre eles ocorre por API HTTP.
 
-**Restrições arquiteturais:**
+**RestriÃ§Ãµes arquiteturais:**
 
-- `Catalogo.*` não referencia `Pedidos.*` (e vice-versa) — nem mesmo `Catalogo.Domain` em `Pedidos.Domain`
+- `Catalogo.*` nÃ£o referencia `Pedidos.*` (e vice-versa) â€” nem mesmo `Catalogo.Domain` em `Pedidos.Domain`
 - Cada host (`Catalogo.Host`, `Pedidos.Host`) sobe de forma completamente independente
 - O banco SQLite fica em `data/` na raiz da solution, compartilhado pelos hosts em desenvolvimento
-- Testes só são executados e corrigidos na fase final (Fase 9), após a migração estrutural estar completa
+- Testes sÃ³ sÃ£o executados e corrigidos na fase final (Fase 9), apÃ³s a migraÃ§Ã£o estrutural estar completa
 
 ---
 
 ---
 
-## Estado atual → Estado desejado (delta)
+## Estado atual â†’ Estado desejado (delta)
 
-| Situação          | Projeto atual                                                | Destino                                                                           |
+| SituaÃ§Ã£o          | Projeto atual                                                | Destino                                                                           |
 | ----------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| ✅ Concluído      | —                                                            | `src/Catalogo/Catalogo.Common/` (Fase 1 ✅)                                       |
-| ✅ Mantém         | `src/Shared/Common/`                                         | `src/Shared/Common/`                                                              |
-| ✅ Mantém         | `src/Shared/Data/`                                           | `src/Shared/Data/`                                                                |
-| ✅ Mantém         | `src/Catalogo/Catalogo.Domain/`                              | `src/Catalogo/Catalogo.Domain/`                                                   |
-| ✅ Mantém         | `src/Catalogo/Catalogo.Application/`                         | `src/Catalogo/Catalogo.Application/`                                              |
-| ✅ Mantém         | `src/Catalogo/Catalogo.Infrastructure/`                      | `src/Catalogo/Catalogo.Infrastructure/`                                           |
-| ✅ Mantém         | `src/Catalogo/Catalogo.Endpoints/`                           | `src/Catalogo/Catalogo.Endpoints/`                                                |
-| ✅ Mantém         | `samples/Catalogo.HttpClientDemo/`                           | `samples/Catalogo.HttpClientDemo/`                                                |
-| 🔀 Formalizar     | `src/Catalogo/Catalogo.Host/` (disco, fora do `.slnx`)       | `src/Catalogo/Catalogo.Host/` — adicionar ao slnx; Program.cs **apenas Catalogo** |
-| 🔀 Eliminar       | `src/Host/`                                                  | Removido depois que Catalogo.Host for o host ativo                                |
-| 🔀 Criar pasta    | `data/` na raiz                                              | SQLite compartilhado entre Catalogo.Host e Pedidos.Host                           |
-| ⚠️ Quebrar        | `src/Pedidos/Pedidos.Domain/` → referencia `Catalogo.Domain` | Criar `ProdutoSnapshot` local em `Pedidos.Domain`; remover dependência            |
-| 🔀 Renomear pasta | `src/Pedidos/Domain/`                                        | `src/Pedidos/Pedidos.Domain/` (csproj já tem o nome certo)                        |
-| 🔀 Extrair        | `src/Pedidos/Pedidos.csproj` (monólito)                      | `src/Pedidos/Pedidos.Application/`                                                |
-| 🔀 Extrair        | `src/Pedidos/Pedidos.csproj` (monólito)                      | `src/Pedidos/Pedidos.Endpoints/`                                                  |
-| 🔀 Extrair        | `src/Pedidos/Pedidos.csproj` (monólito)                      | `src/Pedidos/Pedidos.Infrastructure/`                                             |
-| 🆕 Criar          | —                                                            | `src/Pedidos/Pedidos.Common/`                                                     |
-| 🆕 Criar          | —                                                            | `src/Pedidos/Pedidos.Host/` (independente, sem referência a Catalogo)             |
-| 🔀 Mover          | `src/Pix/Pix.MockServer/`                                    | `samples/Pix/Pix.MockServer/`                                                     |
-| 🔀 Mover          | `src/Pix/Pix.ClientDemo/`                                    | `samples/Pix/Pix.ClientDemo/`                                                     |
-| 🔄 Final          | —                                                            | Corrigir e executar todos os testes                                               |
+| âœ… ConcluÃ­do      | â€”                                                            | `src/Catalogo/Catalogo.Common/` (Fase 1 âœ…)                                       |
+| âœ… MantÃ©m         | `src/Shared/Common/`                                         | `src/Shared/Common/`                                                              |
+| âœ… MantÃ©m         | `src/Shared/Data/`                                           | `src/Shared/Data/`                                                                |
+| âœ… MantÃ©m         | `src/Catalogo/Catalogo.Domain/`                              | `src/Catalogo/Catalogo.Domain/`                                                   |
+| âœ… MantÃ©m         | `src/Catalogo/Catalogo.Application/`                         | `src/Catalogo/Catalogo.Application/`                                              |
+| âœ… MantÃ©m         | `src/Catalogo/Catalogo.Infrastructure/`                      | `src/Catalogo/Catalogo.Infrastructure/`                                           |
+| âœ… MantÃ©m         | `src/Catalogo/Catalogo.Endpoints/`                           | `src/Catalogo/Catalogo.Endpoints/`                                                |
+| âœ… MantÃ©m         | `samples/Catalogo.HttpClientDemo/`                           | `samples/Catalogo.HttpClientDemo/`                                                |
+| ðŸ”€ Formalizar     | `src/Catalogo/Catalogo.Host/` (disco, fora do `.slnx`)       | `src/Catalogo/Catalogo.Host/` â€” adicionar ao slnx; Program.cs **apenas Catalogo** |
+| ðŸ”€ Eliminar       | `src/Host/`                                                  | Removido depois que Catalogo.Host for o host ativo                                |
+| ðŸ”€ Criar pasta    | `data/` na raiz                                              | SQLite compartilhado entre Catalogo.Host e Pedidos.Host                           |
+| âš ï¸ Quebrar        | `src/Pedidos/Pedidos.Domain/` â†’ referencia `Catalogo.Domain` | Criar `ProdutoSnapshot` local em `Pedidos.Domain`; remover dependÃªncia            |
+| ðŸ”€ Renomear pasta | `src/Pedidos/Domain/`                                        | `src/Pedidos/Pedidos.Domain/` (csproj jÃ¡ tem o nome certo)                        |
+| ðŸ”€ Extrair        | `src/Pedidos/Pedidos.csproj` (monÃ³lito)                      | `src/Pedidos/Pedidos.Application/`                                                |
+| ðŸ”€ Extrair        | `src/Pedidos/Pedidos.csproj` (monÃ³lito)                      | `src/Pedidos/Pedidos.Endpoints/`                                                  |
+| ðŸ”€ Extrair        | `src/Pedidos/Pedidos.csproj` (monÃ³lito)                      | `src/Pedidos/Pedidos.Infrastructure/`                                             |
+| ðŸ†• Criar          | â€”                                                            | `src/Pedidos/Pedidos.Common/`                                                     |
+| ðŸ†• Criar          | â€”                                                            | `src/Pedidos/Pedidos.Host/` (independente, sem referÃªncia a Catalogo)             |
+| ðŸ”€ Mover          | `src/Pix/Pix.MockServer/`                                    | `samples/Pix/Pix.MockServer/`                                                     |
+| ðŸ”€ Mover          | `src/Pix/Pix.ClientDemo/`                                    | `samples/Pix/Pix.ClientDemo/`                                                     |
+| ðŸ”„ Final          | â€”                                                            | Corrigir e executar todos os testes                                               |
 
 ---
 
-## Fase 1 — Catalogo.Common ✅ CONCLUÍDA
+## Fase 1 â€” Catalogo.Common âœ… CONCLUÃDA
 
 Projeto `src/Catalogo/Catalogo.Common/Catalogo.Common.csproj` criado e adicionado ao `FacShopAPI.slnx`.
 
 ---
 
-## Fase 2 — Catalogo.Host: formalizar na solução
+## Fase 2 â€” Catalogo.Host: formalizar na soluÃ§Ã£o
 
-**Por que:** `src/Catalogo/Catalogo.Host/` já tem todos os arquivos no disco mas não está no `.slnx` e o `Program.cs` existente só registra o Catálogo — **correto para microserviço independente**. Apenas adicionar à solução.
+**Por que:** `src/Catalogo/Catalogo.Host/` jÃ¡ tem todos os arquivos no disco mas nÃ£o estÃ¡ no `.slnx` e o `Program.cs` existente sÃ³ registra o CatÃ¡logo â€” **correto para microserviÃ§o independente**. Apenas adicionar Ã  soluÃ§Ã£o.
 
-**O que NÃO fazer:** não referenciar `Pedidos.*` aqui. Catalogo.Host hospeda apenas endpoints do Catálogo.
+**O que NÃƒO fazer:** nÃ£o referenciar `Pedidos.*` aqui. Catalogo.Host hospeda apenas endpoints do CatÃ¡logo.
 
 ### Passos
 
 1. Adicionar `src/Catalogo/Catalogo.Host/Catalogo.Host.csproj` ao `FacShopAPI.slnx` na pasta `/Catalogo/`.
-2. Remover a pasta `/Host/` do `FacShopAPI.slnx` e o projeto `src/Host/` da solução (o `src/Host/` permanece no disco até ser substituído na Fase 6).
-3. Atualizar `CLAUDE.md`: substituir a referência ao host principal de `src/Host/` para `src/Catalogo/Catalogo.Host/`.
+2. Remover a pasta `/Host/` do `FacShopAPI.slnx` e o projeto `src/Host/` da soluÃ§Ã£o (o `src/Host/` permanece no disco atÃ© ser substituÃ­do na Fase 6).
+3. Atualizar `CLAUDE.md`: substituir a referÃªncia ao host principal de `src/Host/` para `src/Catalogo/Catalogo.Host/`.
 
-**Critério de conclusão:** `dotnet build src/Catalogo/Catalogo.Host` compilando sem erros.
+**CritÃ©rio de conclusÃ£o:** `dotnet build src/Catalogo/Catalogo.Host` compilando sem erros.
 
 ---
 
-## Fase 3 — Banco de dados em pasta `data/` compartilhada
+## Fase 3 â€” Banco de dados em pasta `data/` compartilhada
 
-**Por que:** Cada host tem hoje o SQLite na sua própria pasta (`produtos-api.db` relativo ao diretório de execução). Com dois hosts independentes, ambos precisam apontar para o mesmo arquivo em desenvolvimento.
+**Por que:** Cada host tem hoje o SQLite na sua prÃ³pria pasta (`produtos-api.db` relativo ao diretÃ³rio de execuÃ§Ã£o). Com dois hosts independentes, ambos precisam apontar para o mesmo arquivo em desenvolvimento.
 
 ### Passos
 
@@ -78,27 +78,27 @@ Projeto `src/Catalogo/Catalogo.Common/Catalogo.Common.csproj` criado e adicionad
 3. Quando `Pedidos.Host` for criado (Fase 7), usar o mesmo caminho relativo `../../../data/facshop.db`.
 4. Adicionar `data/*.db` e `data/*.db-*` ao `.gitignore`.
 
-**Critério de conclusão:** `dotnet run --project src/Catalogo/Catalogo.Host` cria o banco em `data/`.
+**CritÃ©rio de conclusÃ£o:** `dotnet run --project src/Catalogo/Catalogo.Host` cria o banco em `data/`.
 
 ---
 
-## Fase 4 — Quebrar o acoplamento Pedidos → Catalogo.Domain
+## Fase 4 â€” Quebrar o acoplamento Pedidos â†’ Catalogo.Domain
 
-**Por que:** Este é o acoplamento mais profundo e deve ser resolvido antes de decompor o monólito de Pedidos. Atualmente:
+**Por que:** Este Ã© o acoplamento mais profundo e deve ser resolvido antes de decompor o monÃ³lito de Pedidos. Atualmente:
 
 - `Pedidos.Domain.Pedido.AdicionarItem(Produto produto, ...)` recebe `Catalogo.Domain.Produto`
-- `Pedidos.Domain.PedidoItem.Criar(Produto produto, ...)` lê `produto.Id`, `produto.Nome`, `produto.Preco.Value`
+- `Pedidos.Domain.PedidoItem.Criar(Produto produto, ...)` lÃª `produto.Id`, `produto.Nome`, `produto.Preco.Value`
 - `Pedidos.Repositories.IPedidoCommandRepository.ObterProdutoParaItemAsync()` retorna `Catalogo.Domain.Produto`
 - `Pedidos.Infrastructure.PedidoCommandRepository` carrega `Produto` via EF (tabela compartilhada)
 
-**Solução:** criar um value object `ProdutoSnapshot` no domínio de Pedidos que representa o produto **no momento da inclusão no pedido** — um snapshot imutável com apenas os dados relevantes.
+**SoluÃ§Ã£o:** criar um value object `ProdutoSnapshot` no domÃ­nio de Pedidos que representa o produto **no momento da inclusÃ£o no pedido** â€” um snapshot imutÃ¡vel com apenas os dados relevantes.
 
 ### Passos
 
 1. Criar `src/Pedidos/Domain/ProdutoSnapshot.cs`:
 
     ```csharp
-    namespace ProdutosAPI.Pedidos.Domain;
+    namespace FacShopAPI.Pedidos.Domain;
     public record ProdutoSnapshot(int Id, string Nome, decimal Preco);
     ```
 
@@ -110,34 +110,34 @@ Projeto `src/Catalogo/Catalogo.Common/Catalogo.Common.csproj` criado e adicionad
 
 5. Atualizar `PedidoCommandRepository.cs`: projetar de `AppDbContext.Produtos` para `ProdutoSnapshot` (query EF com `Select`), sem importar `Catalogo.Domain`.
 
-6. Remover `using ProdutosAPI.Catalogo.Domain` de todos os arquivos de Pedidos.
+6. Remover `using FacShopAPI.Catalogo.Domain` de todos os arquivos de Pedidos.
 
 7. Remover `<ProjectReference>` para `Catalogo.Domain.csproj` do `Pedidos.csproj`.
 
-**Critério de conclusão:** `dotnet build src/Pedidos/Pedidos.csproj` compila sem `using ProdutosAPI.Catalogo.Domain`.
+**CritÃ©rio de conclusÃ£o:** `dotnet build src/Pedidos/Pedidos.csproj` compila sem `using FacShopAPI.Catalogo.Domain`.
 
 ---
 
-## Fase 5 — Renomear pasta `Domain/` → `Pedidos.Domain/`
+## Fase 5 â€” Renomear pasta `Domain/` â†’ `Pedidos.Domain/`
 
-**Por que:** Padronizar nomenclatura da pasta com o nome do projeto (o `.csproj` já se chama `Pedidos.Domain.csproj`).
+**Por que:** Padronizar nomenclatura da pasta com o nome do projeto (o `.csproj` jÃ¡ se chama `Pedidos.Domain.csproj`).
 
 ### Passos
 
 1. `git mv src/Pedidos/Domain src/Pedidos/Pedidos.Domain`
 2. Atualizar `<Compile Remove="Domain/**" />` no `Pedidos.csproj` para `Pedidos.Domain/**`.
-3. Atualizar `<ProjectReference>` no `Pedidos.csproj`: `Domain/Pedidos.Domain.csproj` → `Pedidos.Domain/Pedidos.Domain.csproj`.
-4. Atualizar path no `FacShopAPI.slnx`: `src/Pedidos/Domain/Pedidos.Domain.csproj` → `src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj`.
+3. Atualizar `<ProjectReference>` no `Pedidos.csproj`: `Domain/Pedidos.Domain.csproj` â†’ `Pedidos.Domain/Pedidos.Domain.csproj`.
+4. Atualizar path no `FacShopAPI.slnx`: `src/Pedidos/Domain/Pedidos.Domain.csproj` â†’ `src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj`.
 
-**Critério de conclusão:** `dotnet sln FacShopAPI.slnx list` mostra o caminho atualizado; `dotnet build` limpo.
+**CritÃ©rio de conclusÃ£o:** `dotnet sln FacShopAPI.slnx list` mostra o caminho atualizado; `dotnet build` limpo.
 
 ---
 
-## Fase 6 — Decompor o monólito `Pedidos.csproj`
+## Fase 6 â€” Decompor o monÃ³lito `Pedidos.csproj`
 
-**Por que:** O único projeto `Pedidos.csproj` mistura Application, Endpoints e Infrastructure. Cada camada deve ser um projeto separado.
+**Por que:** O Ãºnico projeto `Pedidos.csproj` mistura Application, Endpoints e Infrastructure. Cada camada deve ser um projeto separado.
 
-### Mapa de extração
+### Mapa de extraÃ§Ã£o
 
 | Arquivo atual                                          | Projeto destino           |
 | ------------------------------------------------------ | ------------------------- |
@@ -152,131 +152,131 @@ Projeto `src/Catalogo/Catalogo.Common/Catalogo.Common.csproj` criado e adicionad
 | `Infrastructure/PedidoCommandRepository.cs`            | `Pedidos.Infrastructure/` |
 | `Infrastructure/PedidoQueryRepository.cs`              | `Pedidos.Infrastructure/` |
 
-### Grafo de dependências dos novos projetos
+### Grafo de dependÃªncias dos novos projetos
 
 ```
 Pedidos.Domain
-  └── Pedidos.Common (→ Pedidos.Domain, Shared.Common)
-        └── Pedidos.Application (→ Pedidos.Common, Shared.Data)
-              ├── Pedidos.Infrastructure (→ Pedidos.Application, Shared.Data)
-              └── Pedidos.Endpoints (→ Pedidos.Application, Pedidos.Common, Shared.Common)
+  â””â”€â”€ Pedidos.Common (â†’ Pedidos.Domain, Shared.Common)
+        â””â”€â”€ Pedidos.Application (â†’ Pedidos.Common, Shared.Data)
+              â”œâ”€â”€ Pedidos.Infrastructure (â†’ Pedidos.Application, Shared.Data)
+              â””â”€â”€ Pedidos.Endpoints (â†’ Pedidos.Application, Pedidos.Common, Shared.Common)
 ```
 
 Nenhum desses projetos referencia nada de `Catalogo.*`.
 
 ### Passos
 
-1. Criar os quatro `.csproj` acima com as referências corretas.
+1. Criar os quatro `.csproj` acima com as referÃªncias corretas.
 2. Mover os arquivos conforme o mapa.
-3. Ajustar namespaces se necessário.
-4. Remover `Pedidos.csproj` da solução e do disco.
+3. Ajustar namespaces se necessÃ¡rio.
+4. Remover `Pedidos.csproj` da soluÃ§Ã£o e do disco.
 5. Atualizar `FacShopAPI.slnx`.
-6. Atualizar `src/Host/Host.csproj` para referenciar os novos projetos (temporariamente, até Fase 7 e 8).
+6. Atualizar `src/Host/Host.csproj` para referenciar os novos projetos (temporariamente, atÃ© Fase 7 e 8).
 
-**Critério de conclusão:** `dotnet build FacShopAPI.slnx` compila sem erros; `Pedidos.csproj` removido.
+**CritÃ©rio de conclusÃ£o:** `dotnet build FacShopAPI.slnx` compila sem erros; `Pedidos.csproj` removido.
 
 ---
 
-## Fase 7 — Criar Pedidos.Host
+## Fase 7 â€” Criar Pedidos.Host
 
-**Por que:** Pedidos precisa de seu próprio host para ser executado de forma completamente independente.
+**Por que:** Pedidos precisa de seu prÃ³prio host para ser executado de forma completamente independente.
 
 ### Passos
 
 1. Criar `src/Pedidos/Pedidos.Host/Pedidos.Host.csproj`:
     - Referencia: `Pedidos.Endpoints`, `Pedidos.Infrastructure`, `Shared.Common`, `Shared.Data`
-    - Nenhuma referência a `Catalogo.*`
+    - Nenhuma referÃªncia a `Catalogo.*`
 
 2. Criar `Program.cs` do `Pedidos.Host`:
     - Registra JWT, Swagger, CORS, Serilog
     - `builder.Services.AddEndpointsFromAssembly(typeof(PedidosEndpointMarker).Assembly)`
-    - Registra repositórios e handlers de Pedidos
+    - Registra repositÃ³rios e handlers de Pedidos
     - `appsettings.json` com `DefaultConnection` apontando para `../../../data/facshop.db`
 
 3. Adicionar ao `FacShopAPI.slnx` na pasta `/Pedidos/`.
 
-**Critério de conclusão:** `dotnet run --project src/Pedidos/Pedidos.Host` sobe API de Pedidos na porta configurada.
+**CritÃ©rio de conclusÃ£o:** `dotnet run --project src/Pedidos/Pedidos.Host` sobe API de Pedidos na porta configurada.
 
 ---
 
-## Fase 8 — Remover `src/Host/` e tornar `Catalogo.Host` o host padrão
+## Fase 8 â€” Remover `src/Host/` e tornar `Catalogo.Host` o host padrÃ£o
 
-**Por que:** Com Catalogo.Host e Pedidos.Host funcionando, `src/Host/` é redundante.
+**Por que:** Com Catalogo.Host e Pedidos.Host funcionando, `src/Host/` Ã© redundante.
 
 ### Passos
 
-1. Verificar que `Catalogo.Host` está completo (registra apenas endpoints do Catálogo + Auth).
-2. Remover `src/Host/` da solução (`FacShopAPI.slnx`).
+1. Verificar que `Catalogo.Host` estÃ¡ completo (registra apenas endpoints do CatÃ¡logo + Auth).
+2. Remover `src/Host/` da soluÃ§Ã£o (`FacShopAPI.slnx`).
 3. Apagar `src/Host/` do disco (`git rm -r src/Host/`).
 
-**Critério de conclusão:** `src/Host/` removido; `dotnet build FacShopAPI.slnx` limpo.
+**CritÃ©rio de conclusÃ£o:** `src/Host/` removido; `dotnet build FacShopAPI.slnx` limpo.
 
 ---
 
-## Fase 9 — Mover Pix para `samples/`
+## Fase 9 â€” Mover Pix para `samples/`
 
-**Por que:** Pix é material de demonstração, não bounded context de produção.
+**Por que:** Pix Ã© material de demonstraÃ§Ã£o, nÃ£o bounded context de produÃ§Ã£o.
 
 ### Passos
 
 1. `git mv src/Pix/Pix.MockServer samples/Pix/Pix.MockServer`
 2. `git mv src/Pix/Pix.ClientDemo samples/Pix/Pix.ClientDemo`
 3. Atualizar caminhos relativos nos `.csproj` movidos.
-4. Atualizar `FacShopAPI.slnx`: remover pasta `/Pix/`, adicionar projetos Pix à pasta `/Samples/`.
-5. Remover `src/Pix/` (ficará vazia).
+4. Atualizar `FacShopAPI.slnx`: remover pasta `/Pix/`, adicionar projetos Pix Ã  pasta `/Samples/`.
+5. Remover `src/Pix/` (ficarÃ¡ vazia).
 
-**Critério de conclusão:** `src/Pix/` removido; solução lista Pix em `/Samples/`.
+**CritÃ©rio de conclusÃ£o:** `src/Pix/` removido; soluÃ§Ã£o lista Pix em `/Samples/`.
 
 ---
 
-## Fase 10 — Testes: migrar e validar ✅ PASSO FINAL
+## Fase 10 â€” Testes: migrar e validar âœ… PASSO FINAL
 
-**Por que:** Somente após a estrutura estar completamente migrada os testes de integração são ajustados.
+**Por que:** Somente apÃ³s a estrutura estar completamente migrada os testes de integraÃ§Ã£o sÃ£o ajustados.
 
 ### Estado atual dos projetos de teste
 
 | Projeto                       | Estado                                                                                                    |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `tests/Catalogo.Tests/`       | ✅ Compila; `ApiFactory` usa `WebApplicationFactory<Program>` de `Catalogo.Host`                          |
-| `tests/Pedidos.Tests/`        | ⚠️ Compila; `PedidosApiFactory` é stub sem `WebApplicationFactory`; testes de integração são placeholders |
-| `tests/Pix.MockServer.Tests/` | ✅ Compila; 7/7 testes passam                                                                             |
+| `tests/Catalogo.Tests/`       | âœ… Compila; `ApiFactory` usa `WebApplicationFactory<Program>` de `Catalogo.Host`                          |
+| `tests/Pedidos.Tests/`        | âš ï¸ Compila; `PedidosApiFactory` Ã© stub sem `WebApplicationFactory`; testes de integraÃ§Ã£o sÃ£o placeholders |
+| `tests/Pix.MockServer.Tests/` | âœ… Compila; 7/7 testes passam                                                                             |
 
 ### O que ainda precisa ser feito
 
-1. **Remover pasta `/Pix/` vazia do `FacShopAPI.slnx`** — ficou após a migração dos projetos Pix para `/Samples/`.
+1. **Remover pasta `/Pix/` vazia do `FacShopAPI.slnx`** â€” ficou apÃ³s a migraÃ§Ã£o dos projetos Pix para `/Samples/`.
 
 2. **Implementar `PedidosApiFactory` real** em `tests/Pedidos.Tests/Integration/PedidosApiFactory.cs`:
     - Trocar `IAsyncLifetime` por `WebApplicationFactory<Program>` (referenciando `Pedidos.Host`)
-    - Configurar `UseEnvironment("Testing")` e banco InMemory/SQLite temporário
-    - Semear dados de teste necessários
+    - Configurar `UseEnvironment("Testing")` e banco InMemory/SQLite temporÃ¡rio
+    - Semear dados de teste necessÃ¡rios
 
-3. **Implementar os testes de integração de Pedidos** (todos os arquivos em `Integration/` e `Endpoints/` são placeholders com valores hardcoded — não testam a API de fato).
+3. **Implementar os testes de integraÃ§Ã£o de Pedidos** (todos os arquivos em `Integration/` e `Endpoints/` sÃ£o placeholders com valores hardcoded â€” nÃ£o testam a API de fato).
 
 4. **Rodar `dotnet test` completo** e corrigir o que quebrou:
     ```bash
     dotnet test FacShopAPI.slnx --nologo
     ```
 
-### Observação sobre a estrutura final dos samples Pix
+### ObservaÃ§Ã£o sobre a estrutura final dos samples Pix
 
-Os projetos Pix foram movidos para `samples/Pix.MockServer/` e `samples/Pix.ClientDemo/` **sem** subpasta `Pix/` intermediária. A estrutura final real difere ligeiramente do que estava planejado — a seção "Estrutura final esperada" abaixo já reflete a realidade.
+Os projetos Pix foram movidos para `samples/Pix.MockServer/` e `samples/Pix.ClientDemo/` **sem** subpasta `Pix/` intermediÃ¡ria. A estrutura final real difere ligeiramente do que estava planejado â€” a seÃ§Ã£o "Estrutura final esperada" abaixo jÃ¡ reflete a realidade.
 
-**Critério de conclusão:** todos os testes passam (`dotnet test FacShopAPI.slnx`).
+**CritÃ©rio de conclusÃ£o:** todos os testes passam (`dotnet test FacShopAPI.slnx`).
 
 ---
 
-## Ordem de execução
+## Ordem de execuÃ§Ã£o
 
 ```
-Fase 1 ✅ → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6 → Fase 7 → Fase 8 → Fase 9 → Fase 10
+Fase 1 âœ… â†’ Fase 2 â†’ Fase 3 â†’ Fase 4 â†’ Fase 5 â†’ Fase 6 â†’ Fase 7 â†’ Fase 8 â†’ Fase 9 â†’ Fase 10
             (slnx)  (data/)  (desac.) (pasta)  (split) (host)  (rm Host) (pix)  (testes)
 ```
 
-Fase 9 (Pix) é independente e pode ser feita em qualquer momento entre Fase 2 e Fase 10.
+Fase 9 (Pix) Ã© independente e pode ser feita em qualquer momento entre Fase 2 e Fase 10.
 
 ---
 
-## Estrutura final esperada na solução
+## Estrutura final esperada na soluÃ§Ã£o
 
 ```xml
 <Solution>

@@ -1,23 +1,23 @@
-# Reestruturação da Documentação — Plano de Implementação
+﻿# ReestruturaÃ§Ã£o da DocumentaÃ§Ã£o â€” Plano de ImplementaÃ§Ã£o
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task.
 
-**Goal:** Reestruturar toda a documentação do projeto para refletir os dois casos de uso (Produtos com camadas horizontais, Pedidos com Vertical Slice) e criar um novo guia conceitual sobre Vertical Slice Architecture e Domínio Rico.
+**Goal:** Reestruturar toda a documentaÃ§Ã£o do projeto para refletir os dois casos de uso (Produtos com camadas horizontais, Pedidos com Vertical Slice) e criar um novo guia conceitual sobre Vertical Slice Architecture e DomÃ­nio Rico.
 
-**Architecture:** O projeto hoje tem dois padrões arquiteturais coexistindo: horizontal layers (Produtos) e Vertical Slice + Rich Domain (Pedidos). A documentação atual só cobre o primeiro. Este plano atualiza todos os docs existentes e cria um novo guia conceitual (`VERTICAL-SLICE-DOMINIO-RICO.md`).
+**Architecture:** O projeto hoje tem dois padrÃµes arquiteturais coexistindo: horizontal layers (Produtos) e Vertical Slice + Rich Domain (Pedidos). A documentaÃ§Ã£o atual sÃ³ cobre o primeiro. Este plano atualiza todos os docs existentes e cria um novo guia conceitual (`VERTICAL-SLICE-DOMINIO-RICO.md`).
 
-**Tech Stack:** Markdown. Todos os arquivos são documentação pura — sem código a compilar. Verificação = `grep` para confirmar presença de seções-chave + `dotnet test` para confirmar que os snippets de código no doc correspondem ao que o projeto faz.
+**Tech Stack:** Markdown. Todos os arquivos sÃ£o documentaÃ§Ã£o pura â€” sem cÃ³digo a compilar. VerificaÃ§Ã£o = `grep` para confirmar presenÃ§a de seÃ§Ãµes-chave + `dotnet test` para confirmar que os snippets de cÃ³digo no doc correspondem ao que o projeto faz.
 
 **Contagem de testes atual:** 121 testes passando (verificar com `dotnet test --list-tests 2>/dev/null | grep -v "^Build\|^Test run\|^$" | wc -l`).
 
-**Caminhos de referência importantes:**
+**Caminhos de referÃªncia importantes:**
 - Design doc: `docs/plans/2026-02-27-documentacao-reestruturacao-design.md`
-- Domínio de Pedidos: `src/Features/Pedidos/Domain/`
+- DomÃ­nio de Pedidos: `src/Features/Pedidos/Domain/`
 - Slices: `src/Features/Pedidos/CreatePedido/`, `GetPedido/`, `ListPedidos/`, `AddItemPedido/`, `CancelPedido/`
 - Common: `src/Features/Common/Result.cs`, `IEndpoint.cs`, `EndpointExtensions.cs`
 - Modelo Rico: `src/Models/Produto.cs`
-- Testes de domínio: `ProdutosAPI.Tests/Unit/Domain/`
-- Testes de integração: `ProdutosAPI.Tests/Integration/`
+- Testes de domÃ­nio: `FacShopAPI.Tests/Unit/Domain/`
+- Testes de integraÃ§Ã£o: `FacShopAPI.Tests/Integration/`
 
 ---
 
@@ -26,7 +26,7 @@
 **Files:**
 - Modify: `README.md`
 
-Esta é a porta de entrada do projeto. Precisa refletir que o projeto demonstra dois padrões arquiteturais e tem 121 testes.
+Esta Ã© a porta de entrada do projeto. Precisa refletir que o projeto demonstra dois padrÃµes arquiteturais e tem 121 testes.
 
 **Step 1: Ler o arquivo atual**
 
@@ -34,23 +34,23 @@ Esta é a porta de entrada do projeto. Precisa refletir que o projeto demonstra 
 cat README.md
 ```
 
-**Step 2: Reescrever o README.md com as seguintes mudanças obrigatórias**
+**Step 2: Reescrever o README.md com as seguintes mudanÃ§as obrigatÃ³rias**
 
-Mudanças específicas a fazer (não alterar o que não está listado):
+MudanÃ§as especÃ­ficas a fazer (nÃ£o alterar o que nÃ£o estÃ¡ listado):
 
-1. **Badge de versão**: `2.0.0` → `3.0.0`
+1. **Badge de versÃ£o**: `2.0.0` â†’ `3.0.0`
 
-2. **Seção "Sobre o Projeto"** — substituir o parágrafo atual por:
+2. **SeÃ§Ã£o "Sobre o Projeto"** â€” substituir o parÃ¡grafo atual por:
 ```markdown
-**ProdutosAPI** é um projeto educacional demonstrando melhores práticas de APIs REST com **.NET 10 LTS** e **Minimal API**. O projeto cobre dois padrões arquiteturais complementares, implementados como casos de uso reais com cobertura completa de testes (121 testes).
+**FacShopAPI** Ã© um projeto educacional demonstrando melhores prÃ¡ticas de APIs REST com **.NET 10 LTS** e **Minimal API**. O projeto cobre dois padrÃµes arquiteturais complementares, implementados como casos de uso reais com cobertura completa de testes (121 testes).
 ```
 
-3. **Seção "Principais Recursos" → "6 Endpoints REST"** — mudar título para **"11 Endpoints REST (2 casos de uso)"** e adicionar tabela de Pedidos logo abaixo da tabela de Produtos:
+3. **SeÃ§Ã£o "Principais Recursos" â†’ "6 Endpoints REST"** â€” mudar tÃ­tulo para **"11 Endpoints REST (2 casos de uso)"** e adicionar tabela de Pedidos logo abaixo da tabela de Produtos:
 
 ```markdown
-### Pedidos (Vertical Slice + JWT obrigatório)
+### Pedidos (Vertical Slice + JWT obrigatÃ³rio)
 
-| Método | Rota | Descrição | Status |
+| MÃ©todo | Rota | DescriÃ§Ã£o | Status |
 |--------|------|-----------|---------|
 | `POST` | `/api/v1/pedidos` | Criar pedido | 201/400 |
 | `GET` | `/api/v1/pedidos/{id}` | Obter pedido | 200/404 |
@@ -59,54 +59,54 @@ Mudanças específicas a fazer (não alterar o que não está listado):
 | `POST` | `/api/v1/pedidos/{id}/cancelar` | Cancelar pedido | 200/400/404 |
 ```
 
-4. **Contagem de testes**: `50+` → `121`
+4. **Contagem de testes**: `50+` â†’ `121`
 
-5. **Estrutura do projeto** — atualizar a árvore `src/` para incluir:
+5. **Estrutura do projeto** â€” atualizar a Ã¡rvore `src/` para incluir:
 ```
-│   ├── Features/                            # Vertical Slice Architecture
-│   │   ├── Common/
-│   │   │   ├── IEndpoint.cs               # Interface de registro automático
-│   │   │   ├── EndpointExtensions.cs      # Scanner de endpoints
-│   │   │   └── Result.cs                  # Result pattern
-│   │   └── Pedidos/
-│   │       ├── Domain/                    # Aggregate root + entities
-│   │       ├── Common/                    # DTOs dos slices
-│   │       ├── CreatePedido/              # Slice POST /pedidos
-│   │       ├── GetPedido/                 # Slice GET /pedidos/{id}
-│   │       ├── ListPedidos/               # Slice GET /pedidos
-│   │       ├── AddItemPedido/             # Slice POST /pedidos/{id}/itens
-│   │       └── CancelPedido/              # Slice POST /pedidos/{id}/cancelar
-```
-
-E a árvore `ProdutosAPI.Tests/` para incluir:
-```
-│   ├── Unit/Domain/
-│   │   ├── ProdutoTests.cs                # 18 testes de domínio rico
-│   │   └── PedidoTests.cs                 # 16 testes do aggregate
-│   ├── Builders/
-│   │   └── ProdutoBuilder.cs              # Builder fluente para testes
-│   └── Integration/
-│       ├── ApiFactory.cs                  # WebApplicationFactory
-│       ├── AuthHelper.cs                  # JWT helper
-│       ├── CreatePedidoTests.cs
-│       ├── GetPedidoTests.cs
-│       ├── CancelPedidoTests.cs
-│       ├── AddItemPedidoTests.cs
-│       └── ListPedidosTests.cs
+â”‚   â”œâ”€â”€ Features/                            # Vertical Slice Architecture
+â”‚   â”‚   â”œâ”€â”€ Common/
+â”‚   â”‚   â”‚   â”œâ”€â”€ IEndpoint.cs               # Interface de registro automÃ¡tico
+â”‚   â”‚   â”‚   â”œâ”€â”€ EndpointExtensions.cs      # Scanner de endpoints
+â”‚   â”‚   â”‚   â””â”€â”€ Result.cs                  # Result pattern
+â”‚   â”‚   â””â”€â”€ Pedidos/
+â”‚   â”‚       â”œâ”€â”€ Domain/                    # Aggregate root + entities
+â”‚   â”‚       â”œâ”€â”€ Common/                    # DTOs dos slices
+â”‚   â”‚       â”œâ”€â”€ CreatePedido/              # Slice POST /pedidos
+â”‚   â”‚       â”œâ”€â”€ GetPedido/                 # Slice GET /pedidos/{id}
+â”‚   â”‚       â”œâ”€â”€ ListPedidos/               # Slice GET /pedidos
+â”‚   â”‚       â”œâ”€â”€ AddItemPedido/             # Slice POST /pedidos/{id}/itens
+â”‚   â”‚       â””â”€â”€ CancelPedido/              # Slice POST /pedidos/{id}/cancelar
 ```
 
-6. **Seção "Objetivo de Aprendizado"** — adicionar ao final da lista:
+E a Ã¡rvore `FacShopAPI.Tests/` para incluir:
+```
+â”‚   â”œâ”€â”€ Unit/Domain/
+â”‚   â”‚   â”œâ”€â”€ ProdutoTests.cs                # 18 testes de domÃ­nio rico
+â”‚   â”‚   â””â”€â”€ PedidoTests.cs                 # 16 testes do aggregate
+â”‚   â”œâ”€â”€ Builders/
+â”‚   â”‚   â””â”€â”€ ProdutoBuilder.cs              # Builder fluente para testes
+â”‚   â””â”€â”€ Integration/
+â”‚       â”œâ”€â”€ ApiFactory.cs                  # WebApplicationFactory
+â”‚       â”œâ”€â”€ AuthHelper.cs                  # JWT helper
+â”‚       â”œâ”€â”€ CreatePedidoTests.cs
+â”‚       â”œâ”€â”€ GetPedidoTests.cs
+â”‚       â”œâ”€â”€ CancelPedidoTests.cs
+â”‚       â”œâ”€â”€ AddItemPedidoTests.cs
+â”‚       â””â”€â”€ ListPedidosTests.cs
+```
+
+6. **SeÃ§Ã£o "Objetivo de Aprendizado"** â€” adicionar ao final da lista:
 ```markdown
-✅ Vertical Slice Architecture
-✅ Domínio Rico e Aggregate Root
-✅ Result Pattern
-✅ Testes de domínio e integração HTTP
+âœ… Vertical Slice Architecture
+âœ… DomÃ­nio Rico e Aggregate Root
+âœ… Result Pattern
+âœ… Testes de domÃ­nio e integraÃ§Ã£o HTTP
 ```
 
-7. **Adicionar exemplos de Pedidos** — nova seção após os exemplos de Produtos:
+7. **Adicionar exemplos de Pedidos** â€” nova seÃ§Ã£o apÃ³s os exemplos de Produtos:
 
 ```markdown
-### Autenticação (necessária para Pedidos)
+### AutenticaÃ§Ã£o (necessÃ¡ria para Pedidos)
 ```bash
 # Obter token JWT
 curl -X POST "http://localhost:5000/api/v1/auth/login" \
@@ -137,13 +137,13 @@ curl -X POST "http://localhost:5000/api/v1/pedidos/1/itens" \
 
 ```bash
 grep -c "Pedidos\|pedidos" README.md
-# Esperado: >= 10 ocorrências
+# Esperado: >= 10 ocorrÃªncias
 
 grep "121" README.md
 # Esperado: linha com contagem de testes
 
 grep "3.0.0" README.md
-# Esperado: badge de versão
+# Esperado: badge de versÃ£o
 ```
 
 **Step 4: Commit**
@@ -160,57 +160,57 @@ git commit -m "docs: atualizar README com Pedidos, Vertical Slice e 121 testes"
 **Files:**
 - Modify: `docs/00-LEIA-PRIMEIRO.md`
 
-O arquivo atual é uma listagem exaustiva de arquivos. Deve virar uma introdução narrativa que apresenta os dois casos de uso e aponta para as duas trilhas.
+O arquivo atual Ã© uma listagem exaustiva de arquivos. Deve virar uma introduÃ§Ã£o narrativa que apresenta os dois casos de uso e aponta para as duas trilhas.
 
-**Step 1: Escrever o novo conteúdo**
+**Step 1: Escrever o novo conteÃºdo**
 
 Substituir o arquivo inteiro por:
 
 ```markdown
-# Bem-vindo ao ProdutosAPI
+# Bem-vindo ao FacShopAPI
 
-Este é um projeto educacional em **.NET 10 Minimal API** com dois casos de uso reais, cada um demonstrando um padrão arquitetural diferente.
+Este Ã© um projeto educacional em **.NET 10 Minimal API** com dois casos de uso reais, cada um demonstrando um padrÃ£o arquitetural diferente.
 
 ---
 
 ## O Que Este Projeto Demonstra
 
-### Caso 1 — Produtos (Camadas Horizontais)
-A gestão de Produtos segue a arquitetura em camadas clássica: Endpoints → Services → Data. O modelo de domínio é **rico**: a classe `Produto` encapsula suas próprias regras de negócio com factory method e métodos comportamentais — sem setters públicos.
+### Caso 1 â€” Produtos (Camadas Horizontais)
+A gestÃ£o de Produtos segue a arquitetura em camadas clÃ¡ssica: Endpoints â†’ Services â†’ Data. O modelo de domÃ­nio Ã© **rico**: a classe `Produto` encapsula suas prÃ³prias regras de negÃ³cio com factory method e mÃ©todos comportamentais â€” sem setters pÃºblicos.
 
 **Aprenda com Produtos:**
 - REST API design com Minimal API
 - FluentValidation, AutoMapper, Serilog
 - EF Core com SQLite
-- Domínio rico vs anêmico
-- Testes unitários de serviço
+- DomÃ­nio rico vs anÃªmico
+- Testes unitÃ¡rios de serviÃ§o
 
-### Caso 2 — Pedidos (Vertical Slice)
-A gestão de Pedidos usa **Vertical Slice Architecture**: cada operação (criar, buscar, adicionar item, cancelar) vive em sua própria pasta com Command/Handler/Validator/Endpoint. O aggregate `Pedido` encapsula regras de negócio complexas (merge de itens, valor mínimo, cancelamento).
+### Caso 2 â€” Pedidos (Vertical Slice)
+A gestÃ£o de Pedidos usa **Vertical Slice Architecture**: cada operaÃ§Ã£o (criar, buscar, adicionar item, cancelar) vive em sua prÃ³pria pasta com Command/Handler/Validator/Endpoint. O aggregate `Pedido` encapsula regras de negÃ³cio complexas (merge de itens, valor mÃ­nimo, cancelamento).
 
 **Aprenda com Pedidos:**
 - Vertical Slice Architecture
 - Aggregate Root e Domain-Driven Design
 - Result Pattern (erros sem exceptions)
-- Registro automático de endpoints via `IEndpoint`
-- Testes de integração HTTP com WebApplicationFactory
+- Registro automÃ¡tico de endpoints via `IEndpoint`
+- Testes de integraÃ§Ã£o HTTP com WebApplicationFactory
 
 ---
 
-## Como Começar
+## Como ComeÃ§ar
 
-### Rápido (5 min)
+### RÃ¡pido (5 min)
 ```bash
 dotnet run
 # Abra: http://localhost:5000
 ```
 
 ### Aprender (escolha sua trilha)
-→ Veja [INDEX.md](INDEX.md) para as duas trilhas de aprendizado
+â†’ Veja [INDEX.md](INDEX.md) para as duas trilhas de aprendizado
 
-### Referências
-- [ARQUITETURA.md](ARQUITETURA.md) — diagramas dos dois padrões lado a lado
-- [ESTRATEGIA-DE-TESTES.md](../ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md) — 121 testes em 3 categorias
+### ReferÃªncias
+- [ARQUITETURA.md](ARQUITETURA.md) â€” diagramas dos dois padrÃµes lado a lado
+- [ESTRATEGIA-DE-TESTES.md](../FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md) â€” 121 testes em 3 categorias
 ```
 
 **Step 2: Verificar**
@@ -224,7 +224,7 @@ grep "Vertical Slice\|Pedidos\|Produtos\|trilha" docs/00-LEIA-PRIMEIRO.md | wc -
 
 ```bash
 git add docs/00-LEIA-PRIMEIRO.md
-git commit -m "docs: reescrever 00-LEIA-PRIMEIRO com narrativa dos dois padrões"
+git commit -m "docs: reescrever 00-LEIA-PRIMEIRO com narrativa dos dois padrÃµes"
 ```
 
 ---
@@ -234,56 +234,56 @@ git commit -m "docs: reescrever 00-LEIA-PRIMEIRO com narrativa dos dois padrões
 **Files:**
 - Modify: `docs/INDEX.md`
 
-O INDEX atual tem um único caminho linear e ainda sugere "adicione Pedidos" como próximo passo. Deve ser reescrito com duas trilhas e o mapa mental atualizado.
+O INDEX atual tem um Ãºnico caminho linear e ainda sugere "adicione Pedidos" como prÃ³ximo passo. Deve ser reescrito com duas trilhas e o mapa mental atualizado.
 
 **Step 1: Escrever o novo INDEX.md**
 
-Estrutura obrigatória:
+Estrutura obrigatÃ³ria:
 
 ```markdown
-# Índice Completo do Projeto
+# Ãndice Completo do Projeto
 
-## Por Onde Começar?
+## Por Onde ComeÃ§ar?
 
-### ⚡ Rápido (5 minutos)
+### âš¡ RÃ¡pido (5 minutos)
 1. Execute: `dotnet run`
 2. Abra: http://localhost:5000
-3. Explore o Swagger UI — veja os grupos `/api/v1/produtos` e `/api/v1/pedidos`
+3. Explore o Swagger UI â€” veja os grupos `/api/v1/produtos` e `/api/v1/pedidos`
 
 ---
 
 ## Duas Trilhas de Aprendizado
 
-### Trilha 1 — REST + Camadas Horizontais (Produtos)
+### Trilha 1 â€” REST + Camadas Horizontais (Produtos)
 Para quem quer aprender fundamentos de REST API com .NET 10:
 
-1. [MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) — teoria REST (30min)
-2. [MELHORES-PRATICAS-MINIMAL-API.md](MELHORES-PRATICAS-MINIMAL-API.md) → seção Produtos (30min)
-3. Código: `src/Endpoints/`, `src/Services/`, `src/Models/Produto.cs`
-4. Testes: `ProdutosAPI.Tests/Services/` e `ProdutosAPI.Tests/Validators/`
+1. [MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) â€” teoria REST (30min)
+2. [MELHORES-PRATICAS-MINIMAL-API.md](MELHORES-PRATICAS-MINIMAL-API.md) â†’ seÃ§Ã£o Produtos (30min)
+3. CÃ³digo: `src/Endpoints/`, `src/Services/`, `src/Models/Produto.cs`
+4. Testes: `FacShopAPI.Tests/Services/` e `FacShopAPI.Tests/Validators/`
 
-### Trilha 2 — Vertical Slice + Domínio Rico (Pedidos)
-Para quem quer ir além e estudar padrões avançados:
+### Trilha 2 â€” Vertical Slice + DomÃ­nio Rico (Pedidos)
+Para quem quer ir alÃ©m e estudar padrÃµes avanÃ§ados:
 
-1. [VERTICAL-SLICE-DOMINIO-RICO.md](VERTICAL-SLICE-DOMINIO-RICO.md) — teoria (30min)
-2. [MELHORES-PRATICAS-MINIMAL-API.md](MELHORES-PRATICAS-MINIMAL-API.md) → seção Pedidos (20min)
-3. Código: `src/Features/Pedidos/`
-4. Testes: `ProdutosAPI.Tests/Unit/Domain/` e `ProdutosAPI.Tests/Integration/`
+1. [VERTICAL-SLICE-DOMINIO-RICO.md](VERTICAL-SLICE-DOMINIO-RICO.md) â€” teoria (30min)
+2. [MELHORES-PRATICAS-MINIMAL-API.md](MELHORES-PRATICAS-MINIMAL-API.md) â†’ seÃ§Ã£o Pedidos (20min)
+3. CÃ³digo: `src/Features/Pedidos/`
+4. Testes: `FacShopAPI.Tests/Unit/Domain/` e `FacShopAPI.Tests/Integration/`
 
 ### Profundo (completo)
-Ambas as trilhas → [ARQUITETURA.md](ARQUITETURA.md) → [ESTRATEGIA-DE-TESTES.md](../ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md)
+Ambas as trilhas â†’ [ARQUITETURA.md](ARQUITETURA.md) â†’ [ESTRATEGIA-DE-TESTES.md](../FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md)
 
 ---
 
-## Documentação
+## DocumentaÃ§Ã£o
 
-[tabela com todos os docs e seus papéis — incluindo VERTICAL-SLICE-DOMINIO-RICO.md como novo guia]
+[tabela com todos os docs e seus papÃ©is â€” incluindo VERTICAL-SLICE-DOMINIO-RICO.md como novo guia]
 
 ---
 
-## Estrutura do Código
+## Estrutura do CÃ³digo
 
-[árvore completa de src/ incluindo src/Features/Pedidos/]
+[Ã¡rvore completa de src/ incluindo src/Features/Pedidos/]
 
 ---
 
@@ -293,16 +293,16 @@ Ambas as trilhas → [ARQUITETURA.md](ARQUITETURA.md) → [ESTRATEGIA-DE-TESTES.
 
 ---
 
-## Referências Rápidas
+## ReferÃªncias RÃ¡pidas
 
-[tabela atualizada incluindo referências de Pedidos]
+[tabela atualizada incluindo referÃªncias de Pedidos]
 ```
 
-Pontos obrigatórios:
-- Remover toda a seção "Próximos Passos Sugeridos" que sugere adicionar Pedidos (já existe)
+Pontos obrigatÃ³rios:
+- Remover toda a seÃ§Ã£o "PrÃ³ximos Passos Sugeridos" que sugere adicionar Pedidos (jÃ¡ existe)
 - Incluir `VERTICAL-SLICE-DOMINIO-RICO.md` como um dos guias conceituais
 - Mapa mental deve incluir `src/Features/` como ramo separado de `src/`
-- Data no rodapé: `27 de Fevereiro de 2026` / Versão: `3.0.0`
+- Data no rodapÃ©: `27 de Fevereiro de 2026` / VersÃ£o: `3.0.0`
 
 **Step 2: Verificar**
 
@@ -310,8 +310,8 @@ Pontos obrigatórios:
 grep "Trilha\|Pedidos\|Vertical Slice\|VERTICAL-SLICE" docs/INDEX.md | wc -l
 # Esperado: >= 8
 
-grep "Adicione um novo modelo\|próximo passo.*Pedido" docs/INDEX.md
-# Esperado: nenhuma saída (seção removida)
+grep "Adicione um novo modelo\|prÃ³ximo passo.*Pedido" docs/INDEX.md
+# Esperado: nenhuma saÃ­da (seÃ§Ã£o removida)
 ```
 
 **Step 3: Commit**
@@ -328,9 +328,9 @@ git commit -m "docs: reescrever INDEX com duas trilhas de aprendizado"
 **Files:**
 - Modify: `docs/ARQUITETURA.md`
 
-O arquivo atual só mostra a arquitetura em camadas dos Produtos. Precisa mostrar os dois padrões lado a lado e o modelo de dados completo.
+O arquivo atual sÃ³ mostra a arquitetura em camadas dos Produtos. Precisa mostrar os dois padrÃµes lado a lado e o modelo de dados completo.
 
-**Step 1: Ler os arquivos de referência**
+**Step 1: Ler os arquivos de referÃªncia**
 
 ```bash
 cat src/Features/Common/IEndpoint.cs
@@ -340,53 +340,53 @@ cat src/Features/Pedidos/CreatePedido/CreatePedidoEndpoint.cs
 
 **Step 2: Estrutura do novo ARQUITETURA.md**
 
-Seções obrigatórias:
+SeÃ§Ãµes obrigatÃ³rias:
 
-**Seção 1 — Coexistência dos Dois Padrões**
+**SeÃ§Ã£o 1 â€” CoexistÃªncia dos Dois PadrÃµes**
 Diagrama ASCII side-by-side mostrando:
 ```
-Produtos (Horizontal Layers)     │  Pedidos (Vertical Slice)
-─────────────────────────────── │  ──────────────────────────
-ProdutoEndpoints.cs              │  Features/Pedidos/
-  └─ chama IProdutoService        │    CreatePedido/
-       └─ usa AppDbContext         │      ├─ CreatePedidoCommand.cs
-                                   │      ├─ CreatePedidoValidator.cs
-                                   │      └─ CreatePedidoEndpoint.cs
-                                   │           └─ usa AppDbContext
+Produtos (Horizontal Layers)     â”‚  Pedidos (Vertical Slice)
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ProdutoEndpoints.cs              â”‚  Features/Pedidos/
+  â””â”€ chama IProdutoService        â”‚    CreatePedido/
+       â””â”€ usa AppDbContext         â”‚      â”œâ”€ CreatePedidoCommand.cs
+                                   â”‚      â”œâ”€ CreatePedidoValidator.cs
+                                   â”‚      â””â”€ CreatePedidoEndpoint.cs
+                                   â”‚           â””â”€ usa AppDbContext
 ```
-Ambos compartilham: mesmo `AppDbContext`, mesma pipeline JWT, mesmo middleware de exceções.
+Ambos compartilham: mesmo `AppDbContext`, mesma pipeline JWT, mesmo middleware de exceÃ§Ãµes.
 
-**Seção 2 — Arquitetura em Camadas (Produtos)**
-Manter o diagrama vertical existente, atualizado para refletir JWT ativo (não "preparado").
+**SeÃ§Ã£o 2 â€” Arquitetura em Camadas (Produtos)**
+Manter o diagrama vertical existente, atualizado para refletir JWT ativo (nÃ£o "preparado").
 
-**Seção 3 — Vertical Slice (Pedidos)**
+**SeÃ§Ã£o 3 â€” Vertical Slice (Pedidos)**
 Novo diagrama mostrando anatomia de um slice:
 ```
 HTTP Request
-   ↓
-[CreatePedidoEndpoint]   ← só roteamento
-   ↓
-[CreatePedidoValidator]  ← FluentValidation do DTO
-   ↓
-[CreatePedidoCommand]    ← lógica de aplicação (Handler inline)
-   ↓
-[Pedido.AdicionarItem()] ← regras no domínio, retorna Result<T>
-   ↓
-[AppDbContext]           ← persistência
+   â†“
+[CreatePedidoEndpoint]   â† sÃ³ roteamento
+   â†“
+[CreatePedidoValidator]  â† FluentValidation do DTO
+   â†“
+[CreatePedidoCommand]    â† lÃ³gica de aplicaÃ§Ã£o (Handler inline)
+   â†“
+[Pedido.AdicionarItem()] â† regras no domÃ­nio, retorna Result<T>
+   â†“
+[AppDbContext]           â† persistÃªncia
 ```
 
-**Seção 4 — Modelo de Domínio Rico**
-Comparação Produto (antes anêmico → agora rico):
-- Antes: `public string Nome { get; set; }` — setter público, sem comportamento
+**SeÃ§Ã£o 4 â€” Modelo de DomÃ­nio Rico**
+ComparaÃ§Ã£o Produto (antes anÃªmico â†’ agora rico):
+- Antes: `public string Nome { get; set; }` â€” setter pÃºblico, sem comportamento
 - Depois: `public string Nome { get; private set; }` + `static Result<Produto> Criar(...)`
 
-**Seção 5 — Data Model**
+**SeÃ§Ã£o 5 â€” Data Model**
 Tabela de Produtos (existente) + novas tabelas:
 ```
 Pedidos               PedidoItens
-──────────────        ──────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€        â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 Id (PK)               Id (PK)
-Status (TEXT)         PedidoId (FK → Pedidos)
+Status (TEXT)         PedidoId (FK â†’ Pedidos)
 Total (DECIMAL)       ProdutoId (INT)
 CriadoEm             NomeProduto (TEXT snapshot)
 ConfirmadoEm         PrecoUnitario (DECIMAL snapshot)
@@ -394,21 +394,21 @@ CanceladoEm          Quantidade (INT)
 MotivoCancelamento
 ```
 
-**Seção 6 — DI Container**
+**SeÃ§Ã£o 6 â€” DI Container**
 Atualizar para incluir:
 ```
-├─ IEndpoint scan (AddEndpointsFromAssembly)
-│  ├─ CreatePedidoEndpoint
-│  ├─ GetPedidoEndpoint
-│  ├─ ListPedidosEndpoint
-│  ├─ AddItemEndpoint
-│  └─ CancelPedidoEndpoint
+â”œâ”€ IEndpoint scan (AddEndpointsFromAssembly)
+â”‚  â”œâ”€ CreatePedidoEndpoint
+â”‚  â”œâ”€ GetPedidoEndpoint
+â”‚  â”œâ”€ ListPedidosEndpoint
+â”‚  â”œâ”€ AddItemEndpoint
+â”‚  â””â”€ CancelPedidoEndpoint
 ```
 
 **Step 3: Verificar**
 
 ```bash
-grep "Coexistência\|Vertical Slice\|PedidoItens\|AddEndpointsFromAssembly" docs/ARQUITETURA.md | wc -l
+grep "CoexistÃªncia\|Vertical Slice\|PedidoItens\|AddEndpointsFromAssembly" docs/ARQUITETURA.md | wc -l
 # Esperado: >= 4
 ```
 
@@ -424,49 +424,49 @@ git commit -m "docs: reescrever ARQUITETURA com diagrama duplo e modelo de dados
 ### Task 5: Reescrever ESTRATEGIA-DE-TESTES.md
 
 **Files:**
-- Modify: `ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md`
+- Modify: `FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md`
 
-O arquivo atual descreve apenas testes de Produto com mocks e ainda lista "Integration Tests com WebApplicationFactory" como passo futuro — quando esses testes já existem e funcionam. Precisa de reescrita completa.
+O arquivo atual descreve apenas testes de Produto com mocks e ainda lista "Integration Tests com WebApplicationFactory" como passo futuro â€” quando esses testes jÃ¡ existem e funcionam. Precisa de reescrita completa.
 
 **Step 1: Verificar a estrutura real de testes**
 
 ```bash
-find ProdutosAPI.Tests -name "*.cs" | grep -v "\.csproj" | sort
+find FacShopAPI.Tests -name "*.cs" | grep -v "\.csproj" | sort
 dotnet test --list-tests 2>/dev/null | grep -v "^Build\|^Test run\|^$" | sort
 ```
 
 **Step 2: Escrever novo ESTRATEGIA-DE-TESTES.md**
 
-Estrutura obrigatória:
+Estrutura obrigatÃ³ria:
 
 ```markdown
-# Estratégia de Testes — ProdutosAPI
+# EstratÃ©gia de Testes â€” FacShopAPI
 
-## Sumário
+## SumÃ¡rio
 
 **121 testes** organizados em 3 categorias. Execute todos com: `dotnet test`
 
 ---
 
-## Categoria 1 — Testes de Domínio (Unit)
+## Categoria 1 â€” Testes de DomÃ­nio (Unit)
 
-Sem infraestrutura, sem banco, sem HTTP. Testam as regras de negócio puras.
+Sem infraestrutura, sem banco, sem HTTP. Testam as regras de negÃ³cio puras.
 
 ### ProdutoTests.cs (18 testes)
 Testa o modelo rico de Produto:
-- `Criar` — validações do factory method
-- `AtualizarPreco` — valor > 0, diferente do atual
-- `ReporEstoque` — positivo, máximo 99.999
-- `Desativar` — não pode desativar já inativo
-- `TemEstoqueDisponivel` — combina Ativo + Estoque
+- `Criar` â€” validaÃ§Ãµes do factory method
+- `AtualizarPreco` â€” valor > 0, diferente do atual
+- `ReporEstoque` â€” positivo, mÃ¡ximo 99.999
+- `Desativar` â€” nÃ£o pode desativar jÃ¡ inativo
+- `TemEstoqueDisponivel` â€” combina Ativo + Estoque
 
 ### PedidoTests.cs (16 testes)
 Testa o aggregate root Pedido:
-- `AdicionarItem` — só Rascunho, qtd 1-999, merge de itens, limite 20
-- `Confirmar` — requer itens, valor mínimo R$ 10
-- `Cancelar` — motivo obrigatório, não re-cancelar
+- `AdicionarItem` â€” sÃ³ Rascunho, qtd 1-999, merge de itens, limite 20
+- `Confirmar` â€” requer itens, valor mÃ­nimo R$ 10
+- `Cancelar` â€” motivo obrigatÃ³rio, nÃ£o re-cancelar
 
-Padrão usado: sem mocks, sem banco — objetos de domínio puro.
+PadrÃ£o usado: sem mocks, sem banco â€” objetos de domÃ­nio puro.
 
 ### ProdutoBuilder.cs
 Builder fluente para criar `Produto` sem boilerplate em testes:
@@ -474,33 +474,33 @@ Builder fluente para criar `Produto` sem boilerplate em testes:
 
 ---
 
-## Categoria 2 — Testes de Serviço (Unit com mocks)
+## Categoria 2 â€” Testes de ServiÃ§o (Unit com mocks)
 
 Testam `ProdutoService` com AppDbContext e AutoMapper mockados.
 
 ### ProdutoServiceTests.cs (~16 testes)
-[descrição dos cenários]
+[descriÃ§Ã£o dos cenÃ¡rios]
 
 ### ProdutoValidatorTests.cs (~20 testes)
-[descrição dos cenários]
+[descriÃ§Ã£o dos cenÃ¡rios]
 
 ---
 
-## Categoria 3 — Testes de Integração HTTP
+## Categoria 3 â€” Testes de IntegraÃ§Ã£o HTTP
 
-Ponta a ponta: HTTP real, banco SQLite em memória. Sem mocks.
+Ponta a ponta: HTTP real, banco SQLite em memÃ³ria. Sem mocks.
 
 ### ApiFactory.cs
 `WebApplicationFactory<Program>` que:
 - Substitui SQLite por InMemory para isolamento
 - Faz seed de dados via `CreateHost` override
-- Configurada via variável de ambiente `ASPNETCORE_ENVIRONMENT=Testing`
+- Configurada via variÃ¡vel de ambiente `ASPNETCORE_ENVIRONMENT=Testing`
 
 ### AuthHelper.cs
-Gera token JWT válido para os testes autenticados.
+Gera token JWT vÃ¡lido para os testes autenticados.
 Credenciais: `admin@example.com` / `senha123`
 
-### Testes de Integração (13 testes)
+### Testes de IntegraÃ§Ã£o (13 testes)
 | Arquivo | Testes | Cobertura |
 |---|---|---|
 | CreatePedidoTests | 4 | POST /pedidos |
@@ -517,31 +517,31 @@ Credenciais: `admin@example.com` / `senha123`
 
 ---
 
-## Convenções
+## ConvenÃ§Ãµes
 
-[padrão MethodName_Scenario_ExpectedResult]
+[padrÃ£o MethodName_Scenario_ExpectedResult]
 ```
 
-Pontos obrigatórios:
-- Remover a seção "Próximos Passos" que lista WebApplicationFactory como futuro
+Pontos obrigatÃ³rios:
+- Remover a seÃ§Ã£o "PrÃ³ximos Passos" que lista WebApplicationFactory como futuro
 - Refletir 121 testes no total
 - Incluir exemplos do ProdutoBuilder e ApiFactory
 
 **Step 3: Verificar**
 
 ```bash
-grep "WebApplicationFactory.*futuro\|próximo.*WebApplication\|Integration Tests com WebApplication" \
-  ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md
-# Esperado: nenhuma saída
+grep "WebApplicationFactory.*futuro\|prÃ³ximo.*WebApplication\|Integration Tests com WebApplication" \
+  FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md
+# Esperado: nenhuma saÃ­da
 
-grep "121\|ApiFactory\|ProdutoBuilder" ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md | wc -l
+grep "121\|ApiFactory\|ProdutoBuilder" FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md | wc -l
 # Esperado: >= 3
 ```
 
 **Step 4: Commit**
 
 ```bash
-git add ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md
+git add FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md
 git commit -m "docs: reescrever ESTRATEGIA-DE-TESTES com 3 categorias reais e 121 testes"
 ```
 
@@ -552,9 +552,9 @@ git commit -m "docs: reescrever ESTRATEGIA-DE-TESTES com 3 categorias reais e 12
 **Files:**
 - Create: `docs/VERTICAL-SLICE-DOMINIO-RICO.md`
 
-Este é o maior entregável. Um guia conceitual educacional sobre Vertical Slice Architecture e Domínio Rico, usando o próprio projeto como referência. Similar em propósito ao `MELHORES-PRATICAS-API.md`, mas cobrindo padrões arquiteturais avançados.
+Este Ã© o maior entregÃ¡vel. Um guia conceitual educacional sobre Vertical Slice Architecture e DomÃ­nio Rico, usando o prÃ³prio projeto como referÃªncia. Similar em propÃ³sito ao `MELHORES-PRATICAS-API.md`, mas cobrindo padrÃµes arquiteturais avanÃ§ados.
 
-**Step 1: Ler os arquivos de referência do projeto**
+**Step 1: Ler os arquivos de referÃªncia do projeto**
 
 ```bash
 cat src/Features/Common/Result.cs
@@ -568,58 +568,58 @@ cat src/Features/Pedidos/CreatePedido/CreatePedidoEndpoint.cs
 cat src/Models/Produto.cs
 ```
 
-**Step 2: Escrever o guia com as seguintes seções obrigatórias**
+**Step 2: Escrever o guia com as seguintes seÃ§Ãµes obrigatÃ³rias**
 
-**Seção 1 — O Problema com Camadas Horizontais**
+**SeÃ§Ã£o 1 â€” O Problema com Camadas Horizontais**
 
 Mostre que uma nova feature (ex: "criar pedido") requer tocar 5 arquivos em 5 pastas diferentes:
 ```
 Nova feature "Criar Pedido":
-  src/Models/Pedido.cs          ← novo modelo
-  src/DTOs/PedidoDTO.cs         ← novo DTO
-  src/Validators/...            ← novo validador
-  src/Services/PedidoService.cs ← nova lógica
-  src/Endpoints/PedidoEndpoints ← novo endpoint
+  src/Models/Pedido.cs          â† novo modelo
+  src/DTOs/PedidoDTO.cs         â† novo DTO
+  src/Validators/...            â† novo validador
+  src/Services/PedidoService.cs â† nova lÃ³gica
+  src/Endpoints/PedidoEndpoints â† novo endpoint
 ```
-O custo: coupling entre camadas, difícil de encontrar tudo de uma feature.
+O custo: coupling entre camadas, difÃ­cil de encontrar tudo de uma feature.
 
-**Seção 2 — Vertical Slice Architecture**
+**SeÃ§Ã£o 2 â€” Vertical Slice Architecture**
 
-Conceito: organizar por feature, não por camada.
+Conceito: organizar por feature, nÃ£o por camada.
 ```
 src/Features/Pedidos/
-  CreatePedido/   ← tudo de "criar pedido" em um lugar
-  GetPedido/      ← tudo de "buscar pedido"
+  CreatePedido/   â† tudo de "criar pedido" em um lugar
+  GetPedido/      â† tudo de "buscar pedido"
   ...
 ```
 
 Anatomia de um slice (usando CreatePedido como exemplo real do projeto):
-- **Command**: DTO de entrada + Handler com lógica de aplicação
+- **Command**: DTO de entrada + Handler com lÃ³gica de aplicaÃ§Ã£o
 - **Validator**: FluentValidation do DTO de entrada
-- **Endpoint**: só roteamento HTTP, sem lógica
+- **Endpoint**: sÃ³ roteamento HTTP, sem lÃ³gica
 
-Mostrar o código real de `CreatePedidoEndpoint.cs`, `CreatePedidoCommand.cs` e `CreatePedidoValidator.cs` com anotações explicando cada responsabilidade.
+Mostrar o cÃ³digo real de `CreatePedidoEndpoint.cs`, `CreatePedidoCommand.cs` e `CreatePedidoValidator.cs` com anotaÃ§Ãµes explicando cada responsabilidade.
 
-**Registro automático com `IEndpoint`:**
-Mostrar a interface e o `AddEndpointsFromAssembly` — nenhum slice precisa ser registrado manualmente em `Program.cs`.
+**Registro automÃ¡tico com `IEndpoint`:**
+Mostrar a interface e o `AddEndpointsFromAssembly` â€” nenhum slice precisa ser registrado manualmente em `Program.cs`.
 
-**Seção 3 — Modelo de Domínio Anêmico vs Rico**
+**SeÃ§Ã£o 3 â€” Modelo de DomÃ­nio AnÃªmico vs Rico**
 
-Comparação direta usando código do projeto:
+ComparaÃ§Ã£o direta usando cÃ³digo do projeto:
 
 ```csharp
-// ❌ Anêmico — Produto antes da refatoração
+// âŒ AnÃªmico â€” Produto antes da refatoraÃ§Ã£o
 public class Produto
 {
     public string Nome { get; set; } = "";
     public decimal Preco { get; set; }
-    // sem validação, sem comportamento
+    // sem validaÃ§Ã£o, sem comportamento
 }
-// Quem garante que Preco > 0? O Service. E se alguém setar diretamente?
+// Quem garante que Preco > 0? O Service. E se alguÃ©m setar diretamente?
 ```
 
 ```csharp
-// ✅ Rico — Produto atual (src/Models/Produto.cs)
+// âœ… Rico â€” Produto atual (src/Models/Produto.cs)
 public class Produto
 {
     public string Nome { get; private set; } = "";
@@ -627,29 +627,29 @@ public class Produto
 
     public static Result<Produto> Criar(string nome, decimal preco, ...)
     {
-        if (preco <= 0) return Result<Produto>.Fail("Preço deve ser maior que zero");
+        if (preco <= 0) return Result<Produto>.Fail("PreÃ§o deve ser maior que zero");
         // ...
     }
 
     public Result AtualizarPreco(decimal novoPreco)
     {
-        if (novoPreco <= 0) return Result.Fail("Preço inválido");
-        if (novoPreco == Preco) return Result.Fail("Preço já é esse valor");
+        if (novoPreco <= 0) return Result.Fail("PreÃ§o invÃ¡lido");
+        if (novoPreco == Preco) return Result.Fail("PreÃ§o jÃ¡ Ã© esse valor");
         Preco = novoPreco;
         return Result.Ok();
     }
 }
 ```
-Mostrar o código real de `src/Models/Produto.cs` (métodos principais).
+Mostrar o cÃ³digo real de `src/Models/Produto.cs` (mÃ©todos principais).
 
-**Seção 4 — Result Pattern**
+**SeÃ§Ã£o 4 â€” Result Pattern**
 
-Por que não usar exceptions para erros de domínio:
-- Exceptions são caras (stack trace)
-- Exceptions como controle de fluxo são "code smell"
-- Result torna o contrato explícito
+Por que nÃ£o usar exceptions para erros de domÃ­nio:
+- Exceptions sÃ£o caras (stack trace)
+- Exceptions como controle de fluxo sÃ£o "code smell"
+- Result torna o contrato explÃ­cito
 
-Mostrar o código real de `src/Features/Common/Result.cs`.
+Mostrar o cÃ³digo real de `src/Features/Common/Result.cs`.
 
 Como usar no endpoint:
 ```csharp
@@ -658,40 +658,40 @@ if (!result.IsSuccess)
     return TypedResults.BadRequest(new ErrorResponse { Detail = result.Error });
 ```
 
-**Seção 5 — Aggregate Root com Pedido**
+**SeÃ§Ã£o 5 â€” Aggregate Root com Pedido**
 
-O que é um aggregate: fronteira de consistência. Tudo que pertence ao `Pedido` muda junto.
+O que Ã© um aggregate: fronteira de consistÃªncia. Tudo que pertence ao `Pedido` muda junto.
 
-Regras encapsuladas no `Pedido` (listar com código real):
-- `AdicionarItem`: só em Rascunho, merge de quantidade, limite 20 itens
+Regras encapsuladas no `Pedido` (listar com cÃ³digo real):
+- `AdicionarItem`: sÃ³ em Rascunho, merge de quantidade, limite 20 itens
 - `Confirmar`: precisa de itens e valor >= R$ 10
-- `Cancelar`: motivo obrigatório, pedido já cancelado não pode cancelar de novo
+- `Cancelar`: motivo obrigatÃ³rio, pedido jÃ¡ cancelado nÃ£o pode cancelar de novo
 
-`PedidoItem` como entidade filha: preço e nome são **snapshots** do momento do pedido (o produto pode mudar de preço depois).
+`PedidoItem` como entidade filha: preÃ§o e nome sÃ£o **snapshots** do momento do pedido (o produto pode mudar de preÃ§o depois).
 
-**Seção 6 — Coexistência no Mesmo Projeto**
+**SeÃ§Ã£o 6 â€” CoexistÃªncia no Mesmo Projeto**
 
 ```
 Produtos (Horizontal)         Pedidos (Vertical Slice)
-─────────────────────         ──────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€         â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 Bom para: CRUD simples        Bom para: features com
-e equipes pequenas            regras de negócio ricas
+e equipes pequenas            regras de negÃ³cio ricas
 ```
 
 Ambos compartilham:
 - Mesmo `AppDbContext` (`DbSet<Produto>`, `DbSet<Pedido>`, `DbSet<PedidoItem>`)
 - Mesma pipeline JWT
-- Mesmo middleware de exceções
+- Mesmo middleware de exceÃ§Ãµes
 
-**Seção 7 — Onde Ver no Código**
+**SeÃ§Ã£o 7 â€” Onde Ver no CÃ³digo**
 
-Tabela mapeando conceito → arquivo do projeto.
+Tabela mapeando conceito â†’ arquivo do projeto.
 
 **Step 3: Verificar**
 
 ```bash
-# Verificar que todas as seções obrigatórias estão presentes
-grep -c "Anêmico\|Result\|Aggregate\|Coexist\|IEndpoint\|Vertical Slice" \
+# Verificar que todas as seÃ§Ãµes obrigatÃ³rias estÃ£o presentes
+grep -c "AnÃªmico\|Result\|Aggregate\|Coexist\|IEndpoint\|Vertical Slice" \
   docs/VERTICAL-SLICE-DOMINIO-RICO.md
 # Esperado: >= 6
 ```
@@ -700,17 +700,17 @@ grep -c "Anêmico\|Result\|Aggregate\|Coexist\|IEndpoint\|Vertical Slice" \
 
 ```bash
 git add docs/VERTICAL-SLICE-DOMINIO-RICO.md
-git commit -m "docs: criar guia conceitual de Vertical Slice Architecture e Domínio Rico"
+git commit -m "docs: criar guia conceitual de Vertical Slice Architecture e DomÃ­nio Rico"
 ```
 
 ---
 
-### Task 7: Adicionar capítulo de Pedidos ao MELHORES-PRATICAS-MINIMAL-API.md
+### Task 7: Adicionar capÃ­tulo de Pedidos ao MELHORES-PRATICAS-MINIMAL-API.md
 
 **Files:**
 - Modify: `docs/MELHORES-PRATICAS-MINIMAL-API.md`
 
-O guia de implementação atual só cobre Produtos. Adicionar um novo capítulo no final sobre como as práticas se aplicam ao caso Pedidos (Vertical Slice).
+O guia de implementaÃ§Ã£o atual sÃ³ cobre Produtos. Adicionar um novo capÃ­tulo no final sobre como as prÃ¡ticas se aplicam ao caso Pedidos (Vertical Slice).
 
 **Step 1: Ler o final do arquivo atual para saber onde inserir**
 
@@ -720,41 +720,41 @@ tail -50 docs/MELHORES-PRATICAS-MINIMAL-API.md
 
 **Step 2: Adicionar no final do arquivo**
 
-Adicionar nova seção (não alterar o conteúdo existente):
+Adicionar nova seÃ§Ã£o (nÃ£o alterar o conteÃºdo existente):
 
 ```markdown
 ---
 
-## Pedidos — Vertical Slice em Ação
+## Pedidos â€” Vertical Slice em AÃ§Ã£o
 
-Esta seção demonstra como as mesmas boas práticas se aplicam com Vertical Slice Architecture.
+Esta seÃ§Ã£o demonstra como as mesmas boas prÃ¡ticas se aplicam com Vertical Slice Architecture.
 
-### Registro Automático de Endpoints
+### Registro AutomÃ¡tico de Endpoints
 
-Em vez de registrar cada endpoint manualmente em `Program.cs`, os slices de Pedidos usam scan automático via `IEndpoint`:
+Em vez de registrar cada endpoint manualmente em `Program.cs`, os slices de Pedidos usam scan automÃ¡tico via `IEndpoint`:
 
-[mostrar código de IEndpoint.cs e AddEndpointsFromAssembly — ler de src/Features/Common/]
+[mostrar cÃ³digo de IEndpoint.cs e AddEndpointsFromAssembly â€” ler de src/Features/Common/]
 
 ### Anatomia de um Slice: CreatePedido
 
 **Endpoint** (`src/Features/Pedidos/CreatePedido/CreatePedidoEndpoint.cs`):
-[mostrar código real — só roteamento, sem lógica]
+[mostrar cÃ³digo real â€” sÃ³ roteamento, sem lÃ³gica]
 
 **Command/Handler** (`src/Features/Pedidos/CreatePedido/CreatePedidoCommand.cs`):
-[mostrar código real — lógica de aplicação, chama domínio]
+[mostrar cÃ³digo real â€” lÃ³gica de aplicaÃ§Ã£o, chama domÃ­nio]
 
 **Validator** (`src/Features/Pedidos/CreatePedido/CreatePedidoValidator.cs`):
-[mostrar código real — FluentValidation]
+[mostrar cÃ³digo real â€” FluentValidation]
 
 ### Result Pattern nos Endpoints
 
-Como o endpoint trata o `Result<T>` retornado pelo domínio:
-[exemplo de código mostrando if (!result.IsSuccess)]
+Como o endpoint trata o `Result<T>` retornado pelo domÃ­nio:
+[exemplo de cÃ³digo mostrando if (!result.IsSuccess)]
 
-### Referência
+### ReferÃªncia
 
-Para entender os conceitos por trás destes padrões:
-→ [VERTICAL-SLICE-DOMINIO-RICO.md](VERTICAL-SLICE-DOMINIO-RICO.md)
+Para entender os conceitos por trÃ¡s destes padrÃµes:
+â†’ [VERTICAL-SLICE-DOMINIO-RICO.md](VERTICAL-SLICE-DOMINIO-RICO.md)
 ```
 
 **Step 3: Verificar**
@@ -769,7 +769,7 @@ grep "Vertical Slice\|CreatePedido\|IEndpoint\|Result" \
 
 ```bash
 git add docs/MELHORES-PRATICAS-MINIMAL-API.md
-git commit -m "docs: adicionar capítulo de Pedidos (Vertical Slice) ao guia de implementação"
+git commit -m "docs: adicionar capÃ­tulo de Pedidos (Vertical Slice) ao guia de implementaÃ§Ã£o"
 ```
 
 ---
@@ -779,7 +779,7 @@ git commit -m "docs: adicionar capítulo de Pedidos (Vertical Slice) ao guia de 
 **Files:**
 - Modify: `docs/MELHORIAS-DOTNET-10.md`
 
-O guia atual cobre Typed Results, MapGroup, etc. — features usadas em Produtos. Adicionar features usadas nos slices de Pedidos.
+O guia atual cobre Typed Results, MapGroup, etc. â€” features usadas em Produtos. Adicionar features usadas nos slices de Pedidos.
 
 **Step 1: Ler o final do arquivo para saber onde inserir**
 
@@ -789,23 +789,23 @@ tail -30 docs/MELHORIAS-DOTNET-10.md
 
 **Step 2: Adicionar no final**
 
-Nova seção com três features obrigatórias:
+Nova seÃ§Ã£o com trÃªs features obrigatÃ³rias:
 
-**Feature: Scan automático de endpoints via reflection**
+**Feature: Scan automÃ¡tico de endpoints via reflection**
 ```csharp
-// Program.cs — nenhum slice é registrado manualmente
+// Program.cs â€” nenhum slice Ã© registrado manualmente
 builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 // ...
 app.MapRegisteredEndpoints();
 ```
-Mostrar o código real de `EndpointExtensions.cs`.
+Mostrar o cÃ³digo real de `EndpointExtensions.cs`.
 
 **Feature: Collection expressions (C# 12 / .NET 8+, adotado em .NET 10)**
 ```csharp
 // No aggregate Pedido
 private readonly List<PedidoItem> _itens = [];  // collection expression
 ```
-Antes: `new List<PedidoItem>()`. Mais conciso e legível.
+Antes: `new List<PedidoItem>()`. Mais conciso e legÃ­vel.
 
 **Feature: Primary constructors em handlers**
 ```csharp
@@ -816,7 +816,7 @@ public class CreatePedidoHandler(AppDbContext db)
     { ... }
 }
 ```
-Antes: campo `private readonly AppDbContext _db;` + construtor explícito.
+Antes: campo `private readonly AppDbContext _db;` + construtor explÃ­cito.
 
 **Step 3: Verificar**
 
@@ -841,53 +841,53 @@ git commit -m "docs: adicionar features .NET 10 usadas nos slices de Pedidos"
 - Modify: `docs/ENTREGA-FINAL.md`
 - Modify: `docs/CHECKLIST.md`
 
-**ENTREGA-FINAL.md — mudanças obrigatórias:**
+**ENTREGA-FINAL.md â€” mudanÃ§as obrigatÃ³rias:**
 
-1. Título "Três Pilares Educacionais" → "Quatro Pilares Educacionais" (adicionar o novo guia VERTICAL-SLICE-DOMINIO-RICO.md como pilar 4)
-2. Seção "Aplicação Executável": atualizar "6 endpoints" → "11 endpoints (6 Produtos + 5 Pedidos)"
-3. Seção "Arquitetura": substituir o diagrama de camadas único por:
+1. TÃ­tulo "TrÃªs Pilares Educacionais" â†’ "Quatro Pilares Educacionais" (adicionar o novo guia VERTICAL-SLICE-DOMINIO-RICO.md como pilar 4)
+2. SeÃ§Ã£o "AplicaÃ§Ã£o ExecutÃ¡vel": atualizar "6 endpoints" â†’ "11 endpoints (6 Produtos + 5 Pedidos)"
+3. SeÃ§Ã£o "Arquitetura": substituir o diagrama de camadas Ãºnico por:
 ```
-Produtos: Endpoint → Service → Data (Horizontal Layers)
-Pedidos:  Slice (Command+Handler+Validator+Endpoint) → Data (Vertical Slice)
+Produtos: Endpoint â†’ Service â†’ Data (Horizontal Layers)
+Pedidos:  Slice (Command+Handler+Validator+Endpoint) â†’ Data (Vertical Slice)
 ```
-4. Seção "O Que Você Aprenderá" — adicionar ao bloco Arquitetural:
+4. SeÃ§Ã£o "O Que VocÃª AprenderÃ¡" â€” adicionar ao bloco Arquitetural:
 ```
 - Vertical Slice Architecture
 - Aggregate Root e Domain-Driven Design
 - Result Pattern
 ```
-5. Seção "Tecnologias" — corrigir versão ".NET" de "9 LTS" para "10 LTS" (erro no doc atual), remover versões desatualizadas
-6. Remover "Próximos Passos" que sugere adicionar autenticação JWT e testes (ambos já existem)
-7. Data/versão no rodapé: `27 de Fevereiro de 2026` / `3.0.0`
+5. SeÃ§Ã£o "Tecnologias" â€” corrigir versÃ£o ".NET" de "9 LTS" para "10 LTS" (erro no doc atual), remover versÃµes desatualizadas
+6. Remover "PrÃ³ximos Passos" que sugere adicionar autenticaÃ§Ã£o JWT e testes (ambos jÃ¡ existem)
+7. Data/versÃ£o no rodapÃ©: `27 de Fevereiro de 2026` / `3.0.0`
 
-**CHECKLIST.md — mudanças obrigatórias:**
+**CHECKLIST.md â€” mudanÃ§as obrigatÃ³rias:**
 
-Ler o arquivo inteiro primeiro. Adicionar nova seção ao final:
+Ler o arquivo inteiro primeiro. Adicionar nova seÃ§Ã£o ao final:
 
 ```markdown
 ## Features/Pedidos (Vertical Slice)
 
-### Domínio
-- [x] `src/Features/Pedidos/Domain/Pedido.cs` — Aggregate root com regras de negócio
-- [x] `src/Features/Pedidos/Domain/PedidoItem.cs` — Entity filha (snapshot de preço)
-- [x] `src/Features/Pedidos/Domain/StatusPedido.cs` — Enum: Rascunho, Confirmado, Cancelado
-- [x] `src/Features/Common/Result.cs` — Result pattern para erros de domínio
+### DomÃ­nio
+- [x] `src/Features/Pedidos/Domain/Pedido.cs` â€” Aggregate root com regras de negÃ³cio
+- [x] `src/Features/Pedidos/Domain/PedidoItem.cs` â€” Entity filha (snapshot de preÃ§o)
+- [x] `src/Features/Pedidos/Domain/StatusPedido.cs` â€” Enum: Rascunho, Confirmado, Cancelado
+- [x] `src/Features/Common/Result.cs` â€” Result pattern para erros de domÃ­nio
 
 ### Slices
-- [x] `CreatePedido/` — POST /api/v1/pedidos (Command + Validator + Endpoint)
-- [x] `GetPedido/` — GET /api/v1/pedidos/{id}
-- [x] `ListPedidos/` — GET /api/v1/pedidos (paginação + filtro por status)
-- [x] `AddItemPedido/` — POST /api/v1/pedidos/{id}/itens
-- [x] `CancelPedido/` — POST /api/v1/pedidos/{id}/cancelar
+- [x] `CreatePedido/` â€” POST /api/v1/pedidos (Command + Validator + Endpoint)
+- [x] `GetPedido/` â€” GET /api/v1/pedidos/{id}
+- [x] `ListPedidos/` â€” GET /api/v1/pedidos (paginaÃ§Ã£o + filtro por status)
+- [x] `AddItemPedido/` â€” POST /api/v1/pedidos/{id}/itens
+- [x] `CancelPedido/` â€” POST /api/v1/pedidos/{id}/cancelar
 
 ### Infraestrutura
-- [x] `IEndpoint` + `AddEndpointsFromAssembly` — registro automático
-- [x] `AppDbContext` — DbSet<Pedido> e DbSet<PedidoItem> configurados
+- [x] `IEndpoint` + `AddEndpointsFromAssembly` â€” registro automÃ¡tico
+- [x] `AppDbContext` â€” DbSet<Pedido> e DbSet<PedidoItem> configurados
 
 ### Testes
-- [x] `ProdutosAPI.Tests/Unit/Domain/PedidoTests.cs` — 16 testes de domínio
-- [x] `ProdutosAPI.Tests/Integration/` — 13 testes de integração HTTP
-- [x] `ProdutosAPI.Tests/Builders/ProdutoBuilder.cs` — builder para testes
+- [x] `FacShopAPI.Tests/Unit/Domain/PedidoTests.cs` â€” 16 testes de domÃ­nio
+- [x] `FacShopAPI.Tests/Integration/` â€” 13 testes de integraÃ§Ã£o HTTP
+- [x] `FacShopAPI.Tests/Builders/ProdutoBuilder.cs` â€” builder para testes
 ```
 
 **Step 1: Ler os arquivos**
@@ -897,7 +897,7 @@ cat docs/ENTREGA-FINAL.md
 cat docs/CHECKLIST.md
 ```
 
-**Step 2: Aplicar as mudanças descritas acima**
+**Step 2: Aplicar as mudanÃ§as descritas acima**
 
 **Step 3: Verificar**
 
@@ -923,7 +923,7 @@ git commit -m "docs: atualizar ENTREGA-FINAL e CHECKLIST para refletir Pedidos e
 **Files:**
 - Modify: `docs/INICIO-RAPIDO.md`
 
-O guia atual não menciona autenticação nem Pedidos, e ainda sugere "como adicionar autenticação JWT" como próximo passo (já existe).
+O guia atual nÃ£o menciona autenticaÃ§Ã£o nem Pedidos, e ainda sugere "como adicionar autenticaÃ§Ã£o JWT" como prÃ³ximo passo (jÃ¡ existe).
 
 **Step 1: Ler o arquivo atual**
 
@@ -931,23 +931,23 @@ O guia atual não menciona autenticação nem Pedidos, e ainda sugere "como adic
 cat docs/INICIO-RAPIDO.md
 ```
 
-**Step 2: Aplicar as seguintes mudanças**
+**Step 2: Aplicar as seguintes mudanÃ§as**
 
-1. **Seção "Três Documentos Principais"** — adicionar como item 4:
+1. **SeÃ§Ã£o "TrÃªs Documentos Principais"** â€” adicionar como item 4:
 ```markdown
-### 4️⃣ Vertical Slice e Domínio Rico
+### 4ï¸âƒ£ Vertical Slice e DomÃ­nio Rico
 **Arquivo**: [VERTICAL-SLICE-DOMINIO-RICO.md](VERTICAL-SLICE-DOMINIO-RICO.md)
-Guia conceitual sobre os padrões usados no caso de uso de Pedidos.
+Guia conceitual sobre os padrÃµes usados no caso de uso de Pedidos.
 ```
 
-2. **Seção "Fluxo de Aprendizado"** — substituir o fluxo único pelas duas trilhas (apontar para INDEX.md para o detalhe).
+2. **SeÃ§Ã£o "Fluxo de Aprendizado"** â€” substituir o fluxo Ãºnico pelas duas trilhas (apontar para INDEX.md para o detalhe).
 
-3. **Seção "Testar a API"** — adicionar após os exemplos de Produto:
+3. **SeÃ§Ã£o "Testar a API"** â€” adicionar apÃ³s os exemplos de Produto:
 
 ```markdown
-### Testar Pedidos (requer autenticação)
+### Testar Pedidos (requer autenticaÃ§Ã£o)
 
-**Passo 1 — Obter token JWT:**
+**Passo 1 â€” Obter token JWT:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/auth/login \
   -H "Content-Type: application/json" \
@@ -955,7 +955,7 @@ curl -X POST http://localhost:5000/api/v1/auth/login \
 ```
 Copie o campo `token` da resposta.
 
-**Passo 2 — Criar um pedido:**
+**Passo 2 â€” Criar um pedido:**
 ```bash
 TOKEN="seu_token_aqui"
 curl -X POST http://localhost:5000/api/v1/pedidos \
@@ -964,7 +964,7 @@ curl -X POST http://localhost:5000/api/v1/pedidos \
   -d '{}'
 ```
 
-**Passo 3 — Adicionar item:**
+**Passo 3 â€” Adicionar item:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/pedidos/1/itens \
   -H "Authorization: Bearer $TOKEN" \
@@ -972,18 +972,18 @@ curl -X POST http://localhost:5000/api/v1/pedidos/1/itens \
   -d '{"produtoId": 1, "quantidade": 2}'
 ```
 
-4. **Tabela "Conceitos Demonstrados"** — adicionar linhas:
+4. **Tabela "Conceitos Demonstrados"** â€” adicionar linhas:
 ```markdown
 | **Vertical Slice** | [src/Features/Pedidos/](../src/Features/Pedidos/) |
-| **Domínio Rico** | [src/Models/Produto.cs](../src/Models/Produto.cs) |
+| **DomÃ­nio Rico** | [src/Models/Produto.cs](../src/Models/Produto.cs) |
 | **Result Pattern** | [src/Features/Common/Result.cs](../src/Features/Common/Result.cs) |
 ```
 
-5. **FAQ** — substituir "Como adicionar autenticação JWT?" por "Como funciona a autenticação?" com resposta descrevendo o que já existe.
+5. **FAQ** â€” substituir "Como adicionar autenticaÃ§Ã£o JWT?" por "Como funciona a autenticaÃ§Ã£o?" com resposta descrevendo o que jÃ¡ existe.
 
-6. **"Próximos Passos"** — remover itens já implementados (autenticação JWT, testes — ambos já existem).
+6. **"PrÃ³ximos Passos"** â€” remover itens jÃ¡ implementados (autenticaÃ§Ã£o JWT, testes â€” ambos jÃ¡ existem).
 
-7. Data/versão no rodapé: `27 de Fevereiro de 2026` / `3.0.0`
+7. Data/versÃ£o no rodapÃ©: `27 de Fevereiro de 2026` / `3.0.0`
 
 **Step 3: Verificar**
 
@@ -1001,7 +1001,7 @@ git commit -m "docs: atualizar INICIO-RAPIDO com auth JWT e exemplos de Pedidos"
 
 ---
 
-### Task 11: Verificação final e push
+### Task 11: VerificaÃ§Ã£o final e push
 
 **Step 1: Confirmar que todos os arquivos foram atualizados**
 
@@ -1014,7 +1014,7 @@ git log --oneline -15
 
 Verificar que os arquivos referenciados existem:
 ```bash
-# Links críticos que devem existir
+# Links crÃ­ticos que devem existir
 ls docs/VERTICAL-SLICE-DOMINIO-RICO.md
 ls docs/MELHORES-PRATICAS-API.md
 ls docs/MELHORES-PRATICAS-MINIMAL-API.md
@@ -1024,7 +1024,7 @@ ls docs/CHECKLIST.md
 ls docs/ENTREGA-FINAL.md
 ls docs/INICIO-RAPIDO.md
 ls docs/INDEX.md
-ls ProdutosAPI.Tests/ESTRATEGIA-DE-TESTES.md
+ls FacShopAPI.Tests/ESTRATEGIA-DE-TESTES.md
 ls src/Features/Pedidos/Domain/Pedido.cs
 ls src/Features/Common/Result.cs
 ```

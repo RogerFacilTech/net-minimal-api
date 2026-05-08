@@ -1,10 +1,10 @@
-# Fase 1 — Migrar Produtos → Catálogo
+﻿# Fase 1 â€” Migrar Produtos â†’ CatÃ¡logo
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Renomear o bounded context `Produtos` para `Catálogo`, reorganizar rotas para `/api/v1/catalogo/produtos`, e preparar a estrutura para os novos recursos.
+**Goal:** Renomear o bounded context `Produtos` para `CatÃ¡logo`, reorganizar rotas para `/api/v1/catalogo/produtos`, e preparar a estrutura para os novos recursos.
 
-**Architecture:** 4 sub-projetos existentes (`Produtos.Domain`, `.Application`, `.Infrastructure`, `.API`) são renomeados para `Catalogo.*`. Namespaces mudam de `ProdutosAPI.Produtos.*` para `ProdutosAPI.Catalogo.*`. `IProdutoContext` vira `ICatalogoContext`. Route group manual: `app.MapGroup("/api/v1/catalogo")`.
+**Architecture:** 4 sub-projetos existentes (`Produtos.Domain`, `.Application`, `.Infrastructure`, `.API`) sÃ£o renomeados para `Catalogo.*`. Namespaces mudam de `FacShopAPI.Produtos.*` para `FacShopAPI.Catalogo.*`. `IProdutoContext` vira `ICatalogoContext`. Route group manual: `app.MapGroup("/api/v1/catalogo")`.
 
 **Tech Stack:** .NET 10, EF Core 10, Dapper, FluentValidation, AutoMapper, xUnit, FluentAssertions.
 
@@ -19,7 +19,7 @@
 - Create: `src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj`
 - Create: `src/Catalogo/Catalogo.API/Catalogo.API.csproj`
 
-- [ ] **Step 1: Criar diretórios**
+- [ ] **Step 1: Criar diretÃ³rios**
 
 ```bash
 mkdir -p src/Catalogo/Catalogo.Domain/Common
@@ -48,12 +48,12 @@ Crie `src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj`:
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.Domain</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.Domain</RootNamespace>
     <AssemblyName>Catalogo.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>ProdutosAPI.Tests</_Parameter1>
+      <_Parameter1>FacShopAPI.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 </Project>
@@ -69,7 +69,7 @@ Crie `src/Catalogo/Catalogo.Application/Catalogo.Application.csproj`:
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.Application</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.Application</RootNamespace>
     <AssemblyName>Catalogo.Application</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -93,7 +93,7 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj`:
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.Infrastructure</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.Infrastructure</RootNamespace>
     <AssemblyName>Catalogo.Infrastructure</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -119,7 +119,7 @@ Crie `src/Catalogo/Catalogo.API/Catalogo.API.csproj`:
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.API</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.API</RootNamespace>
     <AssemblyName>Catalogo.API</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -140,7 +140,7 @@ Crie `src/Catalogo/Catalogo.API/Catalogo.API.csproj`:
 
 ---
 
-### Task 2: Criar Catalogo.Domain — Result, ValueObjects e Produto
+### Task 2: Criar Catalogo.Domain â€” Result, ValueObjects e Produto
 
 **Files:**
 
@@ -156,7 +156,7 @@ Crie `src/Catalogo/Catalogo.API/Catalogo.API.csproj`:
 Crie `src/Catalogo/Catalogo.Domain/Common/Result.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Domain.Common;
+namespace FacShopAPI.Catalogo.Domain.Common;
 
 public record Result(bool IsSuccess, string? Error = null)
 {
@@ -176,9 +176,9 @@ public record Result<T>(bool IsSuccess, T? Value, string? Error = null)
 Crie `src/Catalogo/Catalogo.Domain/ValueObjects/PrecoProduto.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace FacShopAPI.Catalogo.Domain.ValueObjects;
 
 public sealed record PrecoProduto
 {
@@ -189,7 +189,7 @@ public sealed record PrecoProduto
     public static Result<PrecoProduto> Criar(decimal value)
     {
         if (value < Minimo)
-            return Result<PrecoProduto>.Fail("Preço deve ser maior que zero.");
+            return Result<PrecoProduto>.Fail("PreÃ§o deve ser maior que zero.");
         return Result<PrecoProduto>.Ok(new PrecoProduto(value));
     }
 
@@ -211,9 +211,9 @@ public sealed record PrecoProduto
 Crie `src/Catalogo/Catalogo.Domain/ValueObjects/EstoqueProduto.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace FacShopAPI.Catalogo.Domain.ValueObjects;
 
 public sealed record EstoqueProduto
 {
@@ -224,9 +224,9 @@ public sealed record EstoqueProduto
     public static Result<EstoqueProduto> Criar(int value)
     {
         if (value < 0)
-            return Result<EstoqueProduto>.Fail("Estoque não pode ser negativo.");
+            return Result<EstoqueProduto>.Fail("Estoque nÃ£o pode ser negativo.");
         if (value > Maximo)
-            return Result<EstoqueProduto>.Fail($"Estoque não pode exceder {Maximo} unidades.");
+            return Result<EstoqueProduto>.Fail($"Estoque nÃ£o pode exceder {Maximo} unidades.");
         return Result<EstoqueProduto>.Ok(new EstoqueProduto(value));
     }
 
@@ -240,9 +240,9 @@ public sealed record EstoqueProduto
 Crie `src/Catalogo/Catalogo.Domain/ValueObjects/DescricaoProduto.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace FacShopAPI.Catalogo.Domain.ValueObjects;
 
 public sealed record DescricaoProduto
 {
@@ -252,9 +252,9 @@ public sealed record DescricaoProduto
     public static Result<DescricaoProduto> Criar(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length < 10)
-            return Result<DescricaoProduto>.Fail("Descrição deve ter ao menos 10 caracteres.");
+            return Result<DescricaoProduto>.Fail("DescriÃ§Ã£o deve ter ao menos 10 caracteres.");
         if (value.Length > 500)
-            return Result<DescricaoProduto>.Fail("Descrição não pode exceder 500 caracteres.");
+            return Result<DescricaoProduto>.Fail("DescriÃ§Ã£o nÃ£o pode exceder 500 caracteres.");
         return Result<DescricaoProduto>.Ok(new DescricaoProduto(value));
     }
 
@@ -268,14 +268,14 @@ public sealed record DescricaoProduto
 Crie `src/Catalogo/Catalogo.Domain/ValueObjects/CategoriaProduto.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.Common;
 
-namespace ProdutosAPI.Catalogo.Domain.ValueObjects;
+namespace FacShopAPI.Catalogo.Domain.ValueObjects;
 
 public sealed record CategoriaProduto
 {
     private static readonly string[] CategoriasValidas =
-        ["Eletrônicos", "Livros", "Roupas", "Alimentos", "Outros"];
+        ["EletrÃ´nicos", "Livros", "Roupas", "Alimentos", "Outros"];
 
     private CategoriaProduto(string value) => Value = value;
     public string Value { get; }
@@ -284,7 +284,7 @@ public sealed record CategoriaProduto
     {
         if (!CategoriasValidas.Contains(value))
             return Result<CategoriaProduto>.Fail(
-                $"Categoria inválida. Válidas: {string.Join(", ", CategoriasValidas)}");
+                $"Categoria invÃ¡lida. VÃ¡lidas: {string.Join(", ", CategoriasValidas)}");
         return Result<CategoriaProduto>.Ok(new CategoriaProduto(value));
     }
 
@@ -295,13 +295,13 @@ public sealed record CategoriaProduto
 
 - [ ] **Step 6: Criar Produto.cs**
 
-Crie `src/Catalogo/Catalogo.Domain/Produto.cs` — cópia do arquivo original com namespaces atualizados:
+Crie `src/Catalogo/Catalogo.Domain/Produto.cs` â€” cÃ³pia do arquivo original com namespaces atualizados:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain.Common;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using FacShopAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Domain.ValueObjects;
 
-namespace ProdutosAPI.Catalogo.Domain;
+namespace FacShopAPI.Catalogo.Domain;
 
 public class Produto
 {
@@ -328,7 +328,7 @@ public class Produto
         if (string.IsNullOrWhiteSpace(nome) || nome.Length < 3)
             return Result<Produto>.Fail("Nome deve ter ao menos 3 caracteres.");
         if (string.IsNullOrWhiteSpace(email))
-            return Result<Produto>.Fail("Email de contato é obrigatório.");
+            return Result<Produto>.Fail("Email de contato Ã© obrigatÃ³rio.");
 
         var descricaoResult = DescricaoProduto.Criar(descricao);
         if (!descricaoResult.IsSuccess) return Result<Produto>.Fail(descricaoResult.Error!);
@@ -379,7 +379,7 @@ public class Produto
     {
         var precoResult = PrecoProduto.Criar(novoPreco);
         if (!precoResult.IsSuccess) return Result.Fail(precoResult.Error!);
-        if (precoResult.Value!.Value == Preco.Value) return Result.Fail("Novo preço é igual ao preço atual.");
+        if (precoResult.Value!.Value == Preco.Value) return Result.Fail("Novo preÃ§o Ã© igual ao preÃ§o atual.");
         Preco = precoResult.Value;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -407,7 +407,7 @@ public class Produto
         }
         if (email is not null)
         {
-            if (string.IsNullOrWhiteSpace(email)) return Result.Fail("Email de contato é obrigatório.");
+            if (string.IsNullOrWhiteSpace(email)) return Result.Fail("Email de contato Ã© obrigatÃ³rio.");
             ContatoEmail = email;
         }
         DataAtualizacao = DateTime.UtcNow;
@@ -416,10 +416,10 @@ public class Produto
 
     public Result ReporEstoque(int quantidade)
     {
-        if (quantidade <= 0) return Result.Fail("Quantidade de reposição deve ser positiva.");
+        if (quantidade <= 0) return Result.Fail("Quantidade de reposiÃ§Ã£o deve ser positiva.");
         var novoEstoque = Estoque.Value + quantidade;
         if (novoEstoque > EstoqueMaximo)
-            return Result.Fail($"Estoque não pode exceder {EstoqueMaximo} unidades.");
+            return Result.Fail($"Estoque nÃ£o pode exceder {EstoqueMaximo} unidades.");
         Estoque = EstoqueProduto.Reconstituir(novoEstoque);
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -427,7 +427,7 @@ public class Produto
 
     public Result Desativar()
     {
-        if (!Ativo) return Result.Fail("Produto já está inativo.");
+        if (!Ativo) return Result.Fail("Produto jÃ¡ estÃ¡ inativo.");
         Ativo = false;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -475,9 +475,9 @@ Esperado: `Build succeeded, 0 errors`.
 Crie `src/Catalogo/Catalogo.Application/Interfaces/ICatalogoContext.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Interfaces;
+namespace FacShopAPI.Catalogo.Application.Interfaces;
 
 public interface ICatalogoContext
 {
@@ -492,9 +492,9 @@ public interface ICatalogoContext
 Crie `src/Catalogo/Catalogo.Application/Repositories/IProdutoCommandRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IProdutoCommandRepository
 {
@@ -510,9 +510,9 @@ public interface IProdutoCommandRepository
 Crie `src/Catalogo/Catalogo.Application/Repositories/IProdutoQueryRepository.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Repositories;
+namespace FacShopAPI.Catalogo.Application.Repositories;
 
 public interface IProdutoQueryRepository
 {
@@ -527,7 +527,7 @@ public interface IProdutoQueryRepository
 Crie `src/Catalogo/Catalogo.Application/DTOs/Produto/ProdutoDTO.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Application.DTOs.Produto;
+namespace FacShopAPI.Catalogo.Application.DTOs.Produto;
 
 public class CriarProdutoRequest
 {
@@ -569,10 +569,10 @@ public class ProdutoResponse
 Crie `src/Catalogo/Catalogo.Application/Services/IProdutoService.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public interface IProdutoService
 {
@@ -593,12 +593,12 @@ Crie `src/Catalogo/Catalogo.Application/Services/ProdutoService.cs`:
 ```csharp
 using AutoMapper;
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Catalogo.Application.Services;
+namespace FacShopAPI.Catalogo.Application.Services;
 
 public class ProdutoService : IProdutoService
 {
@@ -643,7 +643,7 @@ public class ProdutoService : IProdutoService
     {
         _logger.LogInformation("Obtendo produto com ID: {ProductId}", id);
         var produto = await _queryRepo.ObterPorIdAsync(id);
-        if (produto is null) _logger.LogWarning("Produto {ProductId} não encontrado", id);
+        if (produto is null) _logger.LogWarning("Produto {ProductId} nÃ£o encontrado", id);
         return produto;
     }
 
@@ -700,7 +700,7 @@ public class ProdutoService : IProdutoService
     {
         _logger.LogInformation("Deletando produto {ProductId}", id);
         var deletado = await _commandRepo.DeletarAsync(id);
-        if (!deletado) _logger.LogWarning("Produto {ProductId} não encontrado para deleção", id);
+        if (!deletado) _logger.LogWarning("Produto {ProductId} nÃ£o encontrado para deleÃ§Ã£o", id);
         return deletado;
     }
 }
@@ -712,34 +712,34 @@ Crie `src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs`:
 
 ```csharp
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
 
-namespace ProdutosAPI.Catalogo.Application.Validators;
+namespace FacShopAPI.Catalogo.Application.Validators;
 
 public class CriarProdutoValidator : AbstractValidator<CriarProdutoRequest>
 {
     public CriarProdutoValidator()
     {
-        RuleFor(p => p.Nome).NotEmpty().WithMessage("Nome é obrigatório")
-            .MinimumLength(3).WithMessage("Nome deve ter no mínimo 3 caracteres")
-            .MaximumLength(100).WithMessage("Nome não pode exceder 100 caracteres");
+        RuleFor(p => p.Nome).NotEmpty().WithMessage("Nome Ã© obrigatÃ³rio")
+            .MinimumLength(3).WithMessage("Nome deve ter no mÃ­nimo 3 caracteres")
+            .MaximumLength(100).WithMessage("Nome nÃ£o pode exceder 100 caracteres");
 
-        RuleFor(p => p.Descricao).NotEmpty().WithMessage("Descrição é obrigatória")
-            .MinimumLength(10).WithMessage("Descrição deve ter no mínimo 10 caracteres")
-            .MaximumLength(500).WithMessage("Descrição não pode exceder 500 caracteres");
+        RuleFor(p => p.Descricao).NotEmpty().WithMessage("DescriÃ§Ã£o Ã© obrigatÃ³ria")
+            .MinimumLength(10).WithMessage("DescriÃ§Ã£o deve ter no mÃ­nimo 10 caracteres")
+            .MaximumLength(500).WithMessage("DescriÃ§Ã£o nÃ£o pode exceder 500 caracteres");
 
-        RuleFor(p => p.Preco).GreaterThan(0).WithMessage("Preço deve ser maior que zero")
-            .LessThan(999999.99m).WithMessage("Preço não pode ser tão alto");
+        RuleFor(p => p.Preco).GreaterThan(0).WithMessage("PreÃ§o deve ser maior que zero")
+            .LessThan(999999.99m).WithMessage("PreÃ§o nÃ£o pode ser tÃ£o alto");
 
-        RuleFor(p => p.Categoria).NotEmpty().WithMessage("Categoria é obrigatória")
-            .Must(c => new[] { "Eletrônicos", "Livros", "Roupas", "Alimentos", "Outros" }.Contains(c))
-            .WithMessage("Categoria inválida");
+        RuleFor(p => p.Categoria).NotEmpty().WithMessage("Categoria Ã© obrigatÃ³ria")
+            .Must(c => new[] { "EletrÃ´nicos", "Livros", "Roupas", "Alimentos", "Outros" }.Contains(c))
+            .WithMessage("Categoria invÃ¡lida");
 
-        RuleFor(p => p.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque não pode ser negativo")
+        RuleFor(p => p.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque nÃ£o pode ser negativo")
             .LessThan(1000000).WithMessage("Estoque muito alto");
 
-        RuleFor(p => p.ContatoEmail).NotEmpty().WithMessage("Email é obrigatório")
-            .EmailAddress().WithMessage("Email inválido");
+        RuleFor(p => p.ContatoEmail).NotEmpty().WithMessage("Email Ã© obrigatÃ³rio")
+            .EmailAddress().WithMessage("Email invÃ¡lido");
     }
 }
 
@@ -747,23 +747,23 @@ public class AtualizarProdutoValidator : AbstractValidator<AtualizarProdutoReque
 {
     public AtualizarProdutoValidator()
     {
-        RuleFor(p => p.Nome).MinimumLength(3).WithMessage("Nome deve ter no mínimo 3 caracteres")
+        RuleFor(p => p.Nome).MinimumLength(3).WithMessage("Nome deve ter no mÃ­nimo 3 caracteres")
             .MaximumLength(100).When(p => !string.IsNullOrEmpty(p.Nome));
 
-        RuleFor(p => p.Descricao).MinimumLength(10).WithMessage("Descrição deve ter no mínimo 10 caracteres")
+        RuleFor(p => p.Descricao).MinimumLength(10).WithMessage("DescriÃ§Ã£o deve ter no mÃ­nimo 10 caracteres")
             .MaximumLength(500).When(p => !string.IsNullOrEmpty(p.Descricao));
 
-        RuleFor(p => p.Preco).GreaterThan(0).WithMessage("Preço deve ser maior que zero")
+        RuleFor(p => p.Preco).GreaterThan(0).WithMessage("PreÃ§o deve ser maior que zero")
             .When(p => p.Preco.HasValue);
 
         RuleFor(p => p.Categoria)
-            .Must(c => new[] { "Eletrônicos", "Livros", "Roupas", "Alimentos", "Outros" }.Contains(c))
-            .WithMessage("Categoria inválida").When(p => !string.IsNullOrEmpty(p.Categoria));
+            .Must(c => new[] { "EletrÃ´nicos", "Livros", "Roupas", "Alimentos", "Outros" }.Contains(c))
+            .WithMessage("Categoria invÃ¡lida").When(p => !string.IsNullOrEmpty(p.Categoria));
 
-        RuleFor(p => p.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque não pode ser negativo")
+        RuleFor(p => p.Estoque).GreaterThanOrEqualTo(0).WithMessage("Estoque nÃ£o pode ser negativo")
             .When(p => p.Estoque.HasValue);
 
-        RuleFor(p => p.ContatoEmail).EmailAddress().WithMessage("Email inválido")
+        RuleFor(p => p.ContatoEmail).EmailAddress().WithMessage("Email invÃ¡lido")
             .When(p => !string.IsNullOrEmpty(p.ContatoEmail));
     }
 }
@@ -775,10 +775,10 @@ Crie `src/Catalogo/Catalogo.Application/Mappings/ProdutoMappingProfile.cs`:
 
 ```csharp
 using AutoMapper;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Application.Mappings;
+namespace FacShopAPI.Catalogo.Application.Mappings;
 
 public class ProdutoMappingProfile : Profile
 {
@@ -817,11 +817,11 @@ Crie `src/Catalogo/Catalogo.Infrastructure/Repositories/EfProdutoCommandReposito
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Repositories;
+namespace FacShopAPI.Catalogo.Infrastructure.Repositories;
 
 public class EfProdutoCommandRepository(ICatalogoContext context) : IProdutoCommandRepository
 {
@@ -859,11 +859,11 @@ using System.Text;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Repositories;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Queries;
+namespace FacShopAPI.Catalogo.Infrastructure.Queries;
 
 public class DapperProdutoQueryRepository : IProdutoQueryRepository
 {
@@ -874,7 +874,7 @@ public class DapperProdutoQueryRepository : IProdutoQueryRepository
     {
         _dbContext = context as DbContext
             ?? throw new InvalidOperationException(
-                "ICatalogoContext precisa ser uma implementação de DbContext para suportar Dapper.");
+                "ICatalogoContext precisa ser uma implementaÃ§Ã£o de DbContext para suportar Dapper.");
         _logger = logger;
     }
 
@@ -959,10 +959,10 @@ FROM Produtos WHERE Id = @Id AND Ativo = 1;";
 Crie `src/Catalogo/Catalogo.Infrastructure/Data/DbSeeder.cs`:
 
 ```csharp
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Domain;
 
-namespace ProdutosAPI.Catalogo.Infrastructure.Data;
+namespace FacShopAPI.Catalogo.Infrastructure.Data;
 
 public static class DbSeeder
 {
@@ -972,14 +972,14 @@ public static class DbSeeder
 
         var produtos = new[]
         {
-            Produto.Criar("Notebook Dell XPS 13", "Notebook de alta performance com processador Intel Core i7, 16GB RAM e 512GB SSD", 4500.00m, "Eletrônicos", 5, "vendas@dell.com").Value!,
-            Produto.Criar("Mouse Logitech MX Master 3S", "Mouse wireless de precisão profissional com múltiplos botões e rastreamento avançado", 450.00m, "Eletrônicos", 25, "suporte@logitech.com").Value!,
-            Produto.Criar("Teclado Mecânico RGB", "Teclado mecânico com iluminação RGB, switches Cherry MX e design compacto", 350.00m, "Eletrônicos", 15, "contato@keyboards.com.br").Value!,
-            Produto.Criar("Clean Code", "Guia prático para escrever código limpo e manutenível. Essencial para todo desenvolvedor", 89.90m, "Livros", 30, "vendas@books.com").Value!,
-            Produto.Criar("Design Patterns", "Padrões de design reutilizáveis para desenvolvimento de software. Referência obrigatória", 75.00m, "Livros", 20, "vendas@books.com").Value!,
-            Produto.Criar("Camiseta técnica Azul", "Camiseta de poliéster com tecnologia anti-transpiração, disponível em vários tamanhos", 79.90m, "Roupas", 50, "vendas@clothing.com.br").Value!,
-            Produto.Criar("Café Gourmet 500g", "Café gourmet especial com grãos selecionados de plantações premium da região", 45.00m, "Alimentos", 100, "vendas@coffee.com.br").Value!,
-            Produto.Criar("Monitor LG UltraWide 34\"", "Monitor curvo ultrawide com resolução 3440x1440, ideal para produtividade e games", 1899.00m, "Eletrônicos", 3, "suporte@lg.com.br").Value!
+            Produto.Criar("Notebook Dell XPS 13", "Notebook de alta performance com processador Intel Core i7, 16GB RAM e 512GB SSD", 4500.00m, "EletrÃ´nicos", 5, "vendas@dell.com").Value!,
+            Produto.Criar("Mouse Logitech MX Master 3S", "Mouse wireless de precisÃ£o profissional com mÃºltiplos botÃµes e rastreamento avanÃ§ado", 450.00m, "EletrÃ´nicos", 25, "suporte@logitech.com").Value!,
+            Produto.Criar("Teclado MecÃ¢nico RGB", "Teclado mecÃ¢nico com iluminaÃ§Ã£o RGB, switches Cherry MX e design compacto", 350.00m, "EletrÃ´nicos", 15, "contato@keyboards.com.br").Value!,
+            Produto.Criar("Clean Code", "Guia prÃ¡tico para escrever cÃ³digo limpo e manutenÃ­vel. Essencial para todo desenvolvedor", 89.90m, "Livros", 30, "vendas@books.com").Value!,
+            Produto.Criar("Design Patterns", "PadrÃµes de design reutilizÃ¡veis para desenvolvimento de software. ReferÃªncia obrigatÃ³ria", 75.00m, "Livros", 20, "vendas@books.com").Value!,
+            Produto.Criar("Camiseta tÃ©cnica Azul", "Camiseta de poliÃ©ster com tecnologia anti-transpiraÃ§Ã£o, disponÃ­vel em vÃ¡rios tamanhos", 79.90m, "Roupas", 50, "vendas@clothing.com.br").Value!,
+            Produto.Criar("CafÃ© Gourmet 500g", "CafÃ© gourmet especial com grÃ£os selecionados de plantaÃ§Ãµes premium da regiÃ£o", 45.00m, "Alimentos", 100, "vendas@coffee.com.br").Value!,
+            Produto.Criar("Monitor LG UltraWide 34\"", "Monitor curvo ultrawide com resoluÃ§Ã£o 3440x1440, ideal para produtividade e games", 1899.00m, "EletrÃ´nicos", 3, "suporte@lg.com.br").Value!
         };
 
         foreach (var p in produtos) context.AddProduto(p);
@@ -1028,18 +1028,18 @@ Crie `src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs`:
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.Services;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Shared.Common;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Produtos;
+namespace FacShopAPI.Catalogo.API.Endpoints.Produtos;
 
 public static class ProdutoEndpoints
 {
     public static void MapProdutoEndpoints(this RouteGroupBuilder catalogoGroup)
     {
         var group = catalogoGroup.MapGroup("/produtos")
-            .WithTags("Catálogo - Produtos");
+            .WithTags("CatÃ¡logo - Produtos");
 
         group.MapGet("/", ListarProdutos).WithName("ListarProdutos")
             .Produces<PaginatedResponse<ProdutoResponse>>(StatusCodes.Status200OK)
@@ -1088,8 +1088,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
-                Detail = $"Produto com ID {id} não encontrado.",
+                Status = 404, Title = "Produto nÃ£o encontrado",
+                Detail = $"Produto com ID {id} nÃ£o encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
             });
@@ -1104,7 +1104,7 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422, Title = "ValidaÃ§Ã£o falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -1120,7 +1120,7 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422, Title = "ValidaÃ§Ã£o falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -1128,8 +1128,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
-                Detail = $"Produto com ID {id} não encontrado.",
+                Status = 404, Title = "Produto nÃ£o encontrado",
+                Detail = $"Produto com ID {id} nÃ£o encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
             });
@@ -1144,7 +1144,7 @@ public static class ProdutoEndpoints
         if (!validation.IsValid)
             return Results.UnprocessableEntity(new ErrorResponse
             {
-                Status = 422, Title = "Validação falhou",
+                Status = 422, Title = "ValidaÃ§Ã£o falhou",
                 Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
                 Type = "https://api.example.com/errors/validation"
             });
@@ -1152,8 +1152,8 @@ public static class ProdutoEndpoints
         if (produto is null)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
-                Detail = $"Produto com ID {id} não encontrado.",
+                Status = 404, Title = "Produto nÃ£o encontrado",
+                Detail = $"Produto com ID {id} nÃ£o encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
             });
@@ -1166,8 +1166,8 @@ public static class ProdutoEndpoints
         if (!deletado)
             return Results.NotFound(new ErrorResponse
             {
-                Status = 404, Title = "Produto não encontrado",
-                Detail = $"Produto com ID {id} não encontrado.",
+                Status = 404, Title = "Produto nÃ£o encontrado",
+                Detail = $"Produto com ID {id} nÃ£o encontrado.",
                 Type = "https://api.example.com/errors/not-found",
                 Instance = $"/api/v1/catalogo/produtos/{id}"
             });
@@ -1178,17 +1178,17 @@ public static class ProdutoEndpoints
 
 - [ ] **Step 3: Criar AuthEndpoints.cs**
 
-Crie `src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs` — mesma lógica, apenas namespace atualizado:
+Crie `src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs` â€” mesma lÃ³gica, apenas namespace atualizado:
 
 ```csharp
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using ProdutosAPI.Shared.Common;
+using FacShopAPI.Shared.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ProdutosAPI.Catalogo.API.Endpoints.Auth;
+namespace FacShopAPI.Catalogo.API.Endpoints.Auth;
 
 public static class AuthEndpoints
 {
@@ -1222,7 +1222,7 @@ public static class AuthEndpoints
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"] ?? "ProdutosAPI",
+            issuer: configuration["Jwt:Issuer"] ?? "FacShopAPI",
             audience: configuration["Jwt:Audience"] ?? "TodosOsClientes",
             claims: claims,
             expires: DateTime.UtcNow.AddHours(2),
@@ -1243,13 +1243,13 @@ Crie `src/Catalogo/Catalogo.API/Extensions/CatalogoServiceExtensions.cs`:
 
 ```csharp
 using FluentValidation;
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Application.Services;
-using ProdutosAPI.Catalogo.Application.Validators;
-using ProdutosAPI.Catalogo.Infrastructure.Queries;
-using ProdutosAPI.Catalogo.Infrastructure.Repositories;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Application.Validators;
+using FacShopAPI.Catalogo.Infrastructure.Queries;
+using FacShopAPI.Catalogo.Infrastructure.Repositories;
 
-namespace ProdutosAPI.Catalogo.API.Extensions;
+namespace FacShopAPI.Catalogo.API.Extensions;
 
 public static class CatalogoServiceExtensions
 {
@@ -1279,9 +1279,9 @@ Esperado: `Build succeeded, 0 errors`.
 **Files:**
 
 - Modify: `src/Shared/Data/AppDbContext.cs`
-- Modify: `src/Shared/Common/PaginatedResponse.cs` (ou criar se não existir)
+- Modify: `src/Shared/Common/PaginatedResponse.cs` (ou criar se nÃ£o existir)
 - Modify: `Program.cs`
-- Modify: `ProdutosAPI.csproj`
+- Modify: `FacShopAPI.csproj`
 - Modify: `FacShopAPI.slnx`
 
 - [ ] **Step 1: Verificar se PaginatedResponse existe em Shared**
@@ -1290,10 +1290,10 @@ Esperado: `Build succeeded, 0 errors`.
 grep -r "PaginatedResponse" src/Shared/
 ```
 
-Se não existir, crie `src/Shared/Common/PaginatedResponse.cs`:
+Se nÃ£o existir, crie `src/Shared/Common/PaginatedResponse.cs`:
 
 ```csharp
-namespace ProdutosAPI.Shared.Common;
+namespace FacShopAPI.Shared.Common;
 
 public class PaginatedResponse<T>
 {
@@ -1334,7 +1334,7 @@ public class LoginRequest
 }
 ```
 
-> **Nota:** `PaginatedResponse<T>`, `ErrorResponse`, `AuthResponse`, `LoginRequest` precisam estar em `ProdutosAPI.Shared.Common` para que tanto `Catalogo.Application` quanto `Catalogo.API` possam usá-los. Adicione referência ao projeto principal em `Catalogo.Application.csproj` e `Catalogo.API.csproj`:
+> **Nota:** `PaginatedResponse<T>`, `ErrorResponse`, `AuthResponse`, `LoginRequest` precisam estar em `FacShopAPI.Shared.Common` para que tanto `Catalogo.Application` quanto `Catalogo.API` possam usÃ¡-los. Adicione referÃªncia ao projeto principal em `Catalogo.Application.csproj` e `Catalogo.API.csproj`:
 >
 > ```xml
 > <!-- Adicionar em Catalogo.Application.csproj e Catalogo.API.csproj -->
@@ -1343,14 +1343,14 @@ public class LoginRequest
 > </ItemGroup>
 > ```
 >
-> **Alternativa mais simples:** Mover `PaginatedResponse`, `ErrorResponse`, `AuthResponse`, `LoginRequest` para dentro de `Catalogo.Application/DTOs/` e `Catalogo.API/` respectivamente, evitando dependência circular.
+> **Alternativa mais simples:** Mover `PaginatedResponse`, `ErrorResponse`, `AuthResponse`, `LoginRequest` para dentro de `Catalogo.Application/DTOs/` e `Catalogo.API/` respectivamente, evitando dependÃªncia circular.
 >
-> **Decisão recomendada:** Mantenha `ErrorResponse` e `PaginatedResponse` em `Catalogo.Application/DTOs/Common/`:
+> **DecisÃ£o recomendada:** Mantenha `ErrorResponse` e `PaginatedResponse` em `Catalogo.Application/DTOs/Common/`:
 
 Crie `src/Catalogo/Catalogo.Application/DTOs/Common/CommonDTOs.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.Application.DTOs.Common;
+namespace FacShopAPI.Catalogo.Application.DTOs.Common;
 
 public class PaginatedResponse<T>
 {
@@ -1370,7 +1370,7 @@ public class PaginationInfo
 Crie `src/Catalogo/Catalogo.API/DTOs/CommonApiDTOs.cs`:
 
 ```csharp
-namespace ProdutosAPI.Catalogo.API.DTOs;
+namespace FacShopAPI.Catalogo.API.DTOs;
 
 public class ErrorResponse
 {
@@ -1397,7 +1397,7 @@ public class LoginRequest
 }
 ```
 
-> Atualize todos os `using` nos arquivos de Task 3–5 que referenciam `ProdutosAPI.Shared.Common` para `ProdutosAPI.Catalogo.Application.DTOs.Common` (para PaginatedResponse) e `ProdutosAPI.Catalogo.API.DTOs` (para ErrorResponse/AuthResponse/LoginRequest).
+> Atualize todos os `using` nos arquivos de Task 3â€“5 que referenciam `FacShopAPI.Shared.Common` para `FacShopAPI.Catalogo.Application.DTOs.Common` (para PaginatedResponse) e `FacShopAPI.Catalogo.API.DTOs` (para ErrorResponse/AuthResponse/LoginRequest).
 
 - [ ] **Step 2: Atualizar AppDbContext**
 
@@ -1405,17 +1405,17 @@ Em `src/Shared/Data/AppDbContext.cs`, substitua `IProdutoContext` por `ICatalogo
 
 ```csharp
 // Remover:
-using ProdutosAPI.Produtos.Application.Interfaces;
-using ProdutosAPI.Produtos.Domain;
-using ProdutosAPI.Produtos.Domain.ValueObjects;
+using FacShopAPI.Produtos.Application.Interfaces;
+using FacShopAPI.Produtos.Domain;
+using FacShopAPI.Produtos.Domain.ValueObjects;
 
 // Adicionar:
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.ValueObjects;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.ValueObjects;
 ```
 
-Declaração da classe:
+DeclaraÃ§Ã£o da classe:
 
 ```csharp
 public class AppDbContext : DbContext, ICatalogoContext
@@ -1429,7 +1429,7 @@ IQueryable<Produto> ICatalogoContext.Produtos => Set<Produto>();
 public void AddProduto(Produto produto) => this.Add(produto);
 ```
 
-O `OnModelCreating` mantém a mesma configuração (apenas os `using` de ValueObjects mudam para `ProdutosAPI.Catalogo.Domain.ValueObjects`).
+O `OnModelCreating` mantÃ©m a mesma configuraÃ§Ã£o (apenas os `using` de ValueObjects mudam para `FacShopAPI.Catalogo.Domain.ValueObjects`).
 
 - [ ] **Step 3: Atualizar Program.cs**
 
@@ -1437,22 +1437,22 @@ Substitua os `using` e as chamadas:
 
 ```csharp
 // Remover:
-using ProdutosAPI.Produtos.API.Endpoints;
-using ProdutosAPI.Produtos.API.Extensions;
-using ProdutosAPI.Produtos.Application.Interfaces;
-using ProdutosAPI.Produtos.Application.Mappings;
-using ProdutosAPI.Produtos.Infrastructure.Data;
+using FacShopAPI.Produtos.API.Endpoints;
+using FacShopAPI.Produtos.API.Extensions;
+using FacShopAPI.Produtos.Application.Interfaces;
+using FacShopAPI.Produtos.Application.Mappings;
+using FacShopAPI.Produtos.Infrastructure.Data;
 
 // Adicionar:
-using ProdutosAPI.Catalogo.API.Endpoints.Auth;
-using ProdutosAPI.Catalogo.API.Endpoints.Produtos;
-using ProdutosAPI.Catalogo.API.Extensions;
-using ProdutosAPI.Catalogo.Application.Interfaces;
-using ProdutosAPI.Catalogo.Application.Mappings;
-using ProdutosAPI.Catalogo.Infrastructure.Data;
+using FacShopAPI.Catalogo.API.Endpoints.Auth;
+using FacShopAPI.Catalogo.API.Endpoints.Produtos;
+using FacShopAPI.Catalogo.API.Extensions;
+using FacShopAPI.Catalogo.Application.Interfaces;
+using FacShopAPI.Catalogo.Application.Mappings;
+using FacShopAPI.Catalogo.Infrastructure.Data;
 ```
 
-Substituir no DI (após `builder.Services.AddDbContext`):
+Substituir no DI (apÃ³s `builder.Services.AddDbContext`):
 
 ```csharp
 // Remover:
@@ -1471,7 +1471,7 @@ Substituir no AutoMapper:
 builder.Services.AddAutoMapper(_ => { }, typeof(ProdutoMappingProfile).Assembly);
 
 // Adicionar:
-builder.Services.AddAutoMapper(_ => { }, typeof(ProdutosAPI.Catalogo.Application.Mappings.ProdutoMappingProfile).Assembly);
+builder.Services.AddAutoMapper(_ => { }, typeof(FacShopAPI.Catalogo.Application.Mappings.ProdutoMappingProfile).Assembly);
 ```
 
 Substituir no seed:
@@ -1481,7 +1481,7 @@ Substituir no seed:
 DbSeeder.Seed(dbContext);
 
 // Adicionar:
-ProdutosAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
+FacShopAPI.Catalogo.Infrastructure.Data.DbSeeder.Seed(dbContext);
 ```
 
 Substituir mapeamento de endpoints:
@@ -1492,14 +1492,14 @@ app.MapAuthEndpoints();
 app.MapProdutoEndpoints();
 
 // Adicionar:
-app.MapAuthEndpoints();  // método de Catalogo.API.Endpoints.Auth.AuthEndpoints
+app.MapAuthEndpoints();  // mÃ©todo de Catalogo.API.Endpoints.Auth.AuthEndpoints
 
 var v1 = app.MapGroup("/api/v1");
 var catalogo = v1.MapGroup("/catalogo");
-catalogo.MapProdutoEndpoints();  // método de Catalogo.API.Endpoints.Produtos.ProdutoEndpoints
+catalogo.MapProdutoEndpoints();  // mÃ©todo de Catalogo.API.Endpoints.Produtos.ProdutoEndpoints
 ```
 
-- [ ] **Step 4: Atualizar ProdutosAPI.csproj**
+- [ ] **Step 4: Atualizar FacShopAPI.csproj**
 
 Substitua as ProjectReferences de Produtos pelas de Catalogo:
 
@@ -1531,24 +1531,24 @@ Substitua as ProjectReferences de Produtos pelas de Catalogo:
 
 ```xml
 <Solution>
-  <Project Path="ProdutosAPI.csproj" />
+  <Project Path="FacShopAPI.csproj" />
   <Project Path="src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
   <Project Path="src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
   <Project Path="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
   <Project Path="src/Catalogo/Catalogo.API/Catalogo.API.csproj" />
   <Project Path="src/Pix/Pix.MockServer/Pix.MockServer.csproj" />
   <Project Path="src/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj" />
-  <Project Path="tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj" />
+  <Project Path="tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj" />
   <Project Path="tests/Pedidos.Tests/Pedidos.Tests.csproj" />
   <Project Path="tests/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj" />
 </Solution>
 ```
 
-- [ ] **Step 6: Atualizar ProdutosAPI.Tests.csproj**
+- [ ] **Step 6: Atualizar FacShopAPI.Tests.csproj**
 
 ```xml
 <!-- Substituir ProjectReferences: -->
-<ProjectReference Include="../../ProdutosAPI.csproj" />
+<ProjectReference Include="../../FacShopAPI.csproj" />
 <ProjectReference Include="../../src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
 <ProjectReference Include="../../src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
 <ProjectReference Include="../../src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
@@ -1557,7 +1557,7 @@ Substitua as ProjectReferences de Produtos pelas de Catalogo:
 - [ ] **Step 7: Build do projeto principal**
 
 ```bash
-dotnet build ProdutosAPI.csproj
+dotnet build FacShopAPI.csproj
 ```
 
 Esperado: `Build succeeded, 0 errors`.
@@ -1568,18 +1568,18 @@ Esperado: `Build succeeded, 0 errors`.
 
 **Files:**
 
-- Modify: `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs`
-- Modify: `tests/ProdutosAPI.Tests/Endpoints/ProdutoEndpointsTests.cs`
-- Modify: `tests/ProdutosAPI.Tests/Services/ProdutoServiceTests.cs`
-- Modify: `tests/ProdutosAPI.Tests/Validators/ProdutoValidatorTests.cs`
-- Modify: `tests/ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs`
-- Modify: `tests/ProdutosAPI.Tests/Builders/ProdutoBuilder.cs`
+- Modify: `tests/FacShopAPI.Tests/Integration/ApiFactory.cs`
+- Modify: `tests/FacShopAPI.Tests/Endpoints/ProdutoEndpointsTests.cs`
+- Modify: `tests/FacShopAPI.Tests/Services/ProdutoServiceTests.cs`
+- Modify: `tests/FacShopAPI.Tests/Validators/ProdutoValidatorTests.cs`
+- Modify: `tests/FacShopAPI.Tests/Unit/Domain/ProdutoTests.cs`
+- Modify: `tests/FacShopAPI.Tests/Builders/ProdutoBuilder.cs`
 
 - [ ] **Step 1: Atualizar ApiFactory.cs**
 
 ```csharp
-using ProdutosAPI.Catalogo.Infrastructure.Data;  // era Produtos.Infrastructure.Data
-// resto igual — DbSeeder.Seed(db) continua funcionando com novo namespace
+using FacShopAPI.Catalogo.Infrastructure.Data;  // era Produtos.Infrastructure.Data
+// resto igual â€” DbSeeder.Seed(db) continua funcionando com novo namespace
 ```
 
 - [ ] **Step 2: Atualizar usando em ProdutoEndpointsTests.cs**
@@ -1588,57 +1588,57 @@ Substituir em todos os arquivos de teste:
 
 ```csharp
 // Remover:
-using ProdutosAPI.Produtos.Application.DTOs;
-using ProdutosAPI.Produtos.Domain;
-using ProdutosAPI.Produtos.Domain.Common;
+using FacShopAPI.Produtos.Application.DTOs;
+using FacShopAPI.Produtos.Domain;
+using FacShopAPI.Produtos.Domain.Common;
 
 // Adicionar:
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Application.DTOs.Common;
-using ProdutosAPI.Catalogo.Domain;
-using ProdutosAPI.Catalogo.Domain.Common;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Application.DTOs.Common;
+using FacShopAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Domain.Common;
 ```
 
 Substituir todas as rotas nos testes:
 
 ```csharp
-// Padrão de busca e substituição:
-"/api/v1/produtos"  →  "/api/v1/catalogo/produtos"
+// PadrÃ£o de busca e substituiÃ§Ã£o:
+"/api/v1/produtos"  â†’  "/api/v1/catalogo/produtos"
 ```
 
-Execute em bash para confirmar quais arquivos têm a rota antiga:
+Execute em bash para confirmar quais arquivos tÃªm a rota antiga:
 
 ```bash
-grep -rn "/api/v1/produtos" tests/ProdutosAPI.Tests/
+grep -rn "/api/v1/produtos" tests/FacShopAPI.Tests/
 ```
 
 - [ ] **Step 3: Atualizar ProdutoServiceTests.cs**
 
 ```csharp
 // Remover:
-using ProdutosAPI.Produtos.Application.Repositories;
-using ProdutosAPI.Produtos.Application.Services;
-using ProdutosAPI.Produtos.Application.DTOs;
-using ProdutosAPI.Produtos.Domain;
+using FacShopAPI.Produtos.Application.Repositories;
+using FacShopAPI.Produtos.Application.Services;
+using FacShopAPI.Produtos.Application.DTOs;
+using FacShopAPI.Produtos.Domain;
 
 // Adicionar:
-using ProdutosAPI.Catalogo.Application.Repositories;
-using ProdutosAPI.Catalogo.Application.Services;
-using ProdutosAPI.Catalogo.Application.DTOs.Produto;
-using ProdutosAPI.Catalogo.Domain;
+using FacShopAPI.Catalogo.Application.Repositories;
+using FacShopAPI.Catalogo.Application.Services;
+using FacShopAPI.Catalogo.Application.DTOs.Produto;
+using FacShopAPI.Catalogo.Domain;
 ```
 
 - [ ] **Step 4: Atualizar ProdutoValidatorTests.cs e ProdutoTests.cs e ProdutoBuilder.cs**
 
-Mesmo padrão: substituir `ProdutosAPI.Produtos.*` por `ProdutosAPI.Catalogo.*` em todos os `using`.
+Mesmo padrÃ£o: substituir `FacShopAPI.Produtos.*` por `FacShopAPI.Catalogo.*` em todos os `using`.
 
 - [ ] **Step 5: Rodar todos os testes**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj --no-build
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj --no-build
 ```
 
-Esperado: todos os testes passando (mesmo número de antes).
+Esperado: todos os testes passando (mesmo nÃºmero de antes).
 
 ---
 
@@ -1663,7 +1663,7 @@ rm -rf src/Produtos/
 
 ```bash
 dotnet build FacShopAPI.slnx
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj
 ```
 
 Esperado: 0 erros, todos os testes passando.
@@ -1674,10 +1674,10 @@ Esperado: 0 erros, todos os testes passando.
 git add -A
 git commit -m "refactor: migrar Produtos para Catalogo com versionamento /api/v1/catalogo/*
 
-- Renomeação de src/Produtos/ → src/Catalogo/ com 4 sub-projetos
-- Namespaces ProdutosAPI.Produtos.* → ProdutosAPI.Catalogo.*
-- IProdutoContext → ICatalogoContext
-- Rota /api/v1/produtos → /api/v1/catalogo/produtos via route groups
-- AddProdutos() → AddCatalogo() no DI
+- RenomeaÃ§Ã£o de src/Produtos/ â†’ src/Catalogo/ com 4 sub-projetos
+- Namespaces FacShopAPI.Produtos.* â†’ FacShopAPI.Catalogo.*
+- IProdutoContext â†’ ICatalogoContext
+- Rota /api/v1/produtos â†’ /api/v1/catalogo/produtos via route groups
+- AddProdutos() â†’ AddCatalogo() no DI
 - Testes atualizados com novos namespaces e rotas"
 ```

@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ProdutosAPI.Catalogo.Domain</RootNamespace>
+    <RootNamespace>FacShopAPI.Catalogo.Domain</RootNamespace>
     <AssemblyName>Catalogo.Domain</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>ProdutosAPI.Tests</_Parameter1>
+      <_Parameter1>FacShopAPI.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 </Project>

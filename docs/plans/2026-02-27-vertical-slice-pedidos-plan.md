@@ -1,36 +1,36 @@
-# Vertical Slice + Domínio Rico (Pedidos) Implementation Plan
+﻿# Vertical Slice + DomÃ­nio Rico (Pedidos) Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Adicionar Vertical Slice Architecture para o caso de uso de Pedidos e enriquecer o modelo de domínio de Produtos, mantendo coexistência com a arquitetura horizontal em camadas existente.
+**Goal:** Adicionar Vertical Slice Architecture para o caso de uso de Pedidos e enriquecer o modelo de domÃ­nio de Produtos, mantendo coexistÃªncia com a arquitetura horizontal em camadas existente.
 
-**Architecture:** O projeto mantém dois padrões lado a lado: Produtos usa horizontal layers (Endpoints → Services → Data), enquanto Pedidos usa Vertical Slice com Feature Folders (cada operação CRUD é um slice com Command/Query + Handler + Validator + Endpoint). Ambos compartilham o mesmo `AppDbContext` e pipeline de middleware.
+**Architecture:** O projeto mantÃ©m dois padrÃµes lado a lado: Produtos usa horizontal layers (Endpoints â†’ Services â†’ Data), enquanto Pedidos usa Vertical Slice com Feature Folders (cada operaÃ§Ã£o CRUD Ã© um slice com Command/Query + Handler + Validator + Endpoint). Ambos compartilham o mesmo `AppDbContext` e pipeline de middleware.
 
 **Tech Stack:** .NET 10, Minimal API, Entity Framework Core 10 (SQLite), FluentValidation 11, xUnit, FluentAssertions, EF InMemory (testes).
 
 ---
 
-## Task 1: Result Pattern (fundação)
+## Task 1: Result Pattern (fundaÃ§Ã£o)
 
 **Files:**
 - Create: `src/Features/Common/Result.cs`
-- Create: `ProdutosAPI.Tests/Unit/Common/ResultTests.cs`
+- Create: `FacShopAPI.Tests/Unit/Common/ResultTests.cs`
 
 **Step 1: Criar pasta de testes**
 
 ```bash
-mkdir -p ProdutosAPI.Tests/Unit/Common
+mkdir -p FacShopAPI.Tests/Unit/Common
 ```
 
 **Step 2: Escrever o teste que falha**
 
-Criar `ProdutosAPI.Tests/Unit/Common/ResultTests.cs`:
+Criar `FacShopAPI.Tests/Unit/Common/ResultTests.cs`:
 
 ```csharp
 using FluentAssertions;
-using ProdutosAPI.Features.Common;
+using FacShopAPI.Features.Common;
 
-namespace ProdutosAPI.Tests.Unit.Common;
+namespace FacShopAPI.Tests.Unit.Common;
 
 public class ResultTests
 {
@@ -71,10 +71,10 @@ public class ResultTests
 **Step 3: Rodar o teste para confirmar que falha**
 
 ```bash
-dotnet test ProdutosAPI.Tests --filter "ResultTests" -v minimal
+dotnet test FacShopAPI.Tests --filter "ResultTests" -v minimal
 ```
 
-Esperado: FAIL com `namespace 'ProdutosAPI.Features.Common' not found`
+Esperado: FAIL com `namespace 'FacShopAPI.Features.Common' not found`
 
 **Step 4: Criar a pasta e o arquivo**
 
@@ -85,7 +85,7 @@ mkdir -p src/Features/Common
 Criar `src/Features/Common/Result.cs`:
 
 ```csharp
-namespace ProdutosAPI.Features.Common;
+namespace FacShopAPI.Features.Common;
 
 public record Result(bool IsSuccess, string? Error = null)
 {
@@ -103,7 +103,7 @@ public record Result<T>(bool IsSuccess, T? Value, string? Error = null)
 **Step 5: Rodar os testes para confirmar que passam**
 
 ```bash
-dotnet test ProdutosAPI.Tests --filter "ResultTests" -v minimal
+dotnet test FacShopAPI.Tests --filter "ResultTests" -v minimal
 ```
 
 Esperado: 4 testes PASS
@@ -111,38 +111,38 @@ Esperado: 4 testes PASS
 **Step 6: Commit**
 
 ```bash
-git add src/Features/Common/Result.cs ProdutosAPI.Tests/Unit/Common/ResultTests.cs
-git commit -m "feat: adicionar Result pattern como fundação do domínio"
+git add src/Features/Common/Result.cs FacShopAPI.Tests/Unit/Common/ResultTests.cs
+git commit -m "feat: adicionar Result pattern como fundaÃ§Ã£o do domÃ­nio"
 ```
 
 ---
 
-## Task 2: Refatorar Produto para domínio rico
+## Task 2: Refatorar Produto para domÃ­nio rico
 
 **Files:**
 - Modify: `src/Models/Produto.cs`
-- Modify: `src/Data/AppDbContext.cs` (configuração de private setters)
+- Modify: `src/Data/AppDbContext.cs` (configuraÃ§Ã£o de private setters)
 - Modify: `src/Data/DbSeeder.cs` (usar factory method)
-- Modify: `src/Services/ProdutoService.cs` (usar métodos de domínio)
+- Modify: `src/Services/ProdutoService.cs` (usar mÃ©todos de domÃ­nio)
 - Modify: `src/Common/MappingProfile.cs` (ajustar mapeamento)
-- Create: `ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs`
+- Create: `FacShopAPI.Tests/Unit/Domain/ProdutoTests.cs`
 
-**Step 1: Escrever os testes de domínio que falham**
+**Step 1: Escrever os testes de domÃ­nio que falham**
 
-Criar `ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs`:
+Criar `FacShopAPI.Tests/Unit/Domain/ProdutoTests.cs`:
 
 ```csharp
 using FluentAssertions;
-using ProdutosAPI.Models;
+using FacShopAPI.Models;
 
-namespace ProdutosAPI.Tests.Unit.Domain;
+namespace FacShopAPI.Tests.Unit.Domain;
 
 public class ProdutoTests
 {
     [Fact]
     public void Criar_ComDadosValidos_RetornaProduto()
     {
-        var result = Produto.Criar("Notebook", "Desc", 1000m, "Eletrônicos", 5, "a@b.com");
+        var result = Produto.Criar("Notebook", "Desc", 1000m, "EletrÃ´nicos", 5, "a@b.com");
 
         result.IsSuccess.Should().BeTrue();
         result.Value!.Nome.Should().Be("Notebook");
@@ -269,19 +269,19 @@ public class ProdutoTests
 
 **Step 2: Criar o ProdutoBuilder (helper de testes)**
 
-Criar `ProdutosAPI.Tests/Builders/ProdutoBuilder.cs`:
+Criar `FacShopAPI.Tests/Builders/ProdutoBuilder.cs`:
 
 ```csharp
-using ProdutosAPI.Models;
+using FacShopAPI.Models;
 
-namespace ProdutosAPI.Tests.Builders;
+namespace FacShopAPI.Tests.Builders;
 
 public class ProdutoBuilder
 {
     private string _nome = "Produto Teste";
-    private string _descricao = "Descrição de teste";
+    private string _descricao = "DescriÃ§Ã£o de teste";
     private decimal _preco = 100m;
-    private string _categoria = "Eletrônicos";
+    private string _categoria = "EletrÃ´nicos";
     private int _estoque = 10;
     private string _email = "contato@teste.com";
 
@@ -300,31 +300,31 @@ public class ProdutoBuilder
 }
 ```
 
-Adicionar `using ProdutosAPI.Tests.Builders;` no arquivo `ProdutoTests.cs`.
+Adicionar `using FacShopAPI.Tests.Builders;` no arquivo `ProdutoTests.cs`.
 
 **Step 3: Rodar os testes para confirmar que falham**
 
 ```bash
-dotnet test ProdutosAPI.Tests --filter "ProdutoTests" -v minimal
+dotnet test FacShopAPI.Tests --filter "ProdutoTests" -v minimal
 ```
 
-Esperado: FAIL com `Produto.Criar não existe`
+Esperado: FAIL com `Produto.Criar nÃ£o existe`
 
 **Step 4: Refatorar `src/Models/Produto.cs`**
 
-Substituir o conteúdo completo por:
+Substituir o conteÃºdo completo por:
 
 ```csharp
-using ProdutosAPI.Features.Common;
+using FacShopAPI.Features.Common;
 
-namespace ProdutosAPI.Models;
+namespace FacShopAPI.Models;
 
 public class Produto
 {
     public static readonly decimal PrecoMinimo = 0.01m;
     public static readonly int EstoqueMaximo = 99_999;
 
-    // EF Core: private setters + private ctor sem parâmetros
+    // EF Core: private setters + private ctor sem parÃ¢metros
     private Produto() { }
 
     public int Id { get; private set; }
@@ -345,11 +345,11 @@ public class Produto
         if (string.IsNullOrWhiteSpace(nome) || nome.Length < 3)
             return Result<Produto>.Fail("Nome deve ter ao menos 3 caracteres.");
         if (preco < PrecoMinimo)
-            return Result<Produto>.Fail("Preço deve ser maior que zero.");
+            return Result<Produto>.Fail("PreÃ§o deve ser maior que zero.");
         if (estoque < 0)
-            return Result<Produto>.Fail("Estoque não pode ser negativo.");
+            return Result<Produto>.Fail("Estoque nÃ£o pode ser negativo.");
         if (string.IsNullOrWhiteSpace(email))
-            return Result<Produto>.Fail("Email de contato é obrigatório.");
+            return Result<Produto>.Fail("Email de contato Ã© obrigatÃ³rio.");
 
         var agora = DateTime.UtcNow;
         return Result<Produto>.Ok(new Produto
@@ -380,9 +380,9 @@ public class Produto
     public Result AtualizarPreco(decimal novoPreco)
     {
         if (novoPreco < PrecoMinimo)
-            return Result.Fail("Preço deve ser maior que zero.");
+            return Result.Fail("PreÃ§o deve ser maior que zero.");
         if (novoPreco == Preco)
-            return Result.Fail("Novo preço é igual ao preço atual.");
+            return Result.Fail("Novo preÃ§o Ã© igual ao preÃ§o atual.");
         Preco = novoPreco;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -407,9 +407,9 @@ public class Produto
     public Result ReporEstoque(int quantidade)
     {
         if (quantidade <= 0)
-            return Result.Fail("Quantidade de reposição deve ser positiva.");
+            return Result.Fail("Quantidade de reposiÃ§Ã£o deve ser positiva.");
         if (Estoque + quantidade > EstoqueMaximo)
-            return Result.Fail($"Estoque não pode exceder {EstoqueMaximo} unidades.");
+            return Result.Fail($"Estoque nÃ£o pode exceder {EstoqueMaximo} unidades.");
         Estoque += quantidade;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -418,7 +418,7 @@ public class Produto
     public Result Desativar()
     {
         if (!Ativo)
-            return Result.Fail("Produto já está inativo.");
+            return Result.Fail("Produto jÃ¡ estÃ¡ inativo.");
         Ativo = false;
         DataAtualizacao = DateTime.UtcNow;
         return Result.Ok();
@@ -430,9 +430,9 @@ public class Produto
 
 **Step 5: Atualizar `src/Data/AppDbContext.cs`**
 
-EF Core precisa de acesso aos private setters. Adicionar `UsePropertyAccessMode` na configuração:
+EF Core precisa de acesso aos private setters. Adicionar `UsePropertyAccessMode` na configuraÃ§Ã£o:
 
-No método `OnModelCreating`, dentro do bloco `modelBuilder.Entity<Produto>(entity =>`, adicionar ao final (antes do `}`):
+No mÃ©todo `OnModelCreating`, dentro do bloco `modelBuilder.Entity<Produto>(entity =>`, adicionar ao final (antes do `}`):
 
 ```csharp
 // Permite EF Core ler/escrever em propriedades com private setters
@@ -451,7 +451,7 @@ entity.Property(p => p.DataAtualizacao).UsePropertyAccessMode(PropertyAccessMode
 
 Substituir todos os `new Produto { ... }` por chamadas `Produto.Criar(...)`.
 
-Exemplo de conversão para o primeiro produto:
+Exemplo de conversÃ£o para o primeiro produto:
 ```csharp
 // ANTES:
 new() { Nome = "Notebook Dell XPS 13", ... }
@@ -459,14 +459,14 @@ new() { Nome = "Notebook Dell XPS 13", ... }
 // DEPOIS:
 Produto.Criar("Notebook Dell XPS 13",
     "Notebook de alta performance com processador Intel Core i7, 16GB RAM e 512GB SSD",
-    4500.00m, "Eletrônicos", 5, "vendas@dell.com").Value!
+    4500.00m, "EletrÃ´nicos", 5, "vendas@dell.com").Value!
 ```
 
-Aplicar o mesmo padrão para todos os 8 produtos do seed. Remover propriedades `DataCriacao` e `DataAtualizacao` (definidas internamente pelo factory method).
+Aplicar o mesmo padrÃ£o para todos os 8 produtos do seed. Remover propriedades `DataCriacao` e `DataAtualizacao` (definidas internamente pelo factory method).
 
 **Step 7: Atualizar `src/Common/MappingProfile.cs`**
 
-AutoMapper não pode usar `Produto.Criar()` para mapear `CriarProdutoRequest → Produto` pois a criação agora tem validação. Remover esse mapeamento — a criação será feita no `ProdutoService` diretamente.
+AutoMapper nÃ£o pode usar `Produto.Criar()` para mapear `CriarProdutoRequest â†’ Produto` pois a criaÃ§Ã£o agora tem validaÃ§Ã£o. Remover esse mapeamento â€” a criaÃ§Ã£o serÃ¡ feita no `ProdutoService` diretamente.
 
 ```csharp
 public MappingProfile()
@@ -475,13 +475,13 @@ public MappingProfile()
     CreateMap<Produto, ProdutoResponse>();
 
     // REMOVIDO: CreateMap<CriarProdutoRequest, Produto>()
-    // Razão: domínio rico exige criação via Produto.Criar() com validação
+    // RazÃ£o: domÃ­nio rico exige criaÃ§Ã£o via Produto.Criar() com validaÃ§Ã£o
 }
 ```
 
 **Step 8: Atualizar `src/Services/ProdutoService.cs`**
 
-Substituir criação e atualização por métodos de domínio.
+Substituir criaÃ§Ã£o e atualizaÃ§Ã£o por mÃ©todos de domÃ­nio.
 
 Em `CriarProdutoAsync`:
 ```csharp
@@ -493,7 +493,7 @@ var resultado = Produto.Criar(
 if (!resultado.IsSuccess)
     throw new InvalidOperationException(resultado.Error);
 var produto = resultado.Value!;
-// Remover: _context.Produtos.Add(produto) — mantém igual
+// Remover: _context.Produtos.Add(produto) â€” mantÃ©m igual
 ```
 
 Em `AtualizarProdutoAsync` (PATCH):
@@ -536,41 +536,41 @@ Esperado: Build succeeded sem erros.
 **Step 10: Rodar todos os testes**
 
 ```bash
-dotnet test ProdutosAPI.Tests -v minimal
+dotnet test FacShopAPI.Tests -v minimal
 ```
 
-Esperado: Todos os testes de ProdutoTests passam. Alguns testes de ProdutoService podem falhar por mudanças no contrato — ajustar conforme necessário.
+Esperado: Todos os testes de ProdutoTests passam. Alguns testes de ProdutoService podem falhar por mudanÃ§as no contrato â€” ajustar conforme necessÃ¡rio.
 
 **Step 11: Commit**
 
 ```bash
 git add src/Models/Produto.cs src/Data/AppDbContext.cs src/Data/DbSeeder.cs \
         src/Services/ProdutoService.cs src/Common/MappingProfile.cs \
-        ProdutosAPI.Tests/Unit/Domain/ProdutoTests.cs \
-        ProdutosAPI.Tests/Builders/ProdutoBuilder.cs
-git commit -m "feat: refatorar Produto para modelo de domínio rico"
+        FacShopAPI.Tests/Unit/Domain/ProdutoTests.cs \
+        FacShopAPI.Tests/Builders/ProdutoBuilder.cs
+git commit -m "feat: refatorar Produto para modelo de domÃ­nio rico"
 ```
 
 ---
 
-## Task 3: Domínio de Pedidos (Aggregate Root)
+## Task 3: DomÃ­nio de Pedidos (Aggregate Root)
 
 **Files:**
 - Create: `src/Features/Pedidos/Domain/StatusPedido.cs`
 - Create: `src/Features/Pedidos/Domain/PedidoItem.cs`
 - Create: `src/Features/Pedidos/Domain/Pedido.cs`
-- Create: `ProdutosAPI.Tests/Unit/Domain/PedidoTests.cs`
+- Create: `FacShopAPI.Tests/Unit/Domain/PedidoTests.cs`
 
 **Step 1: Escrever os testes que falham**
 
-Criar `ProdutosAPI.Tests/Unit/Domain/PedidoTests.cs`:
+Criar `FacShopAPI.Tests/Unit/Domain/PedidoTests.cs`:
 
 ```csharp
 using FluentAssertions;
-using ProdutosAPI.Features.Pedidos.Domain;
-using ProdutosAPI.Tests.Builders;
+using FacShopAPI.Features.Pedidos.Domain;
+using FacShopAPI.Tests.Builders;
 
-namespace ProdutosAPI.Tests.Unit.Domain;
+namespace FacShopAPI.Tests.Unit.Domain;
 
 public class PedidoTests
 {
@@ -650,8 +650,8 @@ public class PedidoTests
         var pedido = Pedido.Criar();
         for (int i = 0; i < 20; i++)
         {
-            // Cria produto diferente a cada iteração (via builder com nome diferente)
-            var p = Produto.Criar($"Produto {i + 100}", "Desc", 10m, "Eletrônicos", 100, "a@b.com").Value!;
+            // Cria produto diferente a cada iteraÃ§Ã£o (via builder com nome diferente)
+            var p = Produto.Criar($"Produto {i + 100}", "Desc", 10m, "EletrÃ´nicos", 100, "a@b.com").Value!;
             pedido.AdicionarItem(p, 1);
         }
         var novo = ProdutoBuilder.Padrao().ComNome("Produto Extra XXX").Build();
@@ -727,11 +727,11 @@ public class PedidoTests
     public void Cancelar_ComMotivo_Cancela()
     {
         var pedido = Pedido.Criar();
-        var result = pedido.Cancelar("Desistência do cliente");
+        var result = pedido.Cancelar("DesistÃªncia do cliente");
 
         result.IsSuccess.Should().BeTrue();
         pedido.Status.Should().Be(StatusPedido.Cancelado);
-        pedido.MotivoCancelamento.Should().Be("Desistência do cliente");
+        pedido.MotivoCancelamento.Should().Be("DesistÃªncia do cliente");
         pedido.CanceladoEm.Should().NotBeNull();
     }
 
@@ -759,10 +759,10 @@ public class PedidoTests
         var produto = ProdutoBuilder.Padrao().ComPreco(100m).ComEstoque(10).Build();
         pedido.AdicionarItem(produto, 1);
 
-        // Simula alteração de preço após o pedido ser criado
+        // Simula alteraÃ§Ã£o de preÃ§o apÃ³s o pedido ser criado
         produto.AtualizarPreco(200m);
 
-        // Item do pedido mantém o preço original
+        // Item do pedido mantÃ©m o preÃ§o original
         pedido.Itens.First().PrecoUnitario.Should().Be(100m);
     }
 }
@@ -771,10 +771,10 @@ public class PedidoTests
 **Step 2: Rodar os testes para confirmar que falham**
 
 ```bash
-dotnet test ProdutosAPI.Tests --filter "PedidoTests" -v minimal
+dotnet test FacShopAPI.Tests --filter "PedidoTests" -v minimal
 ```
 
-Esperado: FAIL com `namespace 'ProdutosAPI.Features.Pedidos.Domain' not found`
+Esperado: FAIL com `namespace 'FacShopAPI.Features.Pedidos.Domain' not found`
 
 **Step 3: Criar pastas**
 
@@ -785,7 +785,7 @@ mkdir -p src/Features/Pedidos/Domain
 **Step 4: Criar `src/Features/Pedidos/Domain/StatusPedido.cs`**
 
 ```csharp
-namespace ProdutosAPI.Features.Pedidos.Domain;
+namespace FacShopAPI.Features.Pedidos.Domain;
 
 public enum StatusPedido
 {
@@ -798,9 +798,9 @@ public enum StatusPedido
 **Step 5: Criar `src/Features/Pedidos/Domain/PedidoItem.cs`**
 
 ```csharp
-using ProdutosAPI.Models;
+using FacShopAPI.Models;
 
-namespace ProdutosAPI.Features.Pedidos.Domain;
+namespace FacShopAPI.Features.Pedidos.Domain;
 
 public class PedidoItem
 {
@@ -825,7 +825,7 @@ public class PedidoItem
     internal void IncrementarQuantidade(int adicional)
     {
         if (Quantidade + adicional > 999)
-            throw new InvalidOperationException("Quantidade máxima por item é 999.");
+            throw new InvalidOperationException("Quantidade mÃ¡xima por item Ã© 999.");
         Quantidade += adicional;
     }
 }
@@ -834,10 +834,10 @@ public class PedidoItem
 **Step 6: Criar `src/Features/Pedidos/Domain/Pedido.cs`**
 
 ```csharp
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Models;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Models;
 
-namespace ProdutosAPI.Features.Pedidos.Domain;
+namespace FacShopAPI.Features.Pedidos.Domain;
 
 public class Pedido
 {
@@ -862,7 +862,7 @@ public class Pedido
     public Result AdicionarItem(Produto produto, int quantidade)
     {
         if (Status != StatusPedido.Rascunho)
-            return Result.Fail("Itens só podem ser adicionados a pedidos em rascunho.");
+            return Result.Fail("Itens sÃ³ podem ser adicionados a pedidos em rascunho.");
 
         if (quantidade < 1 || quantidade > 999)
             return Result.Fail("Quantidade deve estar entre 1 e 999.");
@@ -878,7 +878,7 @@ public class Pedido
         else
         {
             if (_itens.Count >= MaxItensPorPedido)
-                return Result.Fail($"Pedido não pode ter mais de {MaxItensPorPedido} itens distintos.");
+                return Result.Fail($"Pedido nÃ£o pode ter mais de {MaxItensPorPedido} itens distintos.");
 
             _itens.Add(PedidoItem.Criar(produto, quantidade));
         }
@@ -896,7 +896,7 @@ public class Pedido
             return Result.Fail("Pedido precisa ter ao menos um item.");
 
         if (Total < ValorMinimoConfirmacao)
-            return Result.Fail($"Valor mínimo para confirmação é R$ {ValorMinimoConfirmacao:F2}.");
+            return Result.Fail($"Valor mÃ­nimo para confirmaÃ§Ã£o Ã© R$ {ValorMinimoConfirmacao:F2}.");
 
         Status = StatusPedido.Confirmado;
         ConfirmadoEm = DateTime.UtcNow;
@@ -906,10 +906,10 @@ public class Pedido
     public Result Cancelar(string motivo)
     {
         if (Status == StatusPedido.Cancelado)
-            return Result.Fail("Pedido já está cancelado.");
+            return Result.Fail("Pedido jÃ¡ estÃ¡ cancelado.");
 
         if (string.IsNullOrWhiteSpace(motivo))
-            return Result.Fail("Motivo do cancelamento é obrigatório.");
+            return Result.Fail("Motivo do cancelamento Ã© obrigatÃ³rio.");
 
         Status = StatusPedido.Cancelado;
         CanceladoEm = DateTime.UtcNow;
@@ -921,10 +921,10 @@ public class Pedido
 }
 ```
 
-**Step 7: Rodar os testes de domínio**
+**Step 7: Rodar os testes de domÃ­nio**
 
 ```bash
-dotnet test ProdutosAPI.Tests --filter "PedidoTests" -v minimal
+dotnet test FacShopAPI.Tests --filter "PedidoTests" -v minimal
 ```
 
 Esperado: Todos os PedidoTests passam.
@@ -933,8 +933,8 @@ Esperado: Todos os PedidoTests passam.
 
 ```bash
 git add src/Features/Pedidos/Domain/ \
-        ProdutosAPI.Tests/Unit/Domain/PedidoTests.cs
-git commit -m "feat: implementar aggregate Pedido com domínio rico"
+        FacShopAPI.Tests/Unit/Domain/PedidoTests.cs
+git commit -m "feat: implementar aggregate Pedido com domÃ­nio rico"
 ```
 
 ---
@@ -949,7 +949,7 @@ git commit -m "feat: implementar aggregate Pedido com domínio rico"
 **Step 1: Criar `src/Features/Common/IEndpoint.cs`**
 
 ```csharp
-namespace ProdutosAPI.Features.Common;
+namespace FacShopAPI.Features.Common;
 
 public interface IEndpoint
 {
@@ -961,14 +961,14 @@ public interface IEndpoint
 
 ```csharp
 using System.Reflection;
-using ProdutosAPI.Features.Common;
+using FacShopAPI.Features.Common;
 
-namespace ProdutosAPI.Features.Common;
+namespace FacShopAPI.Features.Common;
 
 public static class EndpointExtensions
 {
     /// <summary>
-    /// Registra no DI todas as implementações de IEndpoint do assembly.
+    /// Registra no DI todas as implementaÃ§Ãµes de IEndpoint do assembly.
     /// Elimina a necessidade de registrar cada endpoint manualmente no Program.cs.
     /// </summary>
     public static IServiceCollection AddEndpointsFromAssembly(
@@ -1001,14 +1001,14 @@ public static class EndpointExtensions
 
 **Step 3: Atualizar `Program.cs`**
 
-Na seção "CONFIGURAÇÃO DE DEPENDENCY INJECTION", adicionar após os outros `AddScoped`:
+Na seÃ§Ã£o "CONFIGURAÃ‡ÃƒO DE DEPENDENCY INJECTION", adicionar apÃ³s os outros `AddScoped`:
 
 ```csharp
-// Registrar slices de Pedidos via scan automático
+// Registrar slices de Pedidos via scan automÃ¡tico
 builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 ```
 
-Na seção "CONFIGURAR ENDPOINTS", adicionar após `app.MapProdutoEndpoints()`:
+Na seÃ§Ã£o "CONFIGURAR ENDPOINTS", adicionar apÃ³s `app.MapProdutoEndpoints()`:
 
 ```csharp
 // Slices de Pedidos (IEndpoint)
@@ -1032,25 +1032,25 @@ git commit -m "feat: adicionar IEndpoint interface e assembly scanner"
 
 ---
 
-## Task 5: AppDbContext + Migração de Pedidos
+## Task 5: AppDbContext + MigraÃ§Ã£o de Pedidos
 
 **Files:**
 - Modify: `src/Data/AppDbContext.cs`
 
-**Step 1: Adicionar DbSets e configuração de Pedido no `AppDbContext.cs`**
+**Step 1: Adicionar DbSets e configuraÃ§Ã£o de Pedido no `AppDbContext.cs`**
 
 Adicionar using no topo do arquivo:
 ```csharp
-using ProdutosAPI.Features.Pedidos.Domain;
+using FacShopAPI.Features.Pedidos.Domain;
 ```
 
-Adicionar DbSets após o de Produtos:
+Adicionar DbSets apÃ³s o de Produtos:
 ```csharp
 public DbSet<Pedido> Pedidos => Set<Pedido>();
 public DbSet<PedidoItem> PedidoItens => Set<PedidoItem>();
 ```
 
-Adicionar no método `OnModelCreating`, após a configuração de `Produto`:
+Adicionar no mÃ©todo `OnModelCreating`, apÃ³s a configuraÃ§Ã£o de `Produto`:
 
 ```csharp
 modelBuilder.Entity<Pedido>(entity =>
@@ -1078,7 +1078,7 @@ modelBuilder.Entity<Pedido>(entity =>
         .HasMaxLength(500)
         .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-    // Mapear a coleção privada _itens como backing field
+    // Mapear a coleÃ§Ã£o privada _itens como backing field
     entity.HasMany<PedidoItem>("_itens")
         .WithOne()
         .HasForeignKey(i => i.PedidoId)
@@ -1106,7 +1106,7 @@ modelBuilder.Entity<PedidoItem>(entity =>
     entity.Property(i => i.ProdutoId)
         .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-    // Subtotal é calculado, não persistido
+    // Subtotal Ã© calculado, nÃ£o persistido
     entity.Ignore(i => i.Subtotal);
 });
 ```
@@ -1121,12 +1121,12 @@ Esperado: arquivo de migration criado em `Migrations/`.
 
 **Step 3: Verificar o arquivo de migration gerado**
 
-Abrir o arquivo `Migrations/*_AddPedidos.cs` e confirmar que contém tabelas `Pedidos` e `PedidoItens`.
+Abrir o arquivo `Migrations/*_AddPedidos.cs` e confirmar que contÃ©m tabelas `Pedidos` e `PedidoItens`.
 
 **Step 4: Build + testes**
 
 ```bash
-dotnet build && dotnet test ProdutosAPI.Tests -v minimal
+dotnet build && dotnet test FacShopAPI.Tests -v minimal
 ```
 
 Esperado: Build e todos os testes passam.
@@ -1152,9 +1152,9 @@ mkdir -p src/Features/Pedidos/Common
 ```
 
 ```csharp
-using ProdutosAPI.Features.Pedidos.Domain;
+using FacShopAPI.Features.Pedidos.Domain;
 
-namespace ProdutosAPI.Features.Pedidos.Common;
+namespace FacShopAPI.Features.Pedidos.Common;
 
 public record PedidoResponse(
     int Id,
@@ -1210,7 +1210,7 @@ git commit -m "feat: adicionar PedidoResponse DTO compartilhado"
 
 ---
 
-## Task 7: Slice — CreatePedido
+## Task 7: Slice â€” CreatePedido
 
 **Files:**
 - Create: `src/Features/Pedidos/CreatePedido/CreatePedidoCommand.cs`
@@ -1227,12 +1227,12 @@ mkdir -p src/Features/Pedidos/CreatePedido
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Data;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
-using ProdutosAPI.Features.Pedidos.Domain;
+using FacShopAPI.Data;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Pedidos.Domain;
 
-namespace ProdutosAPI.Features.Pedidos.CreatePedido;
+namespace FacShopAPI.Features.Pedidos.CreatePedido;
 
 public record CreatePedidoCommand(List<CreatePedidoItemDto> Itens);
 public record CreatePedidoItemDto(int ProdutoId, int Quantidade);
@@ -1248,7 +1248,7 @@ public class CreatePedidoHandler(AppDbContext db)
         {
             var produto = await db.Produtos.FindAsync([itemDto.ProdutoId], ct);
             if (produto is null)
-                return Result<PedidoResponse>.Fail($"Produto {itemDto.ProdutoId} não encontrado.");
+                return Result<PedidoResponse>.Fail($"Produto {itemDto.ProdutoId} nÃ£o encontrado.");
 
             var resultado = pedido.AdicionarItem(produto, itemDto.Quantidade);
             if (!resultado.IsSuccess)
@@ -1268,7 +1268,7 @@ public class CreatePedidoHandler(AppDbContext db)
 ```csharp
 using FluentValidation;
 
-namespace ProdutosAPI.Features.Pedidos.CreatePedido;
+namespace FacShopAPI.Features.Pedidos.CreatePedido;
 
 public class CreatePedidoValidator : AbstractValidator<CreatePedidoCommand>
 {
@@ -1282,7 +1282,7 @@ public class CreatePedidoValidator : AbstractValidator<CreatePedidoCommand>
         {
             item.RuleFor(i => i.ProdutoId)
                 .GreaterThan(0)
-                .WithMessage("ProdutoId inválido.");
+                .WithMessage("ProdutoId invÃ¡lido.");
 
             item.RuleFor(i => i.Quantidade)
                 .InclusiveBetween(1, 999)
@@ -1297,10 +1297,10 @@ public class CreatePedidoValidator : AbstractValidator<CreatePedidoCommand>
 ```csharp
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.CreatePedido;
+namespace FacShopAPI.Features.Pedidos.CreatePedido;
 
 public class CreatePedidoEndpoint : IEndpoint
 {
@@ -1336,7 +1336,7 @@ public class CreatePedidoEndpoint : IEndpoint
 
 **Step 5: Registrar Handler no DI em `Program.cs`**
 
-Na seção "CONFIGURAÇÃO DE DEPENDENCY INJECTION", adicionar:
+Na seÃ§Ã£o "CONFIGURAÃ‡ÃƒO DE DEPENDENCY INJECTION", adicionar:
 
 ```csharp
 // Handlers dos slices de Pedidos
@@ -1349,7 +1349,7 @@ builder.Services.AddScoped<CreatePedidoHandler>();
 dotnet build
 ```
 
-**Step 7: Rodar a aplicação e testar via Swagger**
+**Step 7: Rodar a aplicaÃ§Ã£o e testar via Swagger**
 
 ```bash
 dotnet run
@@ -1375,7 +1375,7 @@ git commit -m "feat: adicionar slice CreatePedido"
 
 ---
 
-## Task 8: Slice — GetPedido
+## Task 8: Slice â€” GetPedido
 
 **Files:**
 - Create: `src/Features/Pedidos/GetPedido/GetPedidoQuery.cs`
@@ -1389,11 +1389,11 @@ mkdir -p src/Features/Pedidos/GetPedido
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Data;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Data;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.GetPedido;
+namespace FacShopAPI.Features.Pedidos.GetPedido;
 
 public record GetPedidoQuery(int Id);
 
@@ -1407,7 +1407,7 @@ public class GetPedidoHandler(AppDbContext db)
             .FirstOrDefaultAsync(p => p.Id == query.Id, ct);
 
         if (pedido is null)
-            return Result<PedidoResponse>.Fail("Pedido não encontrado.");
+            return Result<PedidoResponse>.Fail("Pedido nÃ£o encontrado.");
 
         return Result<PedidoResponse>.Ok(PedidoResponse.From(pedido));
     }
@@ -1417,10 +1417,10 @@ public class GetPedidoHandler(AppDbContext db)
 **Step 2: Criar `GetPedidoEndpoint.cs`**
 
 ```csharp
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.GetPedido;
+namespace FacShopAPI.Features.Pedidos.GetPedido;
 
 public class GetPedidoEndpoint : IEndpoint
 {
@@ -1467,7 +1467,7 @@ git commit -m "feat: adicionar slice GetPedido"
 
 ---
 
-## Task 9: Slice — ListPedidos
+## Task 9: Slice â€” ListPedidos
 
 **Files:**
 - Create: `src/Features/Pedidos/ListPedidos/ListPedidosQuery.cs`
@@ -1481,12 +1481,12 @@ mkdir -p src/Features/Pedidos/ListPedidos
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Data;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
-using ProdutosAPI.Features.Pedidos.Domain;
+using FacShopAPI.Data;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Pedidos.Domain;
 
-namespace ProdutosAPI.Features.Pedidos.ListPedidos;
+namespace FacShopAPI.Features.Pedidos.ListPedidos;
 
 public record ListPedidosQuery(int Page = 1, int PageSize = 20, string? Status = null);
 
@@ -1527,10 +1527,10 @@ public class ListPedidosHandler(AppDbContext db)
 **Step 2: Criar `ListPedidosEndpoint.cs`**
 
 ```csharp
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.ListPedidos;
+namespace FacShopAPI.Features.Pedidos.ListPedidos;
 
 public class ListPedidosEndpoint : IEndpoint
 {
@@ -1549,7 +1549,7 @@ public class ListPedidosEndpoint : IEndpoint
         })
         .WithName("ListarPedidos")
         .WithTags("Pedidos")
-        .WithSummary("Listar pedidos com paginação")
+        .WithSummary("Listar pedidos com paginaÃ§Ã£o")
         .Produces<ListPedidosResponse>(StatusCodes.Status200OK)
         .RequireAuthorization();
     }
@@ -1572,12 +1572,12 @@ dotnet build
 
 ```bash
 git add src/Features/Pedidos/ListPedidos/ Program.cs
-git commit -m "feat: adicionar slice ListPedidos com paginação e filtro por status"
+git commit -m "feat: adicionar slice ListPedidos com paginaÃ§Ã£o e filtro por status"
 ```
 
 ---
 
-## Task 10: Slice — AddItemPedido
+## Task 10: Slice â€” AddItemPedido
 
 **Files:**
 - Create: `src/Features/Pedidos/AddItemPedido/AddItemCommand.cs`
@@ -1592,11 +1592,11 @@ mkdir -p src/Features/Pedidos/AddItemPedido
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Data;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Data;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.AddItemPedido;
+namespace FacShopAPI.Features.Pedidos.AddItemPedido;
 
 public record AddItemCommand(int PedidoId, int ProdutoId, int Quantidade);
 
@@ -1610,11 +1610,11 @@ public class AddItemHandler(AppDbContext db)
             .FirstOrDefaultAsync(p => p.Id == cmd.PedidoId, ct);
 
         if (pedido is null)
-            return Result<PedidoResponse>.Fail("Pedido não encontrado.");
+            return Result<PedidoResponse>.Fail("Pedido nÃ£o encontrado.");
 
         var produto = await db.Produtos.FindAsync([cmd.ProdutoId], ct);
         if (produto is null)
-            return Result<PedidoResponse>.Fail($"Produto {cmd.ProdutoId} não encontrado.");
+            return Result<PedidoResponse>.Fail($"Produto {cmd.ProdutoId} nÃ£o encontrado.");
 
         var resultado = pedido.AdicionarItem(produto, cmd.Quantidade);
         if (!resultado.IsSuccess)
@@ -1631,7 +1631,7 @@ public class AddItemHandler(AppDbContext db)
 ```csharp
 using FluentValidation;
 
-namespace ProdutosAPI.Features.Pedidos.AddItemPedido;
+namespace FacShopAPI.Features.Pedidos.AddItemPedido;
 
 public record AddItemRequest(int ProdutoId, int Quantidade);
 
@@ -1639,7 +1639,7 @@ public class AddItemValidator : AbstractValidator<AddItemRequest>
 {
     public AddItemValidator()
     {
-        RuleFor(x => x.ProdutoId).GreaterThan(0).WithMessage("ProdutoId inválido.");
+        RuleFor(x => x.ProdutoId).GreaterThan(0).WithMessage("ProdutoId invÃ¡lido.");
         RuleFor(x => x.Quantidade)
             .InclusiveBetween(1, 999)
             .WithMessage("Quantidade deve estar entre 1 e 999.");
@@ -1651,10 +1651,10 @@ public class AddItemValidator : AbstractValidator<AddItemRequest>
 
 ```csharp
 using FluentValidation;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.AddItemPedido;
+namespace FacShopAPI.Features.Pedidos.AddItemPedido;
 
 public class AddItemEndpoint : IEndpoint
 {
@@ -1695,7 +1695,7 @@ public class AddItemEndpoint : IEndpoint
 builder.Services.AddScoped<AddItemHandler>();
 ```
 
-Os validators dos slices são descobertos automaticamente pelo `AddValidatorsFromAssemblyContaining<CriarProdutoValidator>()` que já escaneia todo o assembly.
+Os validators dos slices sÃ£o descobertos automaticamente pelo `AddValidatorsFromAssemblyContaining<CriarProdutoValidator>()` que jÃ¡ escaneia todo o assembly.
 
 **Step 5: Build**
 
@@ -1712,7 +1712,7 @@ git commit -m "feat: adicionar slice AddItemPedido"
 
 ---
 
-## Task 11: Slice — CancelPedido
+## Task 11: Slice â€” CancelPedido
 
 **Files:**
 - Create: `src/Features/Pedidos/CancelPedido/CancelPedidoCommand.cs`
@@ -1726,11 +1726,11 @@ mkdir -p src/Features/Pedidos/CancelPedido
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using ProdutosAPI.Data;
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Data;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.CancelPedido;
+namespace FacShopAPI.Features.Pedidos.CancelPedido;
 
 public record CancelPedidoCommand(int PedidoId, string Motivo);
 
@@ -1744,7 +1744,7 @@ public class CancelPedidoHandler(AppDbContext db)
             .FirstOrDefaultAsync(p => p.Id == cmd.PedidoId, ct);
 
         if (pedido is null)
-            return Result<PedidoResponse>.Fail("Pedido não encontrado.");
+            return Result<PedidoResponse>.Fail("Pedido nÃ£o encontrado.");
 
         var resultado = pedido.Cancelar(cmd.Motivo);
         if (!resultado.IsSuccess)
@@ -1759,10 +1759,10 @@ public class CancelPedidoHandler(AppDbContext db)
 **Step 2: Criar `CancelPedidoEndpoint.cs`**
 
 ```csharp
-using ProdutosAPI.Features.Common;
-using ProdutosAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Common;
+using FacShopAPI.Features.Pedidos.Common;
 
-namespace ProdutosAPI.Features.Pedidos.CancelPedido;
+namespace FacShopAPI.Features.Pedidos.CancelPedido;
 
 public class CancelPedidoEndpoint : IEndpoint
 {
@@ -1814,17 +1814,17 @@ git commit -m "feat: adicionar slice CancelPedido"
 
 ---
 
-## Task 12: Testes de integração dos slices
+## Task 12: Testes de integraÃ§Ã£o dos slices
 
 **Files:**
-- Modify: `ProdutosAPI.Tests/ProdutosAPI.Tests.csproj` (adicionar Microsoft.AspNetCore.Mvc.Testing)
-- Create: `ProdutosAPI.Tests/Integration/Pedidos/CreatePedidoTests.cs`
-- Create: `ProdutosAPI.Tests/Integration/Pedidos/GetPedidoTests.cs`
-- Create: `ProdutosAPI.Tests/Integration/Pedidos/CancelPedidoTests.cs`
+- Modify: `FacShopAPI.Tests/FacShopAPI.Tests.csproj` (adicionar Microsoft.AspNetCore.Mvc.Testing)
+- Create: `FacShopAPI.Tests/Integration/Pedidos/CreatePedidoTests.cs`
+- Create: `FacShopAPI.Tests/Integration/Pedidos/GetPedidoTests.cs`
+- Create: `FacShopAPI.Tests/Integration/Pedidos/CancelPedidoTests.cs`
 
-**Step 1: Adicionar dependência de testes de integração**
+**Step 1: Adicionar dependÃªncia de testes de integraÃ§Ã£o**
 
-Em `ProdutosAPI.Tests/ProdutosAPI.Tests.csproj`, dentro de `<ItemGroup>`:
+Em `FacShopAPI.Tests/FacShopAPI.Tests.csproj`, dentro de `<ItemGroup>`:
 
 ```xml
 <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0" />
@@ -1832,20 +1832,20 @@ Em `ProdutosAPI.Tests/ProdutosAPI.Tests.csproj`, dentro de `<ItemGroup>`:
 
 Restaurar:
 ```bash
-dotnet restore ProdutosAPI.Tests
+dotnet restore FacShopAPI.Tests
 ```
 
 **Step 2: Criar factory helper**
 
-Criar `ProdutosAPI.Tests/Integration/ApiFactory.cs`:
+Criar `FacShopAPI.Tests/Integration/ApiFactory.cs`:
 
 ```csharp
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ProdutosAPI.Data;
+using FacShopAPI.Data;
 
-namespace ProdutosAPI.Tests.Integration;
+namespace FacShopAPI.Tests.Integration;
 
 public class ApiFactory : WebApplicationFactory<Program>
 {
@@ -1865,14 +1865,14 @@ public class ApiFactory : WebApplicationFactory<Program>
 }
 ```
 
-**Step 3: Criar helper de autenticação**
+**Step 3: Criar helper de autenticaÃ§Ã£o**
 
-Criar `ProdutosAPI.Tests/Integration/AuthHelper.cs`:
+Criar `FacShopAPI.Tests/Integration/AuthHelper.cs`:
 
 ```csharp
 using System.Net.Http.Json;
 
-namespace ProdutosAPI.Tests.Integration;
+namespace FacShopAPI.Tests.Integration;
 
 public static class AuthHelper
 {
@@ -1898,10 +1898,10 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
-using ProdutosAPI.Features.Pedidos.Common;
-using ProdutosAPI.Features.Pedidos.CreatePedido;
+using FacShopAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Pedidos.CreatePedido;
 
-namespace ProdutosAPI.Tests.Integration.Pedidos;
+namespace FacShopAPI.Tests.Integration.Pedidos;
 
 public class CreatePedidoTests : IClassFixture<ApiFactory>
 {
@@ -1949,7 +1949,7 @@ public class CreatePedidoTests : IClassFixture<ApiFactory>
     public async Task POST_Pedidos_ComProdutoValido_Retorna201()
     {
         await AuthenticateAsync();
-        // Produto com Id=1 é seed pelo DbSeeder
+        // Produto com Id=1 Ã© seed pelo DbSeeder
         var response = await _client.PostAsJsonAsync("/api/v1/pedidos",
             new CreatePedidoCommand([new(1, 1)]));
 
@@ -1970,10 +1970,10 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
-using ProdutosAPI.Features.Pedidos.Common;
-using ProdutosAPI.Features.Pedidos.CreatePedido;
+using FacShopAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Pedidos.CreatePedido;
 
-namespace ProdutosAPI.Tests.Integration.Pedidos;
+namespace FacShopAPI.Tests.Integration.Pedidos;
 
 public class GetPedidoTests : IClassFixture<ApiFactory>
 {
@@ -2027,11 +2027,11 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FluentAssertions;
-using ProdutosAPI.Features.Pedidos.CancelPedido;
-using ProdutosAPI.Features.Pedidos.Common;
-using ProdutosAPI.Features.Pedidos.CreatePedido;
+using FacShopAPI.Features.Pedidos.CancelPedido;
+using FacShopAPI.Features.Pedidos.Common;
+using FacShopAPI.Features.Pedidos.CreatePedido;
 
-namespace ProdutosAPI.Tests.Integration.Pedidos;
+namespace FacShopAPI.Tests.Integration.Pedidos;
 
 public class CancelPedidoTests : IClassFixture<ApiFactory>
 {
@@ -2087,7 +2087,7 @@ public class CancelPedidoTests : IClassFixture<ApiFactory>
 **Step 7: Rodar todos os testes**
 
 ```bash
-dotnet test ProdutosAPI.Tests -v minimal
+dotnet test FacShopAPI.Tests -v minimal
 ```
 
 Esperado: Todos os testes passam (unit + integration).
@@ -2095,13 +2095,13 @@ Esperado: Todos os testes passam (unit + integration).
 **Step 8: Commit final**
 
 ```bash
-git add ProdutosAPI.Tests/
-git commit -m "test: adicionar testes de integração dos slices de Pedidos"
+git add FacShopAPI.Tests/
+git commit -m "test: adicionar testes de integraÃ§Ã£o dos slices de Pedidos"
 ```
 
 ---
 
-## Verificação Final
+## VerificaÃ§Ã£o Final
 
 **Step 1: Build limpo**
 
@@ -2112,12 +2112,12 @@ dotnet build -c Release
 **Step 2: Todos os testes**
 
 ```bash
-dotnet test ProdutosAPI.Tests -v normal
+dotnet test FacShopAPI.Tests -v normal
 ```
 
-Esperado: Todos os testes passam, cobertura de domínio + integração.
+Esperado: Todos os testes passam, cobertura de domÃ­nio + integraÃ§Ã£o.
 
-**Step 3: Executar a aplicação**
+**Step 3: Executar a aplicaÃ§Ã£o**
 
 ```bash
 dotnet run
@@ -2129,5 +2129,5 @@ Acessar `http://localhost:5000` e verificar no Swagger que os endpoints de Pedid
 
 ```bash
 git add .
-git commit -m "chore: verificação final — Vertical Slice + domínio rico completos"
+git commit -m "chore: verificaÃ§Ã£o final â€” Vertical Slice + domÃ­nio rico completos"
 ```

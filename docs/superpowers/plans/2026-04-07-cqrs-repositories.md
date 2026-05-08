@@ -1,30 +1,30 @@
-# CQRS Repositories — Implementation Plan
+﻿# CQRS Repositories â€” Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Validar e integrar a segregação de repositórios CQRS (Dapper para leitura, EF Core para escrita) em Produtos e Pedidos, mesclando a feature branch `feature/cqrs-repositories` no `main`.
+**Goal:** Validar e integrar a segregaÃ§Ã£o de repositÃ³rios CQRS (Dapper para leitura, EF Core para escrita) em Produtos e Pedidos, mesclando a feature branch `feature/cqrs-repositories` no `main`.
 
-**Architecture:** A feature branch já contém 3 commits com a implementação completa: `IProdutoQueryRepository`/`IProdutoCommandRepository` para Produtos e `IPedidoQueryRepository`/`IPedidoCommandRepository` para Pedidos. Todos os handlers de Pedidos e o `ProdutoService` já foram atualizados para usar os novos repositórios. O plano é verificar, corrigir eventuais falhas e fazer o merge.
+**Architecture:** A feature branch jÃ¡ contÃ©m 3 commits com a implementaÃ§Ã£o completa: `IProdutoQueryRepository`/`IProdutoCommandRepository` para Produtos e `IPedidoQueryRepository`/`IPedidoCommandRepository` para Pedidos. Todos os handlers de Pedidos e o `ProdutoService` jÃ¡ foram atualizados para usar os novos repositÃ³rios. O plano Ã© verificar, corrigir eventuais falhas e fazer o merge.
 
-**Tech Stack:** .NET 10, EF Core (writes + tracking), Dapper (reads + raw SQL), xUnit + WebApplicationFactory (testes de integração com InMemory SQLite).
+**Tech Stack:** .NET 10, EF Core (writes + tracking), Dapper (reads + raw SQL), xUnit + WebApplicationFactory (testes de integraÃ§Ã£o com InMemory SQLite).
 
-**Worktree:** `.worktrees/feature/cqrs-repositories` — execute todos os comandos de build/test a partir desse diretório.
+**Worktree:** `.worktrees/feature/cqrs-repositories` â€” execute todos os comandos de build/test a partir desse diretÃ³rio.
 
 ---
 
 ## Mapa de Arquivos
 
-### Arquivos criados na feature branch (não existem no main)
+### Arquivos criados na feature branch (nÃ£o existem no main)
 
 | Arquivo                                                                             | Responsabilidade                                                                               |
 | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `src/Produtos/Produtos.Application/Repositories/IProdutoQueryRepository.cs`         | Interface de leitura — `ObterPorIdAsync`, `ListarAsync` → `ProdutoResponse`                    |
-| `src/Produtos/Produtos.Application/Repositories/IProdutoCommandRepository.cs`       | Interface de escrita — `ObterPorIdAsync`, `AdicionarAsync`, `DeletarAsync`, `SaveChangesAsync` |
-| `src/Produtos/Produtos.Infrastructure/Repositories/DapperProdutoQueryRepository.cs` | Dapper, mapeia raw SQL → `ProdutoResponse` inline                                              |
+| `src/Produtos/Produtos.Application/Repositories/IProdutoQueryRepository.cs`         | Interface de leitura â€” `ObterPorIdAsync`, `ListarAsync` â†’ `ProdutoResponse`                    |
+| `src/Produtos/Produtos.Application/Repositories/IProdutoCommandRepository.cs`       | Interface de escrita â€” `ObterPorIdAsync`, `AdicionarAsync`, `DeletarAsync`, `SaveChangesAsync` |
+| `src/Produtos/Produtos.Infrastructure/Repositories/DapperProdutoQueryRepository.cs` | Dapper, mapeia raw SQL â†’ `ProdutoResponse` inline                                              |
 | `src/Produtos/Produtos.Infrastructure/Repositories/EfProdutoCommandRepository.cs`   | EF Core tracking via `IProdutoContext`                                                         |
 | `src/Pedidos/Repositories/IPedidoQueryRepository.cs`                                | Interface de leitura de Pedidos                                                                |
 | `src/Pedidos/Repositories/IPedidoCommandRepository.cs`                              | Interface de escrita de Pedidos (inclui `ObterProdutoParaItemAsync`)                           |
-| `src/Pedidos/Infrastructure/PedidoQueryRepository.cs`                               | Dapper, mapeia raw SQL → `PedidoResponse`                                                      |
+| `src/Pedidos/Infrastructure/PedidoQueryRepository.cs`                               | Dapper, mapeia raw SQL â†’ `PedidoResponse`                                                      |
 | `src/Pedidos/Infrastructure/PedidoCommandRepository.cs`                             | EF Core direto no `AppDbContext`                                                               |
 
 ### Arquivos modificados na feature branch
@@ -32,7 +32,7 @@
 | Arquivo                                                             | O que mudou                                                                                   |
 | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `src/Produtos/Produtos.Application/Services/ProdutoService.cs`      | Injeta `IProdutoQueryRepository` + `IProdutoCommandRepository` em vez de `IProdutoRepository` |
-| `src/Produtos/Produtos.API/Extensions/ProdutosServiceExtensions.cs` | Registra os dois novos repositórios no DI; remove `IProdutoRepository`                        |
+| `src/Produtos/Produtos.API/Extensions/ProdutosServiceExtensions.cs` | Registra os dois novos repositÃ³rios no DI; remove `IProdutoRepository`                        |
 | `src/Pedidos/CreatePedido/CreatePedidoCommand.cs`                   | `CreatePedidoHandler` injeta `IPedidoCommandRepository`                                       |
 | `src/Pedidos/GetPedido/GetPedidoQuery.cs`                           | `GetPedidoHandler` injeta `IPedidoQueryRepository`                                            |
 | `src/Pedidos/ListPedidos/ListPedidosQuery.cs`                       | `ListPedidosHandler` injeta `IPedidoQueryRepository`                                          |
@@ -44,14 +44,14 @@
 
 | Arquivo                                                                        | Motivo                                                                        |
 | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `src/Produtos/Produtos.Application/Repositories/IProdutoRepository.cs`         | Substituído pelos dois repositórios segregados                                |
-| `src/Produtos/Produtos.Infrastructure/Repositories/DapperProdutoRepository.cs` | Substituído por `DapperProdutoQueryRepository` + `EfProdutoCommandRepository` |
+| `src/Produtos/Produtos.Application/Repositories/IProdutoRepository.cs`         | SubstituÃ­do pelos dois repositÃ³rios segregados                                |
+| `src/Produtos/Produtos.Infrastructure/Repositories/DapperProdutoRepository.cs` | SubstituÃ­do por `DapperProdutoQueryRepository` + `EfProdutoCommandRepository` |
 
 ---
 
-## Task 1: Verificar compilação na feature branch
+## Task 1: Verificar compilaÃ§Ã£o na feature branch
 
-**Diretório:** `.worktrees/feature/cqrs-repositories`
+**DiretÃ³rio:** `.worktrees/feature/cqrs-repositories`
 
 - [ ] **Step 1: Rodar build**
 
@@ -70,17 +70,17 @@ Build succeeded.
 
 - [ ] **Step 2: Se houver erros, identificar o tipo**
 
-Erros comuns e correções:
+Erros comuns e correÃ§Ãµes:
 
-**"The name 'IProdutoRepository' does not exist"** → algum arquivo ainda referencia a interface antiga. Buscar e substituir:
+**"The name 'IProdutoRepository' does not exist"** â†’ algum arquivo ainda referencia a interface antiga. Buscar e substituir:
 
 ```bash
 grep -rn "IProdutoRepository" src/ --include="*.cs"
 ```
 
-Substituir cada ocorrência por `IProdutoQueryRepository` (leituras) ou `IProdutoCommandRepository` (escritas) conforme o contexto.
+Substituir cada ocorrÃªncia por `IProdutoQueryRepository` (leituras) ou `IProdutoCommandRepository` (escritas) conforme o contexto.
 
-**"DapperProdutoRepository does not exist"** → mesmo padrão:
+**"DapperProdutoRepository does not exist"** â†’ mesmo padrÃ£o:
 
 ```bash
 grep -rn "DapperProdutoRepository" src/ --include="*.cs"
@@ -88,9 +88,9 @@ grep -rn "DapperProdutoRepository" src/ --include="*.cs"
 
 Substituir por `DapperProdutoQueryRepository`.
 
-**"AppDbContext does not contain a definition for 'Pedidos'"** → verificar se `PedidoCommandRepository.cs` está referenciando o DbSet correto (`db.Pedidos`).
+**"AppDbContext does not contain a definition for 'Pedidos'"** â†’ verificar se `PedidoCommandRepository.cs` estÃ¡ referenciando o DbSet correto (`db.Pedidos`).
 
-- [ ] **Step 3: Reconfirmar build limpo após correções**
+- [ ] **Step 3: Reconfirmar build limpo apÃ³s correÃ§Ãµes**
 
 ```bash
 dotnet build FacShopAPI.slnx
@@ -102,46 +102,46 @@ Esperado: `Build succeeded. 0 Error(s)`
 
 ## Task 2: Rodar testes de Produtos
 
-**Diretório:** `.worktrees/feature/cqrs-repositories`
+**DiretÃ³rio:** `.worktrees/feature/cqrs-repositories`
 
 - [ ] **Step 1: Rodar testes de Produtos**
 
 ```bash
 cd /Volumes/Marco-Dev/dev/net-minimal-api/.worktrees/feature/cqrs-repositories
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v normal
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v normal
 ```
 
-Esperado: todos os testes passando. A suíte cobre:
+Esperado: todos os testes passando. A suÃ­te cobre:
 
-- `ProdutoEndpointsTests` — 23 testes HTTP (GET list, GET by id, POST, PUT, PATCH, DELETE, paginação, filtro por categoria, busca, soft delete, auth)
-- `ProdutoValidatorTests` — validações de entrada
-- `ProdutoTests` (unitários) — domain model, value objects
-- `ResultTests` — Result pattern
+- `ProdutoEndpointsTests` â€” 23 testes HTTP (GET list, GET by id, POST, PUT, PATCH, DELETE, paginaÃ§Ã£o, filtro por categoria, busca, soft delete, auth)
+- `ProdutoValidatorTests` â€” validaÃ§Ãµes de entrada
+- `ProdutoTests` (unitÃ¡rios) â€” domain model, value objects
+- `ResultTests` â€” Result pattern
 
-- [ ] **Step 2: Se houver falhas, identificar padrão**
+- [ ] **Step 2: Se houver falhas, identificar padrÃ£o**
 
 **Falha em testes de leitura (GET /produtos):**
 Sintoma: `NullReferenceException` ou resultado vazio onde se esperava dados.
-Causa provável: `DapperProdutoQueryRepository` não está recebendo a conexão corretamente no banco InMemory de testes.
-Verificar: o `ApiFactory` usa `UseInMemoryDatabase` — Dapper precisa de uma conexão real. Checar se `WithConnectionAsync` abre corretamente a conexão do EF InMemory (SQLite in-memory, não EF InMemory provider).
+Causa provÃ¡vel: `DapperProdutoQueryRepository` nÃ£o estÃ¡ recebendo a conexÃ£o corretamente no banco InMemory de testes.
+Verificar: o `ApiFactory` usa `UseInMemoryDatabase` â€” Dapper precisa de uma conexÃ£o real. Checar se `WithConnectionAsync` abre corretamente a conexÃ£o do EF InMemory (SQLite in-memory, nÃ£o EF InMemory provider).
 
-> **Nota:** O banco de testes usa `Microsoft.Data.Sqlite` com `DataSource=:memory:` e `Cache=Shared`, não o provider `UseInMemoryDatabase`. Confirmar em `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs`:
+> **Nota:** O banco de testes usa `Microsoft.Data.Sqlite` com `DataSource=:memory:` e `Cache=Shared`, nÃ£o o provider `UseInMemoryDatabase`. Confirmar em `tests/FacShopAPI.Tests/Integration/ApiFactory.cs`:
 
 ```bash
-grep -n "UseInMemory\|UseSqlite\|DataSource" tests/ProdutosAPI.Tests/Integration/ApiFactory.cs
+grep -n "UseInMemory\|UseSqlite\|DataSource" tests/FacShopAPI.Tests/Integration/ApiFactory.cs
 ```
 
-Se usar `UseSqlite`, Dapper funciona normalmente. Se usar `UseInMemoryDatabase` puro (sem SQLite), a conexão não existe e Dapper falhará — nesse caso, o `ApiFactory` precisa ser migrado para SQLite in-memory.
+Se usar `UseSqlite`, Dapper funciona normalmente. Se usar `UseInMemoryDatabase` puro (sem SQLite), a conexÃ£o nÃ£o existe e Dapper falharÃ¡ â€” nesse caso, o `ApiFactory` precisa ser migrado para SQLite in-memory.
 
 **Falha em testes de escrita (POST/PUT/PATCH/DELETE):**
-Sintoma: `404` onde se esperava `200/201`, ou entidade não persiste.
-Causa provável: `EfProdutoCommandRepository.AdicionarAsync` chama `SaveChangesAsync` internamente; verificar se não está chamando duas vezes (double save).
+Sintoma: `404` onde se esperava `200/201`, ou entidade nÃ£o persiste.
+Causa provÃ¡vel: `EfProdutoCommandRepository.AdicionarAsync` chama `SaveChangesAsync` internamente; verificar se nÃ£o estÃ¡ chamando duas vezes (double save).
 
 - [ ] **Step 3: Corrigir falhas encontradas**
 
 Se `ApiFactory` usa `UseInMemoryDatabase` puro, atualizar para SQLite in-memory compartilhado:
 
-Arquivo: `tests/ProdutosAPI.Tests/Integration/ApiFactory.cs`
+Arquivo: `tests/FacShopAPI.Tests/Integration/ApiFactory.cs`
 
 Localizar o bloco que configura o DbContext nos testes e substituir:
 
@@ -153,31 +153,31 @@ options.UseInMemoryDatabase("TestDb");
 options.UseSqlite("DataSource=:memory:;Cache=Shared");
 ```
 
-Garantir que a connection string compartilhe a mesma conexão entre o contexto EF e o Dapper (mesmo `DataSource` e `Cache=Shared`).
+Garantir que a connection string compartilhe a mesma conexÃ£o entre o contexto EF e o Dapper (mesmo `DataSource` e `Cache=Shared`).
 
-- [ ] **Step 4: Reconfirmar após correções**
+- [ ] **Step 4: Reconfirmar apÃ³s correÃ§Ãµes**
 
 ```bash
-dotnet test tests/ProdutosAPI.Tests/ProdutosAPI.Tests.csproj -v normal
+dotnet test tests/FacShopAPI.Tests/FacShopAPI.Tests.csproj -v normal
 ```
 
 Esperado: todos passando.
 
-- [ ] **Step 5: Commit se houve correções**
+- [ ] **Step 5: Commit se houve correÃ§Ãµes**
 
 ```bash
 cd /Volumes/Marco-Dev/dev/net-minimal-api/.worktrees/feature/cqrs-repositories
-git add tests/ProdutosAPI.Tests/Integration/ApiFactory.cs
+git add tests/FacShopAPI.Tests/Integration/ApiFactory.cs
 git commit -m "fix(tests): migrar ApiFactory para SQLite in-memory para compatibilidade com Dapper"
 ```
 
-Se não houve correções, pular este step.
+Se nÃ£o houve correÃ§Ãµes, pular este step.
 
 ---
 
 ## Task 3: Rodar testes de Pedidos
 
-**Diretório:** `.worktrees/feature/cqrs-repositories`
+**DiretÃ³rio:** `.worktrees/feature/cqrs-repositories`
 
 - [ ] **Step 1: Rodar testes de Pedidos**
 
@@ -186,35 +186,35 @@ cd /Volumes/Marco-Dev/dev/net-minimal-api/.worktrees/feature/cqrs-repositories
 dotnet test tests/Pedidos.Tests/Pedidos.Tests.csproj -v normal
 ```
 
-Esperado: todos os testes passando. A suíte cobre:
+Esperado: todos os testes passando. A suÃ­te cobre:
 
-- `CreatePedidoEndpointTests` — criação com itens válidos, produto inativo, estoque insuficiente
-- `GetPedidoEndpointTests` — pedido existente, não encontrado
-- `ListPedidosEndpointTests` — listagem com e sem filtro de status
-- `AddItemEndpointTests` — adicionar item a pedido em rascunho, pedido confirmado, produto inexistente
-- `CancelPedidoEndpointTests` — cancelamento com motivo, pedido já cancelado
-- `PedidoTests` (unitários) — FSM de status, regras de negócio
+- `CreatePedidoEndpointTests` â€” criaÃ§Ã£o com itens vÃ¡lidos, produto inativo, estoque insuficiente
+- `GetPedidoEndpointTests` â€” pedido existente, nÃ£o encontrado
+- `ListPedidosEndpointTests` â€” listagem com e sem filtro de status
+- `AddItemEndpointTests` â€” adicionar item a pedido em rascunho, pedido confirmado, produto inexistente
+- `CancelPedidoEndpointTests` â€” cancelamento com motivo, pedido jÃ¡ cancelado
+- `PedidoTests` (unitÃ¡rios) â€” FSM de status, regras de negÃ³cio
 - `PedidosIntegrationTests` / `PedidosWorkflowTests`
 
-- [ ] **Step 2: Se houver falhas, identificar padrão**
+- [ ] **Step 2: Se houver falhas, identificar padrÃ£o**
 
 **Falha em `GetPedido` ou `ListPedidos` (testes de query):**
-Sintoma: retorna `null` ou lista vazia após criar um pedido.
-Causa provável: `PedidoQueryRepository` usa Dapper e pode não ver dados persistidos pelo EF no mesmo banco in-memory.
+Sintoma: retorna `null` ou lista vazia apÃ³s criar um pedido.
+Causa provÃ¡vel: `PedidoQueryRepository` usa Dapper e pode nÃ£o ver dados persistidos pelo EF no mesmo banco in-memory.
 Verificar o `PedidosApiFactory`:
 
 ```bash
 grep -n "UseInMemory\|UseSqlite\|DataSource" tests/Pedidos.Tests/Integration/PedidosApiFactory.cs
 ```
 
-Aplicar a mesma correção de SQLite in-memory compartilhado se necessário.
+Aplicar a mesma correÃ§Ã£o de SQLite in-memory compartilhado se necessÃ¡rio.
 
-**Falha em `CreatePedido` (produto não encontrado):**
+**Falha em `CreatePedido` (produto nÃ£o encontrado):**
 Sintoma: handler retorna erro de produto inexistente mas o seeder deveria ter populado produtos.
-Causa provável: `PedidoCommandRepository.ObterProdutoParaItemAsync` busca por `db.Produtos.FindAsync([produtoId])` — confirmar que o seeder popula produtos no banco de testes.
+Causa provÃ¡vel: `PedidoCommandRepository.ObterProdutoParaItemAsync` busca por `db.Produtos.FindAsync([produtoId])` â€” confirmar que o seeder popula produtos no banco de testes.
 
 **Falha em `AddItemPedido` com `NullReferenceException`:**
-Causa provável: `IPedidoCommandRepository.ObterProdutoParaItemAsync` retornou `null` — produto não existe no banco de testes. Verificar se o `ProdutoTestBuilder` cria produtos com os IDs esperados pelos testes.
+Causa provÃ¡vel: `IPedidoCommandRepository.ObterProdutoParaItemAsync` retornou `null` â€” produto nÃ£o existe no banco de testes. Verificar se o `ProdutoTestBuilder` cria produtos com os IDs esperados pelos testes.
 
 - [ ] **Step 3: Corrigir falhas encontradas**
 
@@ -230,7 +230,7 @@ options.UseInMemoryDatabase("PedidosTestDb");
 options.UseSqlite("DataSource=:memory:;Cache=Shared");
 ```
 
-- [ ] **Step 4: Reconfirmar após correções**
+- [ ] **Step 4: Reconfirmar apÃ³s correÃ§Ãµes**
 
 ```bash
 dotnet test tests/Pedidos.Tests/Pedidos.Tests.csproj -v normal
@@ -238,7 +238,7 @@ dotnet test tests/Pedidos.Tests/Pedidos.Tests.csproj -v normal
 
 Esperado: todos passando.
 
-- [ ] **Step 5: Commit se houve correções**
+- [ ] **Step 5: Commit se houve correÃ§Ãµes**
 
 ```bash
 cd /Volumes/Marco-Dev/dev/net-minimal-api/.worktrees/feature/cqrs-repositories
@@ -246,11 +246,11 @@ git add tests/Pedidos.Tests/Integration/PedidosApiFactory.cs
 git commit -m "fix(tests): migrar PedidosApiFactory para SQLite in-memory para compatibilidade com Dapper"
 ```
 
-Se não houve correções, pular este step.
+Se nÃ£o houve correÃ§Ãµes, pular este step.
 
 ---
 
-## Task 4: Rodar suíte completa
+## Task 4: Rodar suÃ­te completa
 
 - [ ] **Step 1: Rodar todos os testes juntos**
 
@@ -265,15 +265,15 @@ Esperado:
 Passed!  - Failed: 0, Passed: N, Skipped: 0, Total: N
 ```
 
-- [ ] **Step 2: Anotar o número total de testes**
+- [ ] **Step 2: Anotar o nÃºmero total de testes**
 
-Copiar a linha de resumo final (ex: `Passed: 47`). Isso serve como baseline para comparar após o merge.
+Copiar a linha de resumo final (ex: `Passed: 47`). Isso serve como baseline para comparar apÃ³s o merge.
 
 ---
 
 ## Task 5: Criar Pull Request
 
-- [ ] **Step 1: Confirmar que a branch está atualizada em relação ao main**
+- [ ] **Step 1: Confirmar que a branch estÃ¡ atualizada em relaÃ§Ã£o ao main**
 
 ```bash
 cd /Volumes/Marco-Dev/dev/net-minimal-api/.worktrees/feature/cqrs-repositories
@@ -281,9 +281,9 @@ git fetch origin
 git log origin/main..HEAD --oneline
 ```
 
-Esperado: os 3 commits da feature (mais quaisquer correções de teste adicionadas nas Tasks 2-3).
+Esperado: os 3 commits da feature (mais quaisquer correÃ§Ãµes de teste adicionadas nas Tasks 2-3).
 
-Se o `main` avançou desde que a branch foi criada:
+Se o `main` avanÃ§ou desde que a branch foi criada:
 
 ```bash
 git rebase origin/main
@@ -301,35 +301,35 @@ git push origin feature/cqrs-repositories
 gh pr create \
   --base main \
   --head feature/cqrs-repositories \
-  --title "feat: segregar repositórios em CQRS (Dapper reads + EF Core writes)" \
+  --title "feat: segregar repositÃ³rios em CQRS (Dapper reads + EF Core writes)" \
   --body "$(cat <<'EOF'
 ## Resumo
 
-- Separa `IProdutoRepository` em `IProdutoQueryRepository` (Dapper → DTO) e `IProdutoCommandRepository` (EF Core tracking)
-- Separa acesso direto ao `AppDbContext` nos handlers de Pedidos em `IPedidoQueryRepository` (Dapper → DTO) e `IPedidoCommandRepository` (EF Core tracking)
-- `ProdutoService` atualizado para injetar ambos os repositórios
-- Handlers de Pedidos (Create, Get, List, AddItem, Cancel) atualizados para injetar repositório correspondente
+- Separa `IProdutoRepository` em `IProdutoQueryRepository` (Dapper â†’ DTO) e `IProdutoCommandRepository` (EF Core tracking)
+- Separa acesso direto ao `AppDbContext` nos handlers de Pedidos em `IPedidoQueryRepository` (Dapper â†’ DTO) e `IPedidoCommandRepository` (EF Core tracking)
+- `ProdutoService` atualizado para injetar ambos os repositÃ³rios
+- Handlers de Pedidos (Create, Get, List, AddItem, Cancel) atualizados para injetar repositÃ³rio correspondente
 - DI registrado em `ProdutosServiceExtensions` (Produtos) e `Program.cs` (Pedidos)
 
-## O que NÃO mudou
+## O que NÃƒO mudou
 
 Endpoints, validators, domain model (Produto + Pedido + value objects), migrations, middleware.
 
 ## Plano de testes
 
 - [ ] `dotnet test FacShopAPI.slnx` passa sem falhas
-- [ ] Testes de integração HTTP de Produtos (GET, POST, PUT, PATCH, DELETE)
-- [ ] Testes de integração HTTP de Pedidos (Create, Get, List, AddItem, Cancel)
-- [ ] Testes unitários de domínio
+- [ ] Testes de integraÃ§Ã£o HTTP de Produtos (GET, POST, PUT, PATCH, DELETE)
+- [ ] Testes de integraÃ§Ã£o HTTP de Pedidos (Create, Get, List, AddItem, Cancel)
+- [ ] Testes unitÃ¡rios de domÃ­nio
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+ðŸ¤– Generated with [Claude Code](https://claude.com/claude-code)
 EOF
 )"
 ```
 
 - [ ] **Step 4: Anotar a URL do PR**
 
-A URL será impressa pelo comando acima. Guardar para referência.
+A URL serÃ¡ impressa pelo comando acima. Guardar para referÃªncia.
 
 ---
 
@@ -339,8 +339,8 @@ A URL será impressa pelo comando acima. Guardar para referência.
 
 Acessar a URL do PR criado. Verificar:
 
-- Diff dos 3 commits (+ correções de teste se houver)
-- Nenhum arquivo inesperado incluído (sem `.db`, sem `bin/`, sem `obj/`)
+- Diff dos 3 commits (+ correÃ§Ãµes de teste se houver)
+- Nenhum arquivo inesperado incluÃ­do (sem `.db`, sem `bin/`, sem `obj/`)
 
 - [ ] **Step 2: Fazer o merge**
 
@@ -348,7 +348,7 @@ Acessar a URL do PR criado. Verificar:
 gh pr merge --merge --delete-branch
 ```
 
-Flag `--merge` preserva os commits individuais (sem squash). Flag `--delete-branch` remove a branch remota após o merge.
+Flag `--merge` preserva os commits individuais (sem squash). Flag `--delete-branch` remove a branch remota apÃ³s o merge.
 
 - [ ] **Step 3: Atualizar main local**
 
@@ -364,7 +364,7 @@ cd /Volumes/Marco-Dev/dev/net-minimal-api
 dotnet test FacShopAPI.slnx -v minimal
 ```
 
-Esperado: mesmo número de testes passando anotado na Task 4.
+Esperado: mesmo nÃºmero de testes passando anotado na Task 4.
 
 - [ ] **Step 5: Remover a worktree local**
 
@@ -373,7 +373,7 @@ cd /Volumes/Marco-Dev/dev/net-minimal-api
 git worktree remove .worktrees/feature/cqrs-repositories
 ```
 
-Se o comando reclamar de mudanças não commitadas (não deveria, mas por precaução):
+Se o comando reclamar de mudanÃ§as nÃ£o commitadas (nÃ£o deveria, mas por precauÃ§Ã£o):
 
 ```bash
 git worktree remove --force .worktrees/feature/cqrs-repositories
@@ -381,7 +381,7 @@ git worktree remove --force .worktrees/feature/cqrs-repositories
 
 ---
 
-## Referências
+## ReferÃªncias
 
 - Spec: `docs/superpowers/specs/2026-04-07-cqrs-repositories-design.md`
 - Feature branch: `feature/cqrs-repositories`
