@@ -17,8 +17,8 @@
                     "raw": "{\n  \"email\": \"admin@example.com\",\n  \"senha\": \"senha123\"\n}"
                 },
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/auth/login",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{authBaseUrl}}/api/v1/auth/login",
+                    "host": ["{{authBaseUrl}}"],
                     "path": ["api", "v1", "auth", "login"]
                 }
             }
@@ -29,8 +29,8 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/health",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{authBaseUrl}}/health",
+                    "host": ["{{authBaseUrl}}"],
                     "path": ["health"]
                 }
             }
@@ -41,12 +41,18 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/catalogo/produtos?page=1&pageSize=10",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos?page=1&pageSize=10",
+                    "host": ["{{catalogoBaseUrl}}"],
                     "path": ["api", "v1", "catalogo", "produtos"],
                     "query": [
                         { "key": "page", "value": "1" },
-                        { "key": "pageSize", "value": "10" }
+                        { "key": "pageSize", "value": "10" },
+                        {
+                            "key": "categoria",
+                            "value": "Eletrônicos",
+                            "disabled": true
+                        },
+                        { "key": "search", "value": "", "disabled": true }
                     ]
                 }
             }
@@ -57,9 +63,10 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/catalogo/produtos/1",
-                    "host": ["{{baseUrl}}"],
-                    "path": ["api", "v1", "catalogo", "produtos", "1"]
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos/:produtoId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "produtos", ":produtoId"],
+                    "variable": [{ "key": "produtoId", "value": "1" }]
                 }
             }
         },
@@ -73,12 +80,52 @@
                 ],
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"nome\": \"Produto Teste\",\n  \"descricao\": \"Descrição...\",\n  \"preco\": 99.9,\n  \"categoriaId\": 1,\n  \"estoque\": 10\n}"
+                    "raw": "{\n  \"nome\": \"Produto Teste\",\n  \"descricao\": \"Descrição detalhada do produto teste\",\n  \"preco\": 99.9,\n  \"categoria\": \"Eletrônicos\",\n  \"estoque\": 10,\n  \"contatoEmail\": \"fornecedor@example.com\"\n}"
                 },
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/catalogo/produtos",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos",
+                    "host": ["{{catalogoBaseUrl}}"],
                     "path": ["api", "v1", "catalogo", "produtos"]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Atualizar Produto (completo)",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" },
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"nome\": \"Produto Atualizado\",\n  \"descricao\": \"Descrição atualizada do produto\",\n  \"preco\": 149.9,\n  \"categoria\": \"Eletrônicos\",\n  \"estoque\": 20,\n  \"contatoEmail\": \"fornecedor@example.com\"\n}"
+                },
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos/:produtoId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "produtos", ":produtoId"],
+                    "variable": [{ "key": "produtoId", "value": "1" }]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Atualizar Produto (parcial)",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" },
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"preco\": 79.9,\n  \"estoque\": 50\n}"
+                },
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos/:produtoId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "produtos", ":produtoId"],
+                    "variable": [{ "key": "produtoId", "value": "1" }]
                 }
             }
         },
@@ -90,9 +137,107 @@
                     { "key": "Authorization", "value": "Bearer {{token}}" }
                 ],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/catalogo/produtos/1",
-                    "host": ["{{baseUrl}}"],
-                    "path": ["api", "v1", "catalogo", "produtos", "1"]
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/produtos/:produtoId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "produtos", ":produtoId"],
+                    "variable": [{ "key": "produtoId", "value": "1" }]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Listar Categorias",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/categorias",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "categorias"]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Obter Categoria",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/categorias/:categoriaId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": [
+                        "api",
+                        "v1",
+                        "catalogo",
+                        "categorias",
+                        ":categoriaId"
+                    ],
+                    "variable": [{ "key": "categoriaId", "value": "1" }]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Criar Categoria",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" },
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"nome\": \"Categoria Teste\"\n}"
+                },
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/categorias",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": ["api", "v1", "catalogo", "categorias"]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Renomear Categoria",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" },
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"nome\": \"Categoria Renomeada\"\n}"
+                },
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/categorias/:categoriaId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": [
+                        "api",
+                        "v1",
+                        "catalogo",
+                        "categorias",
+                        ":categoriaId"
+                    ],
+                    "variable": [{ "key": "categoriaId", "value": "1" }]
+                }
+            }
+        },
+        {
+            "name": "Catalogo - Desativar Categoria",
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "url": {
+                    "raw": "{{catalogoBaseUrl}}/api/v1/catalogo/categorias/:categoriaId",
+                    "host": ["{{catalogoBaseUrl}}"],
+                    "path": [
+                        "api",
+                        "v1",
+                        "catalogo",
+                        "categorias",
+                        ":categoriaId"
+                    ],
+                    "variable": [{ "key": "categoriaId", "value": "1" }]
                 }
             }
         },
@@ -102,12 +247,17 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/pedidos?page=1&pageSize=10",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{pedidosBaseUrl}}/api/v1/pedidos?page=1&pageSize=10",
+                    "host": ["{{pedidosBaseUrl}}"],
                     "path": ["api", "v1", "pedidos"],
                     "query": [
                         { "key": "page", "value": "1" },
-                        { "key": "pageSize", "value": "10" }
+                        { "key": "pageSize", "value": "10" },
+                        {
+                            "key": "status",
+                            "value": "Rascunho",
+                            "disabled": true
+                        }
                     ]
                 }
             }
@@ -118,9 +268,10 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/pedidos/1",
-                    "host": ["{{baseUrl}}"],
-                    "path": ["api", "v1", "pedidos", "1"]
+                    "raw": "{{pedidosBaseUrl}}/api/v1/pedidos/:pedidoId",
+                    "host": ["{{pedidosBaseUrl}}"],
+                    "path": ["api", "v1", "pedidos", ":pedidoId"],
+                    "variable": [{ "key": "pedidoId", "value": "1" }]
                 }
             }
         },
@@ -137,8 +288,8 @@
                     "raw": "{\n  \"itens\": [{ \"produtoId\": 1, \"quantidade\": 2 }]\n}"
                 },
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/pedidos",
-                    "host": ["{{baseUrl}}"],
+                    "raw": "{{pedidosBaseUrl}}/api/v1/pedidos",
+                    "host": ["{{pedidosBaseUrl}}"],
                     "path": ["api", "v1", "pedidos"]
                 }
             }
@@ -156,9 +307,10 @@
                     "raw": "{\n  \"produtoId\": 2,\n  \"quantidade\": 1\n}"
                 },
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/pedidos/1/itens",
-                    "host": ["{{baseUrl}}"],
-                    "path": ["api", "v1", "pedidos", "1", "itens"]
+                    "raw": "{{pedidosBaseUrl}}/api/v1/pedidos/:pedidoId/itens",
+                    "host": ["{{pedidosBaseUrl}}"],
+                    "path": ["api", "v1", "pedidos", ":pedidoId", "itens"],
+                    "variable": [{ "key": "pedidoId", "value": "1" }]
                 }
             }
         },
@@ -175,9 +327,10 @@
                     "raw": "{\n  \"motivo\": \"Cliente desistiu\"\n}"
                 },
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/pedidos/1/cancelar",
-                    "host": ["{{baseUrl}}"],
-                    "path": ["api", "v1", "pedidos", "1", "cancelar"]
+                    "raw": "{{pedidosBaseUrl}}/api/v1/pedidos/:pedidoId/cancelar",
+                    "host": ["{{pedidosBaseUrl}}"],
+                    "path": ["api", "v1", "pedidos", ":pedidoId", "cancelar"],
+                    "variable": [{ "key": "pedidoId", "value": "1" }]
                 }
             }
         },
@@ -206,15 +359,11 @@
                 "header": [
                     { "key": "Content-Type", "value": "application/json" },
                     { "key": "Authorization", "value": "Bearer {{pixToken}}" },
-                    {
-                        "key": "X-MTLS-Client-Cert",
-                        "value": "demo-certificado-cliente"
-                    },
                     { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
                 ],
                 "body": {
                     "mode": "raw",
-                    "raw": "{\n  \"calendario\": { \"expiracao\": 3600 },\n  \"devedor\": {\n    \"nome\": \"Cliente Exemplo\",\n    \"cpf\": \"12345678901\",\n    \"endereco\": {\n      \"logradouro\": \"Rua A\",\n      \"numero\": \"100\",\n      \"cidade\": \"Sao Paulo\",\n      \"uf\": \"SP\",\n      \"cep\": \"01001000\"\n    }\n  },\n  \"recebedor\": {\n    \"nome\": \"Empresa\",\n    \"agencia\": \"12345678\",\n    \"conta\": \"0001\",\n    \"banco\": \"99999\",\n    \"tipoConta\": \"CACC\"\n  },\n  \"valor\": { \"original\": 100.0 },\n  \"chave\": \"chave-pix-demo\",\n  \"solicitacaoPagador\": \"Pedido #123\"\n}"
+                    "raw": "{\n  \"calendario\": { \"expiracao\": 3600 },\n  \"devedor\": {\n    \"nome\": \"Cliente Exemplo\",\n    \"cpfCnpj\": \"12345678901\",\n    \"endereco\": {\n      \"logradouro\": \"Rua A\",\n      \"numero\": \"100\",\n      \"cidade\": \"Sao Paulo\",\n      \"uf\": \"SP\",\n      \"cep\": \"01001000\"\n    }\n  },\n  \"recebedor\": {\n    \"nome\": \"Empresa Demo\",\n    \"ispb\": \"00000000\",\n    \"agencia\": \"0001\",\n    \"conta\": \"123456\",\n    \"tipoConta\": \"CACC\"\n  },\n  \"valor\": {\n    \"original\": 100.0,\n    \"abatimento\": 0.0,\n    \"desconto\": 0.0,\n    \"juros\": 0.0,\n    \"multa\": 0.0\n  },\n  \"chavePix\": \"chave-pix-demo\",\n  \"solicitacaoPagador\": \"Pedido #123\",\n  \"split\": [],\n  \"infoAdicionais\": []\n}"
                 },
                 "url": {
                     "raw": "{{pixBaseUrl}}/pix/v1/cobrancas",
@@ -222,14 +371,90 @@
                     "path": ["pix", "v1", "cobrancas"]
                 }
             }
+        },
+        {
+            "name": "Pix - Obter Cobrança",
+            "request": {
+                "method": "GET",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer {{pixToken}}" }
+                ],
+                "url": {
+                    "raw": "{{pixBaseUrl}}/pix/v1/cobrancas/:txid",
+                    "host": ["{{pixBaseUrl}}"],
+                    "path": ["pix", "v1", "cobrancas", ":txid"],
+                    "variable": [{ "key": "txid", "value": "{{pixTxid}}" }]
+                }
+            }
+        },
+        {
+            "name": "Pix - Simular Liquidação",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer {{pixToken}}" }
+                ],
+                "url": {
+                    "raw": "{{pixBaseUrl}}/pix/v1/cobrancas/:txid/simular-liquidacao",
+                    "host": ["{{pixBaseUrl}}"],
+                    "path": [
+                        "pix",
+                        "v1",
+                        "cobrancas",
+                        ":txid",
+                        "simular-liquidacao"
+                    ],
+                    "variable": [{ "key": "txid", "value": "{{pixTxid}}" }]
+                }
+            }
+        },
+        {
+            "name": "Pix - Criar Devolução",
+            "request": {
+                "method": "POST",
+                "header": [
+                    { "key": "Content-Type", "value": "application/json" },
+                    { "key": "Authorization", "value": "Bearer {{pixToken}}" }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"txid\": \"{{pixTxid}}\",\n  \"endToEndId\": \"E0000000020260508120000000000001\",\n  \"valor\": 50.0,\n  \"natureza\": \"ORIGINAL\",\n  \"motivo\": \"Devolução solicitada pelo cliente\"\n}"
+                },
+                "url": {
+                    "raw": "{{pixBaseUrl}}/pix/v1/devolucoes",
+                    "host": ["{{pixBaseUrl}}"],
+                    "path": ["pix", "v1", "devolucoes"]
+                }
+            }
+        },
+        {
+            "name": "Pix - Obter Devolução",
+            "request": {
+                "method": "GET",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer {{pixToken}}" }
+                ],
+                "url": {
+                    "raw": "{{pixBaseUrl}}/pix/v1/devolucoes/:devolucaoId",
+                    "host": ["{{pixBaseUrl}}"],
+                    "path": ["pix", "v1", "devolucoes", ":devolucaoId"],
+                    "variable": [
+                        { "key": "devolucaoId", "value": "{{pixDevolucaoId}}" }
+                    ]
+                }
+            }
         }
     ],
     "event": [],
     "variable": [
-        { "key": "baseUrl", "value": "http://localhost:5000" },
+        { "key": "authBaseUrl", "value": "http://localhost:5020" },
+        { "key": "catalogoBaseUrl", "value": "http://localhost:5000" },
+        { "key": "pedidosBaseUrl", "value": "http://localhost:5010" },
         { "key": "token", "value": "" },
-        { "key": "pixBaseUrl", "value": "http://localhost:5099" },
+        { "key": "pixBaseUrl", "value": "https://localhost:5099" },
         { "key": "pixToken", "value": "" },
-        { "key": "idempotencyKey", "value": "{{guid}}" }
+        { "key": "pixTxid", "value": "" },
+        { "key": "pixDevolucaoId", "value": "" },
+        { "key": "idempotencyKey", "value": "{{$guid}}" }
     ]
 }
