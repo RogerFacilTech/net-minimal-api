@@ -1,11 +1,11 @@
 using FacShopAPI.Catalogo.Application.DTOs.Variante;
 using FacShopAPI.Catalogo.Application.Services;
-using FacShopAPI.Catalogo.Endpoints.DTOs;
+using Catalogo.API.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Variantes;
+namespace Catalogo.API.Endpoints.Variantes;
 
 public static class VarianteEndpoints
 {

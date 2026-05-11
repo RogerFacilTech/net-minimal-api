@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace FacShopAPI.Catalogo.Data
+namespace FacShopAPI.Catalogo.Infrastructure
 {
     public class CatalogoDbContextFactory : IDesignTimeDbContextFactory<CatalogoDbContext>
     {

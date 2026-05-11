@@ -29,9 +29,7 @@
     <ProjectReference Include="../Catalogo.API/Catalogo.API.csproj" />
     <ProjectReference Include="../Catalogo.Domain/Catalogo.Domain.csproj" />
     <ProjectReference Include="../Catalogo.Application/Catalogo.Application.csproj" />
-    <ProjectReference Include="../Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <ProjectReference Include="../Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
-    <ProjectReference Include="../Catalogo.Common/Catalogo.Common.csproj" />
     <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
   </ItemGroup>
 

@@ -1,11 +1,11 @@
 using FacShopAPI.Catalogo.Application.DTOs.Midia;
 using FacShopAPI.Catalogo.Application.Services;
-using FacShopAPI.Catalogo.Endpoints.DTOs;
+using Catalogo.API.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Midias;
+namespace Catalogo.API.Endpoints.Midias;
 
 public static class MidiaEndpoints
 {

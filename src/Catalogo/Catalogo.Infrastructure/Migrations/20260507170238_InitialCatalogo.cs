@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace FacShopAPI.Catalogo.Data.Migrations
+namespace FacShopAPI.Catalogo.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCatalogo : Migration

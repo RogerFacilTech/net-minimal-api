@@ -5,7 +5,7 @@ using FacShopAPI.Catalogo.Infrastructure.Queries;
 using FacShopAPI.Catalogo.Infrastructure.Repositories;
 using FluentValidation;
 
-namespace FacShopAPI.Catalogo.Endpoints.Extensions;
+namespace Catalogo.API.Extensions;
 
 public static class CatalogoServiceExtensions
 {

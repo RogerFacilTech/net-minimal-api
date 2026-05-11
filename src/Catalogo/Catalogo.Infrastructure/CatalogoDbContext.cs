@@ -3,7 +3,7 @@ using Catalogo.Domain.ValueObjects;
 using FacShopAPI.Catalogo.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FacShopAPI.Catalogo.Data;
+namespace FacShopAPI.Catalogo.Infrastructure;
 
 public class CatalogoDbContext : DbContext, ICatalogoContext
 {

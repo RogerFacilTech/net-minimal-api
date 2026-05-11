@@ -1,5 +1,5 @@
 using System.Net;
-using FacShopAPI.Catalogo.Endpoints.DTOs;
+using Catalogo.API.DTOs;
 using FluentValidation;
 
 namespace FacShopAPI.Shared.Middleware;

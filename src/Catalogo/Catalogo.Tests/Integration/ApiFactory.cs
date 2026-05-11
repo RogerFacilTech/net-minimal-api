@@ -1,5 +1,5 @@
-using FacShopAPI.Catalogo.Data;
-using FacShopAPI.Catalogo.Endpoints.Extensions;
+using Catalogo.API.Extensions;
+using FacShopAPI.Catalogo.Infrastructure;
 using FacShopAPI.Catalogo.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

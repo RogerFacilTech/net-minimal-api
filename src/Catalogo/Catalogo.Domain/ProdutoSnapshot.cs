@@ -1,4 +1,4 @@
-namespace FacShopAPI.Catalogo.Common;
+namespace Catalogo.Domain;
 
 public sealed record ProdutoSnapshot(
     int Id,

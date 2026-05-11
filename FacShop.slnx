@@ -6,13 +6,10 @@
     <Project Path="src/Shared/Http/Shared.Http.csproj" />
   </Folder>
   <Folder Name="/Catalogo/">
-    <Project Path="src/Catalogo/Catalogo.Common/Catalogo.Common.csproj" />
     <Project Path="src/Catalogo/Catalogo.Domain/Catalogo.Domain.csproj" />
     <Project Path="src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
     <Project Path="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
-    <Project Path="src/Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
     <Project Path="src/Catalogo/Catalogo.API/Catalogo.API.csproj" />
-    <Project Path="src/Catalogo/Catalogo.Data/Catalogo.Data.csproj" />
     <Project Path="src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj" />
   </Folder>
   <Folder Name="/Pedidos/">

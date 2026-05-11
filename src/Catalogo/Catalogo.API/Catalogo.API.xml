@@ -4,6 +4,11 @@
         <name>Catalogo.API</name>
     </assembly>
     <members>
+        <member name="M:Catalogo.API.Extensions.RateLimitingExtensions.AddCatalogoRateLimitingWithLimits(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Registra políticas de rate limiting com limites customizados — usado em testes.
+            </summary>
+        </member>
         <member name="T:FacShopAPI.Shared.Middleware.ExceptionHandlingMiddleware">
             <summary>
             Middleware global para tratamento de exceções

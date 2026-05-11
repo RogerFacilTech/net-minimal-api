@@ -1,12 +1,12 @@
 using FacShopAPI.Catalogo.Application.DTOs.Common;
 using FacShopAPI.Catalogo.Application.DTOs.Produto;
 using FacShopAPI.Catalogo.Application.Services;
-using FacShopAPI.Catalogo.Endpoints.DTOs;
+using Catalogo.API.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FacShopAPI.Catalogo.Endpoints.Endpoints.Produtos;
+namespace Catalogo.API.Endpoints.Produtos;
 
 public static class ProdutoEndpoints
 {

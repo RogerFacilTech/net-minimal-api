@@ -1,4 +1,4 @@
-using FacShopAPI.Catalogo.Endpoints.Extensions;
+using Catalogo.API.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Catalogo.Tests.Integration;
