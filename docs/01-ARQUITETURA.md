@@ -22,7 +22,7 @@ O Catálogo usa Clean Architecture nas camadas internas e Vertical Slice na cama
 | `Catalogo.Infrastructure` | Repositórios EF Core, DbSeeder, configurações de mapeamento |
 | `Catalogo.Data`           | `CatalogoDbContext`, migrations                             |
 | `Catalogo.Endpoints`      | Endpoints Minimal API, extensões, rate limiting             |
-| `Catalogo.Host`           | Entry point da API, DI, middleware, Program.cs              |
+| `Catalogo.API`            | Entry point da API, DI, middleware, Program.cs              |
 
 ### Domain
 
@@ -151,7 +151,7 @@ net-minimal-api/
 │   │   ├── Catalogo.Infrastructure/        # Repositórios EF Core, DbSeeder
 │   │   ├── Catalogo.Data/                  # CatalogoDbContext, migrations
 │   │   ├── Catalogo.Endpoints/             # Endpoints Minimal API, extensões, rate limiting
-│   │   ├── Catalogo.Host/                  # Entry point (porta 5000)
+│   │   ├── Catalogo.API/                   # Entry point (porta 5000)
 │   │   └── Catalogo.Tests/                 # Testes do Catálogo
 │   │
 │   ├── Pedidos/                            # Bounded Context — Vertical Slice + Domínio Rico
@@ -166,7 +166,7 @@ net-minimal-api/
 │   │   │   ├── ListPedidos/
 │   │   │   ├── AddItemPedido/
 │   │   │   └── CancelPedido/
-│   │   ├── Pedidos.Host/                   # Entry point (porta 5001)
+│   │   ├── Pedidos.API/                    # Entry point (porta 5001)
 │   │   └── Pedidos.Tests/                  # Testes de Pedidos
 │   │
 │   └── Shared/                             # Utilitários compartilhados

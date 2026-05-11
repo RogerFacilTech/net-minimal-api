@@ -124,7 +124,7 @@ Com `AUTH_BASE_URL` definido, `AuthHelper.ObterTokenAsync(client)` chama `POST /
 
 ```bash
 # Executar toda a suíte da solução
-dotnet test FacShopAPI.slnx -v minimal
+dotnet test FacShop.slnx -v minimal
 
 # Por projeto
 dotnet test src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj -v minimal
@@ -150,7 +150,7 @@ dotnet test src/Pedidos/Pedidos.Tests/Pedidos.Tests.csproj --filter "FullyQualif
 dotnet test src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj --filter "FullyQualifiedName~RateLimitingTests" -v detailed
 
 # Com cobertura
-dotnet test FacShopAPI.slnx --collect:"XPlat Code Coverage"
+dotnet test FacShop.slnx --collect:"XPlat Code Coverage"
 ```
 
 ---

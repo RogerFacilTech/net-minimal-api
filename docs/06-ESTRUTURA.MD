@@ -5,7 +5,7 @@
 Os projetos **Catálogo** e **Pedidos** podem ser classificados como **microserviços** porque:
 
 - **Isolamento de Contextos**: Cada domínio (Catálogo e Pedidos) possui seu próprio conjunto de projetos, regras de negócio, endpoints e infraestrutura, permitindo evolução e manutenção independentes.
-- **Deploy Independente**: Os hosts (`Catalogo.Host` e `Pedidos.Host`) permitem que cada serviço seja executado, escalado e publicado separadamente, sem dependências de ciclo de vida entre si.
+- **Deploy Independente**: Os projetos (`Catalogo.API` e `Pedidos.API`) permitem que cada serviço seja executado, escalado e publicado separadamente, sem dependências de ciclo de vida entre si.
 - **Persistência Isolada**: Cada domínio possui seu próprio DbContext (`CatalogoDbContext`, `PedidosDbContext`) com migrations independentes, permitindo evolução do schema sem impacto cruzado.
 - **Contratos e Integrações**: A comunicação entre contextos ocorre apenas por contratos bem definidos (em `Shared.Kernel` e `Shared.Web`), evitando acoplamento direto entre domínios.
 - **Padrões Arquiteturais Distintos**: Cada microserviço pode adotar padrões próprios (ex: Clean Architecture no Catálogo, Vertical Slice em Pedidos), reforçando autonomia tecnológica.
@@ -35,7 +35,7 @@ src/
     Catalogo.Data/               -> DbContext e migrations do Catálogo
     Catalogo.Domain/             -> Domínio do Catálogo
     Catalogo.Endpoints/          -> Endpoints, DTOs, extensões HTTP
-    Catalogo.Host/               -> Entry point específico do Catálogo (porta 5000)
+    Catalogo.API/                -> Entry point específico do Catálogo (porta 5000)
     Catalogo.Infrastructure/     -> Implementações de repositório, queries, DbSeeder
     Catalogo.Tests/              -> Testes do Catálogo
   Pedidos/
@@ -44,7 +44,7 @@ src/
     Pedidos.Data/                -> DbContext e migrations de Pedidos
     Pedidos.Domain/              -> Domínio rico de Pedidos
     Pedidos.Endpoints/           -> Endpoints, DTOs, validadores
-    Pedidos.Host/                -> Entry point específico de Pedidos (porta 5001)
+    Pedidos.API/                 -> Entry point específico de Pedidos (porta 5001)
     Pedidos.Infrastructure/      -> Implementações de persistência e integrações
     Pedidos.Tests/               -> Testes de Pedidos
   Shared/
@@ -71,14 +71,14 @@ samples/
 | Catalogo.Data           | DbContext e migrations do Catálogo.                                                           |
 | Catalogo.Domain         | Entidades, value objects e regras de negócio do Catálogo. Sem dependência de framework.       |
 | Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensões de rate limiting.     |
-| Catalogo.Host           | Entry point específico do Catálogo.                                                           |
+| Catalogo.API            | Entry point específico do Catálogo.                                                           |
 | Catalogo.Infrastructure | Implementações de repositório (EF Core + Dapper), queries, DbSeeder, extensões de DI.         |
 | Pedidos.Application     | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
 | Pedidos.Common          | Contratos e utilitários específicos de Pedidos.                                               |
 | Pedidos.Data            | DbContext e migrations de Pedidos.                                                            |
 | Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negócio.                     |
 | Pedidos.Endpoints       | Endpoints Minimal API, validadores, DTOs de request/response.                                 |
-| Pedidos.Host            | Entry point específico de Pedidos.                                                            |
+| Pedidos.API             | Entry point específico de Pedidos.                                                            |
 | Pedidos.Infrastructure  | Implementações de persistência e integrações.                                                 |
 | Shared.Data             | Extensões de inicialização de banco e utilitários de persistência compartilhada.              |
 | Shared.Http             | Handlers HTTP, idempotência, correlation ID, logging de request.                              |
@@ -105,5 +105,5 @@ Catalogo.Infrastructure Pedidos.Infrastructure
   ^                   ^
 Catalogo.Endpoints      Pedidos.Endpoints
   ^                   ^
-Catalogo.Host           Pedidos.Host
+Catalogo.API            Pedidos.API
 ```

@@ -143,7 +143,7 @@ public static class PixMtlsCertificateStore
         var dir = new DirectoryInfo(startPath);
         while (dir is not null)
         {
-            if (File.Exists(Path.Combine(dir.FullName, "FacShopAPI.slnx")))
+            if (File.Exists(Path.Combine(dir.FullName, "FacShop.slnx")))
             {
                 return dir.FullName;
             }

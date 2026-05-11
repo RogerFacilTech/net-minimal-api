@@ -14,8 +14,8 @@ O projeto implementa idempotência em **dois pontos distintos**: no servidor (mi
 
 ## 1. Lado Servidor — `IdempotencyMiddleware`
 
-**Arquivo:** `src/Catalogo/Catalogo.Host/Middleware/IdempotencyMiddleware.cs`  
-**Registrado em:** `src/Catalogo/Catalogo.Host/Program.cs` via `app.UseMiddleware<IdempotencyMiddleware>()`
+**Arquivo:** `src/Catalogo/Catalogo.API/Middleware/IdempotencyMiddleware.cs`  
+**Registrado em:** `src/Catalogo/Catalogo.API/Program.cs` via `app.UseMiddleware<IdempotencyMiddleware>()`
 
 ### Fluxo
 

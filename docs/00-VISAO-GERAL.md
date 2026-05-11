@@ -20,8 +20,8 @@ Diagrama simplificado do fluxo:
 flowchart LR
    Cliente[Cliente / Swagger / Testes] -->|POST /api/v1/auth/login| Auth[Auth.Host]
    Auth -->|JWT assinado| Cliente
-   Cliente -->|Bearer token| Catalogo[Catalogo.Host]
-   Cliente -->|Bearer token| Pedidos[Pedidos.Host]
+   Cliente -->|Bearer token| Catalogo[Catalogo.API]
+   Cliente -->|Bearer token| Pedidos[Pedidos.API]
    Catalogo -->|valida assinatura, issuer, audience| JWT[(JWT)]
    Pedidos -->|valida assinatura, issuer, audience| JWT
 ```
@@ -162,7 +162,7 @@ Foco: entender a estrutura básica, testar a API e ver as boas práticas.
 
 ```
 1. Executar a API (5 min)
-   dotnet run --project src/Catalogo/Catalogo.Host/Catalogo.Host.csproj
+   dotnet run --project src/Catalogo/Catalogo.API/Catalogo.API.csproj
 
 2. Abrir Swagger e explorar endpoints
    http://localhost:5000
@@ -179,7 +179,7 @@ Foco: entender a estrutura básica, testar a API e ver as boas práticas.
 5. Testar via curl (exemplos em docs/02-CATALOGO.md → seção "Exemplos cURL")
 
 6. Rodar os testes
-   dotnet test FacShopAPI.slnx
+   dotnet test FacShop.slnx
 ```
 
 ### Roteiro 2 — Intermediário (2–3 horas adicionais)
@@ -253,11 +253,11 @@ Foco: decisões arquiteturais registradas, integração externa, resiliência e 
 
 # Restaurar e executar (cada host em um terminal separado)
 dotnet run --project src/Auth/Auth.Host/Auth.Host.csproj        # http://localhost:5020
-dotnet run --project src/Catalogo/Catalogo.Host/Catalogo.Host.csproj  # http://localhost:5000
-dotnet run --project src/Pedidos/Pedidos.Host/Pedidos.Host.csproj     # http://localhost:5001
+dotnet run --project src/Catalogo/Catalogo.API/Catalogo.API.csproj  # http://localhost:5000
+dotnet run --project src/Pedidos/Pedidos.API/Pedidos.API.csproj     # http://localhost:5001
 
 # Rodar todos os testes (170 testes no total)
-dotnet test FacShopAPI.slnx -v minimal
+dotnet test FacShop.slnx -v minimal
 ```
 
 Credenciais para obter JWT nos testes e no Swagger: `admin@example.com` / `senha123`.

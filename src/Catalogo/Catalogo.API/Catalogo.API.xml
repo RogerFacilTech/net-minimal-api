@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Catalogo.Host</name>
+        <name>Catalogo.API</name>
     </assembly>
     <members>
         <member name="T:FacShopAPI.Shared.Middleware.ExceptionHandlingMiddleware">

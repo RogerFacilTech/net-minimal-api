@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Pedidos.Domain/Pedidos.Domain.csproj" />
-    <ProjectReference Include="../Pedidos.Host/Pedidos.Host.csproj" />
+    <ProjectReference Include="../Pedidos.API/Pedidos.API.csproj" />
   </ItemGroup>
 
 </Project>

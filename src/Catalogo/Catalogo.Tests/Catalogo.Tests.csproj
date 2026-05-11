@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Catalogo.Host/Catalogo.Host.csproj" />
+    <ProjectReference Include="../Catalogo.API/Catalogo.API.csproj" />
     <ProjectReference Include="../Catalogo.Domain/Catalogo.Domain.csproj" />
     <ProjectReference Include="../Catalogo.Application/Catalogo.Application.csproj" />
     <ProjectReference Include="../Catalogo.Endpoints/Catalogo.Endpoints.csproj" />

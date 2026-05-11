@@ -862,7 +862,7 @@ dotnet run --project samples/Pix/Pix.ClientDemo/Pix.ClientDemo.csproj
 ### Rodar testes
 
 ```bash
-dotnet test FacShopAPI.slnx -v minimal            # todos os 150 testes
+dotnet test FacShop.slnx -v minimal            # todos os 150 testes
 dotnet test tests/FacShopAPI.Tests/ \
   --filter "FullyQualifiedName~RateLimitingTests"  # sÃ³ rate limiting
 ```

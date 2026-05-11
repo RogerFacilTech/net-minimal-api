@@ -3,8 +3,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>FacShopAPI.Pedidos.Host</RootNamespace>
-    <AssemblyName>Pedidos.Host</AssemblyName>
+    <RootNamespace>FacShopAPI.Pedidos.API</RootNamespace>
+    <AssemblyName>Pedidos.API</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Pedidos.Endpoints/Pedidos.Endpoints.csproj" />

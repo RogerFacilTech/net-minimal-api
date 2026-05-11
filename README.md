@@ -1,4 +1,4 @@
-﻿# FacShopAPI
+﻿# FacShop
 
 Projeto educacional em .NET 10 Minimal API demonstrando três bounded contexts com padrões arquiteturais distintos coexistindo no mesmo repositório.
 
@@ -32,10 +32,10 @@ O projeto possui três hosts independentes. Rode cada um em um terminal separado
 dotnet run --project src/Auth/Auth.Host/Auth.Host.csproj
 
 # Catálogo — Swagger: http://localhost:5000
-dotnet run --project src/Catalogo/Catalogo.Host/Catalogo.Host.csproj
+dotnet run --project src/Catalogo/Catalogo.API/Catalogo.API.csproj
 
 # Pedidos — Swagger: http://localhost:5001
-dotnet run --project src/Pedidos/Pedidos.Host/Pedidos.Host.csproj
+dotnet run --project src/Pedidos/Pedidos.API/Pedidos.API.csproj
 ```
 
 ---
@@ -55,7 +55,7 @@ dotnet run --project src/Pedidos/Pedidos.Host/Pedidos.Host.csproj
 
 ```
 net-minimal-api/
-├── FacShopAPI.slnx
+├── FacShop.slnx
 │
 ├── src/
 │   ├── Auth/
@@ -69,7 +69,7 @@ net-minimal-api/
 │   │   ├── Catalogo.Application/
 │   │   ├── Catalogo.Infrastructure/
 │   │   ├── Catalogo.Endpoints/
-│   │   ├── Catalogo.Host/
+│   │   ├── Catalogo.API/
 │   │   └── Catalogo.Tests/
 │   │
 │   ├── Pedidos/
@@ -84,7 +84,7 @@ net-minimal-api/
 │   │   │   ├── ListPedidos/
 │   │   │   ├── AddItemPedido/
 │   │   │   └── CancelPedido/
-│   │   ├── Pedidos.Host/
+│   │   ├── Pedidos.API/
 │   │   └── Pedidos.Tests/
 │   │
 │   └── Shared/
@@ -175,7 +175,7 @@ dotnet test src/Pedidos/Pedidos.Tests/Pedidos.Tests.csproj
 dotnet test samples/Pix/Pix.MockServer.Tests/Pix.MockServer.Tests.csproj
 
 # Solução completa
-dotnet test FacShopAPI.slnx
+dotnet test FacShop.slnx
 ```
 
 ---

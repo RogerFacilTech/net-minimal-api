@@ -11,12 +11,12 @@
     <Project Path="src/Catalogo/Catalogo.Application/Catalogo.Application.csproj" />
     <Project Path="src/Catalogo/Catalogo.Infrastructure/Catalogo.Infrastructure.csproj" />
     <Project Path="src/Catalogo/Catalogo.Endpoints/Catalogo.Endpoints.csproj" />
-    <Project Path="src/Catalogo/Catalogo.Host/Catalogo.Host.csproj" />
+    <Project Path="src/Catalogo/Catalogo.API/Catalogo.API.csproj" />
     <Project Path="src/Catalogo/Catalogo.Data/Catalogo.Data.csproj" />
     <Project Path="src/Catalogo/Catalogo.Tests/Catalogo.Tests.csproj" />
   </Folder>
   <Folder Name="/Pedidos/">
-    <Project Path="src/Pedidos/Pedidos.Host/Pedidos.Host.csproj" />
+    <Project Path="src/Pedidos/Pedidos.API/Pedidos.API.csproj" />
     <Project Path="src/Pedidos/Pedidos.Common/Pedidos.Common.csproj" />
     <Project Path="src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
     <Project Path="src/Pedidos/Pedidos.Application/Pedidos.Application.csproj" />

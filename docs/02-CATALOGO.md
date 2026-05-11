@@ -12,7 +12,7 @@ O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Archi
 | `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, migrations e DbSeeder                      |
 | `src/Catalogo/Catalogo.Data/`           | `CatalogoDbContext` e migrations                                 |
 | `src/Catalogo/Catalogo.Endpoints/`      | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
-| `src/Catalogo/Catalogo.Host/`           | Entry point da API, DI, middleware, Program.cs                   |
+| `src/Catalogo/Catalogo.API/`            | Entry point da API, DI, middleware, Program.cs                   |
 
 ---
 

@@ -84,10 +84,10 @@ dotnet new classlib -n Faturamento.Infrastructure -o src/Faturamento/Faturamento
 Adicionar os projetos na solucao:
 
 ```bash
-dotnet sln FacShopAPI.slnx add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
-dotnet sln FacShopAPI.slnx add src/Faturamento/Faturamento.Endpoints/Faturamento.Endpoints.csproj
-dotnet sln FacShopAPI.slnx add src/Faturamento/Faturamento.Data/Faturamento.Data.csproj
-dotnet sln FacShopAPI.slnx add src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
+dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
+dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Endpoints/Faturamento.Endpoints.csproj
+dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Data/Faturamento.Data.csproj
+dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
 ```
 
 ---
@@ -653,8 +653,8 @@ Validacoes esperadas:
 
 ## 16. Referencias no repositorio (para copiar padroes)
 
-- Host do Catalogo: src/Catalogo/Catalogo.Host/Program.cs
-- Host de Pedidos: src/Pedidos/Pedidos.Host/Program.cs
+- Host do Catalogo: src/Catalogo/Catalogo.API/Program.cs
+- Host de Pedidos: src/Pedidos/Pedidos.API/Program.cs
 - Registro automatico de endpoints: src/Shared/Web/EndpointExtensions.cs
 - Contrato de endpoint em Vertical Slice: src/Shared/Web/IEndpoint.cs
 - Extensao para migrations na startup: src/Shared/Data/DbInitializationExtensions.cs
