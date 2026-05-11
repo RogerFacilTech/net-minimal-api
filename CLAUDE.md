@@ -29,7 +29,7 @@ Rate limiting **não é registrado** no ambiente `Testing`. Cada subclasse de `A
 
 **Idempotência automática:** `IdempotencyMiddleware` intercepta POST/PUT/PATCH via header `Idempotency-Key`. Não reimplemente no handler.
 
-**Novos endpoints em Pedidos** devem implementar `IEndpoint` (`src/Shared/Common/IEndpoint.cs`) — são registrados automaticamente por reflection. **Não** cadastre manualmente no `Program.cs`.
+**Novos endpoints em Pedidos** devem implementar `IEndpoint` (`src/Shared/Web/IEndpoint.cs`) — são registrados automaticamente por reflection. **Não** cadastre manualmente no `Program.cs`.
 
 **Endpoints do Catálogo** devem declarar `RequireRateLimiting("leitura")`, `RequireRateLimiting("escrita")` ou `RequireRateLimiting("criacao-produto")` conforme o tipo de operação.
 
@@ -51,4 +51,4 @@ Autenticação nos testes via `AuthHelper.ObterTokenAsync(client)` — credencia
 
 ## Planos de Implementação
 
-Planos ficam em `docs/superpowers/plans/`. ADRs ficam em `docs/ADRs/` (15 ADRs no formato MADR 3.x com frontmatter). Leia o ADR relevante antes de qualquer mudança arquitetural significativa.
+Planos ficam em `docs/superpowers/plans/`. ADRs ficam em `docs/ADRs/` (16 ADRs no formato MADR 3.x com frontmatter). Leia o ADR relevante antes de qualquer mudança arquitetural significativa.

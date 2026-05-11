@@ -12,10 +12,10 @@ A API precisa de autenticação para proteger endpoints de escrita (criação, a
 
 ## Opções Consideradas
 
-* OAuth2 com provedor externo (Azure AD, Auth0, Keycloak)
-* IdentityServer / Duende IdentityServer embutido
-* JWT Bearer com usuário hardcoded no código-fonte
-* JWT Bearer com credenciais em arquivo de configuração
+- OAuth2 com provedor externo (Azure AD, Auth0, Keycloak)
+- IdentityServer / Duende IdentityServer embutido
+- JWT Bearer com usuário hardcoded no código-fonte
+- JWT Bearer com credenciais em arquivo de configuração
 
 ## Decisão
 
@@ -24,6 +24,7 @@ Opção escolhida: "JWT Bearer com credenciais em arquivo de configuração", po
 O endpoint `POST /api/v1/auth/login` valida email e senha lidos de `appsettings.json` (`Auth:AdminEmail`, `Auth:AdminPassword`) e retorna um JWT assinado com HS256, expiração de 2 horas, contendo claims de `sub`, `email` e `role`.
 
 **Simplificações intencionais para contexto educacional:**
+
 - Usuário único (admin), sem user store ou banco de usuários
 - Senha em texto claro na configuração (em produção: hash BCrypt/Argon2 no banco)
 - Chave de assinatura JWT em `appsettings.json` (em produção: secrets manager ou variável de ambiente)
@@ -31,10 +32,14 @@ O endpoint `POST /api/v1/auth/login` valida email e senha lidos de `appsettings.
 
 ### Consequências
 
-* Positivo, porque a API é autocontida — não requer infraestrutura externa para demonstrar autenticação JWT.
-* Positivo, porque as credenciais ficam em configuração, não no código-fonte, seguindo o princípio de separação de configuração e código.
-* Negativo, porque a chave JWT em `appsettings.json` é comprometida se o repositório for público — em produção, usar `dotnet user-secrets`, variáveis de ambiente ou Azure Key Vault.
-* Negativo, porque não há gestão de usuários, refresh tokens ou revogação — funcionalidades necessárias em produção que estão fora do escopo educacional.
+- Positivo, porque a API é autocontida — não requer infraestrutura externa para demonstrar autenticação JWT.
+- Positivo, porque as credenciais ficam em configuração, não no código-fonte, seguindo o princípio de separação de configuração e código.
+- Negativo, porque a chave JWT em `appsettings.json` é comprometida se o repositório for público — em produção, usar `dotnet user-secrets`, variáveis de ambiente ou Azure Key Vault.
+- Negativo, porque não há gestão de usuários, refresh tokens ou revogação — funcionalidades necessárias em produção que estão fora do escopo educacional.
+
+## Ver também
+
+- [ADR-0016 — Auth como Serviço Dedicado](ADR-0016-auth-servico-dedicado.md): a emissão de JWT descrita aqui foi posteriormente extraída para um microsserviço dedicado (`Auth.Host`), desacoplando a responsabilidade de autenticação das APIs de domínio.
 
 ---
 

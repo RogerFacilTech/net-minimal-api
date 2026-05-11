@@ -1,7 +1,8 @@
 # Plano de Ação — Conformidade ADRs
 
 Data levantamento: 2026-05-08
-Status: Pendente
+Última atualização: 2026-05-11
+Status: Em andamento (3/5 concluídas)
 
 ---
 
@@ -47,15 +48,15 @@ dessa categoria — deve retornar 422 com mensagem de erro.
 
 ---
 
-### 🟡 MODERADO — 2. Corrigir path de IEndpoint no ADR-0009 e CLAUDE.md
+### ✅ CONCLUÍDO — 2. Corrigir path de IEndpoint no ADR-0009 e CLAUDE.md
 
 **Problema:** ADR-0009 e CLAUDE.md referenciam `src/Shared/Common/IEndpoint.cs`.
 Path real: `src/Shared/Web/IEndpoint.cs`.
 
-**Arquivos a modificar:**
+**Arquivos modificados em 2026-05-11:**
 
-- `docs/ADRs/ADR-0009-minimal-api-autodiscovery-endpoints.md` — corrigir path na seção Decisão
-- `CLAUDE.md` — corrigir linha "Novos endpoints em Pedidos devem implementar `IEndpoint` (`src/Shared/Common/IEndpoint.cs`)"
+- `docs/ADRs/ADR-0009-minimal-api-autodiscovery-endpoints.md` — path corrigido na seção Decisão
+- `CLAUDE.md` — path corrigido na convenção sobre Pedidos
 
 ---
 
@@ -83,24 +84,20 @@ violando o padrão definido no ADR-0010 e aplicado em Produto, Categoria, Varian
 
 ---
 
-### 🔵 MENOR — 4. Atualizar contagem de ADRs no CLAUDE.md
+### ✅ CONCLUÍDO — 4. Atualizar contagem de ADRs no CLAUDE.md
 
 **Problema:** CLAUDE.md diz "15 ADRs no formato MADR 3.x". Total real é 16 (ADR-0016 adicionado).
 
-**Arquivo a modificar:**
-
-- `CLAUDE.md` — alterar "15 ADRs" para "16 ADRs"
+**Arquivo modificado:** `CLAUDE.md` — alterado "15 ADRs" para "16 ADRs" em 2026-05-11.
 
 ---
 
-### 🔵 MENOR — 5. Cross-reference ADR-0007 → ADR-0016
+### ✅ CONCLUÍDO — 5. Cross-reference ADR-0007 → ADR-0016
 
 **Problema:** ADR-0007 descreve emissão de JWT sem indicar que a responsabilidade foi
 movida para Auth dedicado (ADR-0016). Leitor isolado pode concluir incorretamente.
 
-**Arquivo a modificar:**
-
-- `docs/ADRs/ADR-0007-autenticacao-jwt-bearer.md` — adicionar seção "Ver também: ADR-0016"
+**Arquivo modificado:** `docs/ADRs/ADR-0007-autenticacao-jwt-bearer.md` — seção "Ver também" adicionada em 2026-05-11, com link e descrição do ADR-0016.
 
 ---
 
