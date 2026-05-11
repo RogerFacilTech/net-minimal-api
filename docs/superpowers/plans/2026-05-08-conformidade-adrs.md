@@ -14,37 +14,204 @@ Revisão das 16 ADRs identificou 5 não-conformidades. 12 ADRs estão plenamente
 
 ## Ações
 
-### 🔴 CRÍTICO — 1. Implementar `TemProdutosAtivosAsync` real (ADR-0015)
+### 🔴 CRÍTICO — 1. Implementar `TemProdutosAtivosAsync` real com FK (ADR-0015)
 
 **Problema:** Regra "Categoria não pode ser desativada com produtos ativos" é inoperante.
-A implementação sempre retorna `false` (TODO hardcoded).
+A implementação sempre retorna `false` (TODO hardcoded), permitindo desativar categorias que
+ainda possuem produtos ativos — violando a invariante de domínio do ADR-0015.
 
-**Causa raiz:** `Produto` armazena categoria como string via value object `CategoriaProduto`,
-sem FK inteira para a tabela `Categorias`. A validação por ID nunca funciona.
+**Causa raiz:** `Produto` armazena a categoria via value object `CategoriaProduto` (string),
+sem FK numérica para a tabela `Categorias`.
 
-**Arquivo com bug:**
+---
 
-- `src/Catalogo/Catalogo.Infrastructure/Repositories/EfCategoriaCommandRepository.cs` linha 22
+### Análise de abordagens
 
-**Abordagem recomendada:**
-Validar por string de nome em vez de ID, cruzando `Produto.Categoria.Value` com `Categoria.Nome`
-enquanto a FK real não é criada. Exemplo:
+#### Alternativa A — Coexistência (coluna string + FK)
+
+Adiciona `CategoriaId int? NULL` mantendo `Categoria TEXT` existente. Os dois campos coexistem.
+
+| Aspecto                         | Detalhe                                                                    |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| Escopo                          | 8 arquivos (plano abaixo)                                                  |
+| Dado duplicado                  | Sim — `Categoria` (string) e `CategoriaId` guardam a mesma informação      |
+| Risco de inconsistência         | Se `Categoria.Renomear()` for chamado, o string fica stale silenciosamente |
+| Queries Dapper                  | Sem alteração — continuam lendo `Categoria TEXT`                           |
+| `ProdutoResponse.Categoria`     | Sem alteração                                                              |
+| `CategoriaProduto` value object | Mantido intacto                                                            |
+| Migration                       | ADD COLUMN apenas                                                          |
+
+Indicado se o objetivo é corrigir o bug com menor risco imediato.
+
+---
+
+#### Alternativa B — Remoção completa do campo string
+
+Remove `Produto.Categoria` (value object + coluna), mantém apenas `CategoriaId int NOT NULL`.
+`ProdutoResponse.Categoria` passa a ser resolvido via JOIN com a tabela `Categorias`.
+
+| Aspecto                         | Detalhe                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Escopo                          | ~14 arquivos                                                                                            |
+| Dado duplicado                  | Não — fonte única de verdade                                                                            |
+| Risco de inconsistência         | Nenhum — FK garante integridade                                                                         |
+| Queries Dapper                  | Precisam de JOIN com `Categorias` para montar `ProdutoResponse.Categoria`                               |
+| `ProdutoResponse.Categoria`     | Preenchida pelo nome da categoria via JOIN                                                              |
+| `CategoriaProduto` value object | Removido (ou mantido apenas como validação de entrada no request)                                       |
+| `CriarProdutoRequest.Categoria` | Pode continuar string (validada contra categorias existentes no banco) ou trocar para `CategoriaId int` |
+| Migration                       | ADD COLUMN `CategoriaId` + backfill + DROP COLUMN `Categoria`                                           |
+
+Arquivos adicionais impactados além dos 8 da Alternativa A:
+
+- `Catalogo.Domain/ValueObjects/CategoriaProduto.cs` — remover ou converter para validação de entrada apenas
+- `Catalogo.Data/CatalogoDbContext.cs` — remover mapeamento de `Categoria`, tornar `CategoriaId NOT NULL`
+- `Catalogo.Infrastructure/Queries/DapperProdutoQueryRepository.cs` — adicionar JOIN
+- `Catalogo.Application/Validators/ProdutoValidator.cs` — ajustar validação de categoria
+- `Catalogo.Application/Services/ProdutoService.cs` — `CriarProduto` passa a receber/resolver `CategoriaId`
+- `Catalogo.Tests/Endpoints/ProdutoEndpointsTests.cs` — atualizar testes que usam o campo string
+
+**Decisão pendente:** escolher entre Alternativa A (coexistência) ou Alternativa B (remoção completa).
+
+---
+
+#### Plano de execução (Alternativa A — coexistência)
+
+**Passo 1 — Domínio: adicionar `CategoriaId` em `Produto`**
+
+Arquivo: `src/Catalogo/Catalogo.Domain/Produto.cs`
+
+- Adicionar `public int? CategoriaId { get; private set; }` (após `Categoria`)
+- Adicionar método `public void DefinirCategoriaId(int id) => CategoriaId = id;`
+- Atualizar `Reconstituir()`: adicionar parâmetro `int? categoriaId = null` e setar `CategoriaId = categoriaId`
+
+`Criar()` **não recebe** `categoriaId` — o ID é definido externamente pelo service após a criação
+(separação de responsabilidades: domínio não faz lookup de banco).
+
+---
+
+**Passo 2 — Repositório: adicionar `ObterPorNomeAsync` em `ICategoriaCommandRepository`**
+
+Arquivo: `src/Catalogo/Catalogo.Application/Repositories/ICategoriaCommandRepository.cs`
+
+Adicionar:
 
 ```csharp
-context.Produtos.AnyAsync(p => p.Ativo && p.Categoria.Value == categoria.Nome)
+Task<Categoria?> ObterPorNomeAsync(string nome);
 ```
 
-Obter `categoria.Nome` buscando a entidade pelo `categoriaId` (já feito antes no fluxo de desativação).
+Implementação em `EfCategoriaCommandRepository.cs`:
 
-**Alternativa mais robusta (maior escopo):** Adicionar coluna `CategoriaId` (int?) em `Produto`
-com migration, criar FK real e atualizar a query.
+```csharp
+public Task<Categoria?> ObterPorNomeAsync(string nome) =>
+    context.Categorias.FirstOrDefaultAsync(c => c.Nome == nome && c.Ativa);
+```
 
-**Arquivos a modificar:**
+---
 
-- `src/Catalogo/Catalogo.Infrastructure/Repositories/EfCategoriaCommandRepository.cs`
+**Passo 3 — Service: resolver `CategoriaId` no `ProdutoService`**
 
-**Teste de verificação:** Criar produto com categoria X via API, tentar `DELETE /categorias/{id}`
-dessa categoria — deve retornar 422 com mensagem de erro.
+Arquivo: `src/Catalogo/Catalogo.Application/Services/ProdutoService.cs`
+
+- Injetar `ICategoriaCommandRepository _categoriaRepo` no construtor
+- Em `CriarProdutoAsync()`: após `Produto.Criar(...)`, chamar `ObterPorNomeAsync(request.Categoria)` e `produto.DefinirCategoriaId(cat.Id)` se encontrada
+- Em `AtualizarProdutoAsync()` e `AtualizarCompletoProdutoAsync()`: se `request.Categoria` foi alterado, também atualizar `CategoriaId` via `DefinirCategoriaId`
+
+---
+
+**Passo 4 — DbContext: configurar FK em `OnModelCreating`**
+
+Arquivo: `src/Catalogo/Catalogo.Data/CatalogoDbContext.cs`
+
+No bloco `modelBuilder.Entity<Produto>`, adicionar após a config de `Categoria`:
+
+```csharp
+entity.Property(p => p.CategoriaId)
+    .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+entity.HasOne<Categoria>()
+    .WithMany()
+    .HasForeignKey(p => p.CategoriaId)
+    .OnDelete(DeleteBehavior.Restrict)
+    .IsRequired(false);
+```
+
+---
+
+**Passo 5 — Migration**
+
+Executar no terminal:
+
+```
+dotnet ef migrations add AdicionarCategoriaIdEmProduto \
+  --project src/Catalogo/Catalogo.Data \
+  --startup-project src/Catalogo/Catalogo.API
+```
+
+A migration gerada adicionará:
+
+- Coluna `CategoriaId INTEGER NULL` na tabela `Produtos`
+- `FK_Produtos_Categorias_CategoriaId` com `ON DELETE RESTRICT`
+- Índice `IX_Produtos_CategoriaId`
+
+---
+
+**Passo 6 — DbSeeder: reordenar e popular `CategoriaId`**
+
+Arquivo: `src/Catalogo/Catalogo.Infrastructure/Data/DbSeeder.cs`
+
+- Inverter ordem em `Seed()`: chamar `SeedCategorias(context)` **antes** de `SeedProdutos(context)`
+  (garantir que os IDs das categorias existam no momento da criação dos produtos)
+- Em `SeedProdutos()`, após criar cada produto, fazer lookup do ID:
+
+```csharp
+var cat = context.Categorias.First(c => c.Nome == produto.Categoria.Value);
+produto.DefinirCategoriaId(cat.Id);
+```
+
+---
+
+**Passo 7 — Repositório: corrigir `TemProdutosAtivosAsync`**
+
+Arquivo: `src/Catalogo/Catalogo.Infrastructure/Repositories/EfCategoriaCommandRepository.cs`
+
+Substituir o `Task.FromResult(false)` por:
+
+```csharp
+public Task<bool> TemProdutosAtivosAsync(int categoriaId) =>
+    context.Produtos.AnyAsync(p => p.Ativo && p.CategoriaId == categoriaId);
+```
+
+---
+
+**Passo 8 — Teste de integração**
+
+Arquivo: `src/Catalogo/Catalogo.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`
+
+Novo teste `DELETE_DesativarCategoria_ComProdutoAtivo_Retorna422`:
+
+1. Criar categoria nova via `POST /categorias` — obter seu `Id` e `Nome`
+2. Criar produto com `Categoria = nome` via `POST /produtos` com token
+3. `DELETE /categorias/{id}` — deve retornar **422**
+   com mensagem "Não é possível desativar categoria com produtos ativos."
+
+Nota: o `CriarProdutoRequest.Categoria` aceita apenas os valores de `CategoriaProduto.CategoriasValidas`
+(`"Eletrônicos"`, `"Livros"`, `"Roupas"`, `"Alimentos"`, `"Outros"`). O teste deve usar
+um desses nomes e garantir que a categoria criada tenha o mesmo nome.
+
+---
+
+**Arquivos a modificar (resumo):**
+
+| #   | Arquivo                                                                | Tipo de mudança                                                               |
+| --- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 1   | `Catalogo.Domain/Produto.cs`                                           | Adicionar `CategoriaId` + `DefinirCategoriaId()` + atualizar `Reconstituir()` |
+| 2   | `Catalogo.Application/Repositories/ICategoriaCommandRepository.cs`     | Adicionar `ObterPorNomeAsync`                                                 |
+| 3   | `Catalogo.Application/Services/ProdutoService.cs`                      | Injetar repo categoria, setar `CategoriaId`                                   |
+| 4   | `Catalogo.Data/CatalogoDbContext.cs`                                   | Configurar FK em `OnModelCreating`                                            |
+| 5   | Migration (arquivo gerado)                                             | `AdicionarCategoriaIdEmProduto`                                               |
+| 6   | `Catalogo.Infrastructure/Data/DbSeeder.cs`                             | Reordenar + popular `CategoriaId`                                             |
+| 7   | `Catalogo.Infrastructure/Repositories/EfCategoriaCommandRepository.cs` | Implementar `ObterPorNomeAsync` + corrigir `TemProdutosAtivosAsync`           |
+| 8   | `Catalogo.Tests/Integration/Catalogo/CategoriaEndpointsTests.cs`       | Novo teste de integração                                                      |
 
 ---
 
