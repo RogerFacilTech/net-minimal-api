@@ -25,49 +25,58 @@ A Minimal API Ã© ideal para:
 
 ```
 net-minimal-api/
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ Catalogo/                           # Bounded Context 1 â€” Clean Architecture hÃ­brida
-â”‚   â”‚   â”œâ”€â”€ Catalogo.Domain/                # Entidades, value objects, interfaces de repositÃ³rio
-â”‚   â”‚   â”‚   â”œâ”€â”€ Produto.cs                  # Aggregate com Produto.Criar() â†’ Result<Produto>
-â”‚   â”‚   â”‚   â”œâ”€â”€ Categoria.cs               # Slug gerado, hierarquia pai/filho
-â”‚   â”‚   â”‚   â”œâ”€â”€ Variante.cs                # SKU value object
-â”‚   â”‚   â”‚   â”œâ”€â”€ Atributo.cs / Midia.cs     # CRUD simples (anÃªmico)
-â”‚   â”‚   â”‚   â””â”€â”€ Common/                    # PrecoProduto, EstoqueProduto, DomainResult
-â”‚   â”‚   â”œâ”€â”€ Catalogo.Application/
-â”‚   â”‚   â”‚   â”œâ”€â”€ Services/                  # OrquestraÃ§Ã£o â€” ProdutoService, etc.
-â”‚   â”‚   â”‚   â”œâ”€â”€ DTOs/                      # Produto/, Categoria/, Variante/, etc.
-â”‚   â”‚   â”‚   â”œâ”€â”€ Validators/                # FluentValidation por recurso
-â”‚   â”‚   â”‚   â”œâ”€â”€ Repositories/              # Interfaces Query/Command (CQRS leve)
-â”‚   â”‚   â”‚   â””â”€â”€ Mappings/                  # AutoMapper profiles
-â”‚   â”‚   â”œâ”€â”€ Catalogo.Infrastructure/       # RepositÃ³rios EF Core, DbSeeder
-â”‚   â”‚   â”œâ”€â”€ Catalogo.API/
-â”‚   â”‚   â”‚   â”œâ”€â”€ Endpoints/                 # Um arquivo por recurso
-â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Produtos/ProdutoEndpoints.cs
-â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Categorias/CategoriaEndpoints.cs
-â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Variantes/VarianteEndpoints.cs
-â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Atributos/AtributoEndpoints.cs
-â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ Midias/MidiaEndpoints.cs
-â”‚   â”‚   â”‚   â”‚   â””â”€â”€ Auth/AuthEndpoints.cs
-â”‚   â”‚   â”‚   â””â”€â”€ Extensions/
-â”‚   â”‚   â”‚       â””â”€â”€ RateLimitingExtensions.cs  # 3 polÃ­ticas
-â”‚   â”‚   â””â”€â”€ Catalogo.ClientDemo/           # Console app â€” resiliÃªncia Polly v8
-â”‚   â”‚
-â”‚   â”œâ”€â”€ Pedidos/                           # Bounded Context 2 â€” Vertical Slice + DomÃ­nio Rico
-â”‚   â”‚   â”œâ”€â”€ Domain/                        # Pedido aggregate, Result<T>
-â”‚   â”‚   â””â”€â”€ Features/                      # CreatePedido/, GetPedido/, etc.
-â”‚   â”‚
-â”‚   â”œâ”€â”€ Pix/                               # Bounded Context 3 â€” Mock + Cliente HTTP
-â”‚   â”‚   â”œâ”€â”€ Pix.MockServer/                # Simula BCB Pix (OAuth2 + mTLS)
-â”‚   â”‚   â””â”€â”€ Pix.ClientDemo/                # HttpClient tipado com resiliÃªncia
-â”‚   â”‚
-â”‚   â””â”€â”€ Shared/
-â”‚       â”œâ”€â”€ Common/                        # IEndpoint, Result<T>, EndpointExtensions
-â”‚       â”œâ”€â”€ Data/                          # AppDbContext + Migrations + DbSeeder
-â”‚       â””â”€â”€ Middleware/                    # ExceptionHandling, Idempotency
-â”‚
-â””â”€â”€ tests/
-    â”œâ”€â”€ FacShopAPI.Tests/                 # 143 testes â€” CatÃ¡logo e Pedidos
-    â””â”€â”€ Pix.MockServer.Tests/              # 7 testes â€” integraÃ§Ã£o PIX
+├── src/
+│   ├── Auth/                               # Bounded Context — Emissor JWT
+│   │   ├── Auth.Endpoints/                 # Endpoint de login
+│   │   └── Auth.Host/                      # Entry point (porta 5020)
+│   │
+│   ├── Catalogo/                           # Bounded Context 1 — Clean Architecture híbrida
+│   │   ├── Catalogo.Domain/                # Entidades, value objects, interfaces de repositório
+│   │   │   ├── Produto.cs                  # Aggregate com Produto.Criar() → Result<Produto>
+│   │   │   ├── Categoria.cs               # Slug gerado, hierarquia pai/filho
+│   │   │   ├── Variante.cs                # SKU value object
+│   │   │   └── Atributo.cs / Midia.cs     # CRUD simples (anêmico)
+│   │   ├── Catalogo.Application/
+│   │   │   ├── Services/                  # Orquestração — ProdutoService, etc.
+│   │   │   ├── DTOs/                      # Produto/, Categoria/, Variante/, etc.
+│   │   │   ├── Validators/                # FluentValidation por recurso
+│   │   │   ├── Repositories/              # Interfaces Query/Command (CQRS leve)
+│   │   │   └── Mappings/                  # AutoMapper profiles
+│   │   ├── Catalogo.Infrastructure/       # Repositórios EF Core, DbContext, migrations, DbSeeder
+│   │   ├── Catalogo.API/
+│   │   │   ├── Endpoints/                 # Um arquivo por recurso
+│   │   │   │   ├── Produtos/ProdutoEndpoints.cs
+│   │   │   │   ├── Categorias/CategoriaEndpoints.cs
+│   │   │   │   ├── Variantes/VarianteEndpoints.cs
+│   │   │   │   ├── Atributos/AtributoEndpoints.cs
+│   │   │   │   └── Midias/MidiaEndpoints.cs
+│   │   │   └── Extensions/
+│   │   │       └── RateLimitingExtensions.cs  # 3 políticas
+│   │   └── Catalogo.Tests/
+│   │
+│   ├── Pedidos/                            # Bounded Context 2 — Vertical Slice + Domínio Rico
+│   │   ├── Pedidos.Domain/                 # Pedido aggregate, Result<T>
+│   │   ├── Pedidos.Infrastructure/         # Repositórios concretos, DbContext, migrations
+│   │   ├── Pedidos.API/                    # Entry point + slices por caso de uso
+│   │   │   ├── CreatePedido/
+│   │   │   ├── GetPedido/
+│   │   │   ├── ListPedidos/
+│   │   │   ├── AddItemPedido/
+│   │   │   └── CancelPedido/
+│   │   └── Pedidos.Tests/
+│   │
+│   └── Shared/
+│       ├── Kernel/                        # Result<T>, utilitários de domínio
+│       ├── Web/                           # IEndpoint, EndpointExtensions
+│       ├── Http/                          # IdempotencyMiddleware, handlers HTTP
+│       └── Data/                          # Extensões de migration
+│
+└── samples/
+    ├── Catalogo.HttpClientDemo/            # Console app — retry + circuit breaker
+    └── Pix/                               # Bounded Context 3 — Mock + Cliente HTTP
+        ├── Pix.MockServer/                # Simula BCB Pix (OAuth2 + mTLS)
+        ├── Pix.ClientDemo/                # HttpClient tipado com resiliência
+        └── Pix.MockServer.Tests/          # Testes de integração HTTP
 ```
 
 ---
@@ -481,7 +490,7 @@ public class Produto
 }
 ```
 
-**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L47-L60)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs](../src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs#L47-L60)
 
 #### âœ… SanitizaÃ§Ã£o
 
@@ -561,12 +570,12 @@ public class ErrorResponse
 }
 ```
 
-**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs#L35-L75)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs](../src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs#L35-L75)
 
 #### âœ… Middleware Global de Tratamento de Erros
 
 ```csharp
-// src/Shared/Middleware/ExceptionHandlingMiddleware.cs
+// src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs
 public class ExceptionHandlingMiddleware
 {
     public async Task InvokeAsync(HttpContext context)
@@ -587,7 +596,7 @@ public class ExceptionHandlingMiddleware
 app.UseExceptionHandling();
 ```
 
-**ImplementaÃ§Ã£o**: [src/Shared/Middleware/ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)
+**ImplementaÃ§Ã£o**: [src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs](../src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs)
 
 ---
 
@@ -921,11 +930,11 @@ src/Catalogo/
 | Versionamento                  | [SeÃ§Ã£o 6](MELHORES-PRATICAS-API.md)                              | `/api/v1/catalogo/` prefix em todos os endpoints                                                                                                                                            |
 | SeguranÃ§a JWT                 | [SeÃ§Ã£o 4](MELHORES-PRATICAS-API.md)                              | [AuthEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Auth/AuthEndpoints.cs)                                                                                                            |
 | ValidaÃ§Ã£o FluentValidation   | [SeÃ§Ã£o 7](MELHORES-PRATICAS-API.md)                              | [ProdutoValidator.cs](../src/Catalogo/Catalogo.Application/Validators/ProdutoValidator.cs)                                                                                                  |
-| Tratamento de Erros            | [SeÃ§Ã£o 5](MELHORES-PRATICAS-API.md)                              | [ExceptionHandlingMiddleware.cs](../src/Shared/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
-| IdempotÃªncia                  | [SeÃ§Ã£o 3](MELHORES-PRATICAS-API.md)                              | [IdempotencyMiddleware.cs](../src/Shared/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
+| Tratamento de Erros            | [SeÃ§Ã£o 5](MELHORES-PRATICAS-API.md)                              | [ExceptionHandlingMiddleware.cs](../src/Catalogo/Catalogo.API/Middleware/ExceptionHandlingMiddleware.cs)                                                                                                   |
+| IdempotÃªncia                  | [SeÃ§Ã£o 3](MELHORES-PRATICAS-API.md)                              | [IdempotencyMiddleware.cs](../src/Catalogo/Catalogo.API/Middleware/IdempotencyMiddleware.cs)                                                                                                               |
 | Logging                        | [SeÃ§Ã£o 9 â€” MELHORES-PRATICAS-API.md](MELHORES-PRATICAS-API.md) | [ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)                                                                                                        |
 | Rate Limiting                  | [SeÃ§Ã£o 8](MELHORES-PRATICAS-API.md)                              | [RateLimitingExtensions.cs](../src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs)                                                                                              |
-| DomÃ­nio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                        | [Pedidos/Domain/](../src/Pedidos/Domain/)                                                                                                                                                   |
+| DomÃ­nio Rico + Result Pattern | [docs/03-PEDIDOS.md](../docs/03-PEDIDOS.md)                        | [Pedidos/Domain/](../src/Pedidos/Pedidos.Domain/)                                                                                                                                                   |
 
 ---
 
@@ -1091,7 +1100,7 @@ builder.Services.AddEndpointsFromAssembly(typeof(Program).Assembly);
 
 ### DomÃ­nio Rico
 
-O agregado `Pedido` reside em `src/Pedidos/Domain/` e encapsula regras:
+O agregado `Pedido` reside em `src/Pedidos/Pedidos.Domain/` e encapsula regras:
 
 ```csharp
 public sealed class Pedido

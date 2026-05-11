@@ -32,20 +32,20 @@ Quando criar um novo servico, configure somente validacao JWT (`AddJwtBearer`) e
 Antes de criar um novo servico, escolha o estilo arquitetural:
 
 - Estilo Catalogo (Clean Architecture hibrida):
-    - Dominio, Application, Infrastructure, Endpoints, Host, Data separados
+    - 4 projetos: Domain, Application, Infrastructure, API
+    - Endpoints e extensoes dentro do projeto API
     - Endpoints mapeados por grupos no Program.cs
 - Estilo Pedidos (Vertical Slice):
-    - Endpoints e handlers por feature
+    - 3 projetos: Domain, Infrastructure, API
+    - Features (slices) como pastas dentro do projeto API
     - Descoberta automatica de endpoints via interface IEndpoint
 
 Para um iniciante, a opcao mais simples para comecar rapido e:
 
-- 1 Host
-- 1 projeto de Endpoints
-- 1 projeto de Data
-- 1 projeto de Infrastructure (repositorios/queries)
+- 1 projeto API (entrada + endpoints)
+- 1 projeto Infrastructure (DbContext + migrations + repositorios)
 
-Depois voce evolui para mais camadas.
+Depois voce adiciona Domain e Application quando o dominio crescer.
 
 ---
 
@@ -55,13 +55,11 @@ Exemplo para um novo contexto chamado Faturamento:
 
 ```text
 src/Faturamento/
-  Faturamento.Host/             # entrada da API (Program.cs)
-  Faturamento.Endpoints/        # rotas Minimal API
-  Faturamento.Data/             # DbContext + migrations
-  Faturamento.Infrastructure/   # repositorios e integracoes
+  Faturamento.API/              # entrada da API (Program.cs + endpoints)
+  Faturamento.Infrastructure/   # DbContext, migrations e repositorios
 ```
 
-Opcional (quando precisar separar regras):
+Opcional (quando precisar separar camadas de dominio):
 
 ```text
   Faturamento.Domain/
@@ -75,18 +73,14 @@ Opcional (quando precisar separar regras):
 A partir da raiz do repositorio:
 
 ```bash
-dotnet new web -n Faturamento.Host -o src/Faturamento/Faturamento.Host
-dotnet new classlib -n Faturamento.Endpoints -o src/Faturamento/Faturamento.Endpoints
-dotnet new classlib -n Faturamento.Data -o src/Faturamento/Faturamento.Data
+dotnet new web -n Faturamento.API -o src/Faturamento/Faturamento.API
 dotnet new classlib -n Faturamento.Infrastructure -o src/Faturamento/Faturamento.Infrastructure
 ```
 
 Adicionar os projetos na solucao:
 
 ```bash
-dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
-dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Endpoints/Faturamento.Endpoints.csproj
-dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Data/Faturamento.Data.csproj
+dotnet sln FacShop.slnx add src/Faturamento/Faturamento.API/Faturamento.API.csproj
 dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
 ```
 
@@ -94,55 +88,34 @@ dotnet sln FacShop.slnx add src/Faturamento/Faturamento.Infrastructure/Faturamen
 
 ## 4. Referencias entre projetos
 
-No projeto Host, adicione referencias para:
+No projeto API, adicione referencias para:
 
-- Faturamento.Endpoints
 - Faturamento.Infrastructure
-- Faturamento.Data
 - Shared.Data (para extensao de migration)
 - Shared.Web (se usar autodiscovery de endpoints com IEndpoint)
 
-No projeto Endpoints, adicione referencia para:
-
-- Faturamento.Application (se existir) ou Infrastructure
-- Shared.Web (se usar IEndpoint)
-
-No projeto Infrastructure, adicione referencia para:
-
-- Faturamento.Data
+No projeto Infrastructure, nao ha dependencias internas (apenas NuGet).
 
 ### Exemplos de como adicionar uma referência entre projetos
 
 No terminal, navegue até a raiz do repositório e use o comando:
 
 ```bash
-# Adicionar referência do Host para Endpoints
-dotnet add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj reference src/Faturamento/Faturamento.Endpoints/Faturamento.Endpoints.csproj
+# Adicionar referência do API para Infrastructure
+dotnet add src/Faturamento/Faturamento.API/Faturamento.API.csproj reference src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
 
-# Adicionar referência do Host para Infrastructure
-dotnet add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj reference src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
+# Adicionar referência do API para Shared.Data
+dotnet add src/Faturamento/Faturamento.API/Faturamento.API.csproj reference src/Shared/Data/Shared.Data.csproj
 
-# Adicionar referência do Host para Data
-dotnet add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj reference src/Faturamento/Faturamento.Data/Faturamento.Data.csproj
-
-# Adicionar referência do Host para Shared.Data
-dotnet add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj reference src/Shared/Data/Shared.Data.csproj
-
-# Adicionar referência do Host para Shared.Web
-dotnet add src/Faturamento/Faturamento.Host/Faturamento.Host.csproj reference src/Shared/Web/Shared.Web.csproj
-
-# Adicionar referência do Endpoints para Infrastructure
-dotnet add src/Faturamento/Faturamento.Endpoints/Faturamento.Endpoints.csproj reference src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj
-
-# Adicionar referência do Infrastructure para Data
-dotnet add src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj reference src/Faturamento/Faturamento.Data/Faturamento.Data.csproj
+# Adicionar referência do API para Shared.Web (opcional, para autodiscovery IEndpoint)
+dotnet add src/Faturamento/Faturamento.API/Faturamento.API.csproj reference src/Shared/Web/Shared.Web.csproj
 ```
 
 ---
 
 ## 5. Pacotes NuGet minimos
 
-No Host:
+No API:
 
 - Swashbuckle.AspNetCore
 - Microsoft.AspNetCore.Authentication.JwtBearer
@@ -150,22 +123,15 @@ No Host:
 - Serilog.AspNetCore
 - Serilog.Sinks.Console
 - Serilog.Sinks.File
-- Microsoft.EntityFrameworkCore.Sqlite
-
-No Data:
-
-- Microsoft.EntityFrameworkCore
-- Microsoft.EntityFrameworkCore.Sqlite
-- Microsoft.EntityFrameworkCore.Design
-
-No Endpoints:
-
 - FluentValidation
 - FluentValidation.DependencyInjectionExtensions
 
-No Infrastructure (opcional):
+No Infrastructure:
 
-- Dapper
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Sqlite
+- Microsoft.EntityFrameworkCore.Design (com PrivateAssets=all)
+- Dapper (opcional, para queries de leitura)
 
 ---
 
@@ -173,14 +139,14 @@ No Infrastructure (opcional):
 
 ### 6.1 Criar DbContext
 
-No projeto Faturamento.Data, crie um DbContext simples.
+No projeto Faturamento.Infrastructure, crie um DbContext simples.
 
 Exemplo minimo:
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
 
-namespace FacShopAPI.Faturamento.Data;
+namespace FacShopAPI.Faturamento.Infrastructure;
 
 public class FaturamentoDbContext(DbContextOptions<FaturamentoDbContext> options) : DbContext(options)
 {
@@ -225,7 +191,7 @@ else
 ### 6.3 Criar migration inicial
 
 ```bash
-dotnet ef migrations add InitialFaturamento --project src/Faturamento/Faturamento.Data/Faturamento.Data.csproj --startup-project src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
+dotnet ef migrations add InitialFaturamento --project src/Faturamento/Faturamento.Infrastructure/Faturamento.Infrastructure.csproj --startup-project src/Faturamento/Faturamento.API/Faturamento.API.csproj
 ```
 
 ### 6.4 Aplicar migration na subida do host
@@ -532,7 +498,7 @@ Exemplo:
 
 ```csharp
 using System.Text;
-using FacShopAPI.Faturamento.Data;
+using FacShopAPI.Faturamento.Infrastructure;
 using FacShopAPI.Shared.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -633,13 +599,13 @@ Antes de subir o servico, confirme:
 Executar build:
 
 ```bash
-dotnet build src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
+dotnet build src/Faturamento/Faturamento.API/Faturamento.API.csproj
 ```
 
 Executar host:
 
 ```bash
-dotnet run --project src/Faturamento/Faturamento.Host/Faturamento.Host.csproj
+dotnet run --project src/Faturamento/Faturamento.API/Faturamento.API.csproj
 ```
 
 Validacoes esperadas:
