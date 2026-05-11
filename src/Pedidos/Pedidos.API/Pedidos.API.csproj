@@ -7,14 +7,16 @@
     <AssemblyName>Pedidos.API</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Pedidos.Endpoints/Pedidos.Endpoints.csproj" />
     <ProjectReference Include="../Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
+    <ProjectReference Include="../Pedidos.Domain/Pedidos.Domain.csproj" />
     <ProjectReference Include="../../Shared/Web/Shared.Web.csproj" />
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
-    <ProjectReference Include="../Pedidos.Data/Pedidos.Data.csproj" />
     <ProjectReference Include="../../Shared/Http/Shared.Http.csproj" />
+    <ProjectReference Include="../../Shared/Kernel/Shared.Kernel.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />

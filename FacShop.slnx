@@ -14,12 +14,8 @@
   </Folder>
   <Folder Name="/Pedidos/">
     <Project Path="src/Pedidos/Pedidos.API/Pedidos.API.csproj" />
-    <Project Path="src/Pedidos/Pedidos.Common/Pedidos.Common.csproj" />
     <Project Path="src/Pedidos/Pedidos.Domain/Pedidos.Domain.csproj" />
-    <Project Path="src/Pedidos/Pedidos.Application/Pedidos.Application.csproj" />
     <Project Path="src/Pedidos/Pedidos.Infrastructure/Pedidos.Infrastructure.csproj" />
-    <Project Path="src/Pedidos/Pedidos.Endpoints/Pedidos.Endpoints.csproj" />
-    <Project Path="src/Pedidos/Pedidos.Data/Pedidos.Data.csproj" />
     <Project Path="src/Pedidos/Pedidos.Tests/Pedidos.Tests.csproj" />
   </Folder>
   <Folder Name="/Samples/">

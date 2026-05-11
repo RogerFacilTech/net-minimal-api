@@ -1,5 +1,5 @@
-using FacShopAPI.Pedidos.Common;
-using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Domain;
+
 using FacShopAPI.Shared.Kernel;
 using FacShopAPI.Shared.Web;
 

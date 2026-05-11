@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace FacShopAPI.Pedidos.Data
+namespace FacShopAPI.Pedidos.Infrastructure
 {
     public class PedidosDbContextFactory : IDesignTimeDbContextFactory<PedidosDbContext>
     {

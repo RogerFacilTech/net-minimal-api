@@ -1,7 +1,4 @@
-using FacShopAPI.Pedidos.Common;
-using FacShopAPI.Pedidos.Domain;
-
-namespace FacShopAPI.Pedidos.Repositories;
+namespace FacShopAPI.Pedidos.Domain;
 
 public interface IPedidoQueryRepository
 {

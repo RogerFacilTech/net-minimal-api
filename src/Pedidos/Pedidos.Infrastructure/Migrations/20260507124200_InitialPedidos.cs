@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace FacShopAPI.Pedidos.Data.Migrations
+namespace FacShopAPI.Pedidos.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPedidos : Migration

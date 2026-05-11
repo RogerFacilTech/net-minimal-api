@@ -1,10 +1,8 @@
 using System.Data;
 using System.Data.Common;
 using Dapper;
-using FacShopAPI.Pedidos.Common;
-using FacShopAPI.Pedidos.Data;
 using FacShopAPI.Pedidos.Domain;
-using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacShopAPI.Pedidos.Infrastructure;

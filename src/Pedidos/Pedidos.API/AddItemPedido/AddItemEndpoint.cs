@@ -1,20 +1,26 @@
-using FacShopAPI.Pedidos.Common;
+using FacShopAPI.Pedidos.Domain;
 using FacShopAPI.Shared.Kernel;
 using FacShopAPI.Shared.Web;
+using FluentValidation;
 
-namespace FacShopAPI.Pedidos.CancelPedido;
+namespace FacShopAPI.Pedidos.AddItemPedido;
 
-public class CancelPedidoEndpoint : IEndpoint
+public class AddItemEndpoint : IEndpoint
 {
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/v1/pedidos/{id:int}/cancelar", async (
+        app.MapPost("/api/v1/pedidos/{id:int}/itens", async (
             int id,
-            CancelPedidoRequest request,
-            CancelPedidoHandler handler,
+            AddItemRequest request,
+            AddItemHandler handler,
+            IValidator<AddItemRequest> validator,
             CancellationToken ct) =>
         {
-            var cmd = new CancelPedidoCommand(id, request.Motivo);
+            var validation = await validator.ValidateAsync(request, ct);
+            if (!validation.IsValid)
+                return Results.ValidationProblem(validation.ToDictionary());
+
+            var cmd = new AddItemCommand(id, request.ProdutoId, request.Quantidade);
             var result = await handler.HandleAsync(cmd, ct);
 
             if (!result.IsSuccess)
@@ -25,12 +31,13 @@ public class CancelPedidoEndpoint : IEndpoint
             }
             return Results.Ok(result.Value);
         })
-        .WithName("CancelarPedido")
+        .WithName("AdicionarItemPedido")
         .WithTags("Pedidos")
-        .WithSummary("Cancelar pedido")
+        .WithSummary("Adicionar item a pedido em rascunho")
         .Produces<PedidoResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status422UnprocessableEntity)
         .RequireAuthorization();
     }
 }

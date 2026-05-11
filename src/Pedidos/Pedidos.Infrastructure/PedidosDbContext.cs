@@ -1,7 +1,7 @@
 using FacShopAPI.Pedidos.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace FacShopAPI.Pedidos.Data;
+namespace FacShopAPI.Pedidos.Infrastructure;
 
 public class PedidosDbContext : DbContext
 {

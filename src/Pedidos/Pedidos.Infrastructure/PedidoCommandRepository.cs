@@ -1,6 +1,5 @@
-using FacShopAPI.Pedidos.Data;
 using FacShopAPI.Pedidos.Domain;
-using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacShopAPI.Pedidos.Infrastructure;

@@ -1,12 +1,11 @@
-﻿using System.Text;
+using System.Text;
 using FacShopAPI.Pedidos.AddItemPedido;
 using FacShopAPI.Pedidos.CancelPedido;
 using FacShopAPI.Pedidos.CreatePedido;
-using FacShopAPI.Pedidos.Data;
 using FacShopAPI.Pedidos.GetPedido;
 using FacShopAPI.Pedidos.Infrastructure;
 using FacShopAPI.Pedidos.ListPedidos;
-using FacShopAPI.Pedidos.Repositories;
+using FacShopAPI.Pedidos.Domain;
 using FacShopAPI.Shared.Data;
 using FacShopAPI.Shared.Http;
 using FacShopAPI.Shared.Web;
@@ -20,7 +19,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================
-// CONFIGURAÃ‡ÃƒO DE LOGGING
+// CONFIGURAÇÃO DE LOGGING
 // ==========================================
 
 Log.Logger = new LoggerConfiguration()
@@ -37,7 +36,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // ==========================================
-// CONFIGURAÃ‡ÃƒO DE BANCO DE DADOS
+// CONFIGURAÇÃO DE BANCO DE DADOS
 // ==========================================
 
 if (builder.Environment.IsEnvironment("Testing"))
@@ -58,7 +57,7 @@ else
 }
 
 // ==========================================
-// CONFIGURAÃ‡ÃƒO DE DEPENDENCY INJECTION
+// CONFIGURAÇÃO DE DEPENDENCY INJECTION
 // ==========================================
 
 var catalogoApiBaseUrl = builder.Configuration["CatalogoApi:BaseUrl"] ?? "https://localhost:5001";
@@ -92,7 +91,7 @@ builder.Services.AddScoped<CancelPedidoHandler>();
 builder.Services.AddValidatorsFromAssemblyContaining<AddItemValidator>();
 
 // ==========================================
-// CONFIGURAÃ‡ÃƒO DE SEGURANÃ‡A (JWT)
+// CONFIGURAÇÃO DE SEGURANÇA (JWT)
 // ==========================================
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "MinhaChaveSuperSecretaDePeloMenos32BytesAki123!";
