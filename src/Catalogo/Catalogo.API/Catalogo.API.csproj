@@ -9,6 +9,7 @@
     <Description>API REST de Produtos com Minimal API e .NET 10</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>Catalogo.API.xml</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Shared/Data/Shared.Data.csproj" />
