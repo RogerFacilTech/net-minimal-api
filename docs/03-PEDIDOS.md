@@ -11,7 +11,7 @@ O servico de `Pedidos` e um resource server.
 
 > Complemento didÃ¡tico: para integraÃ§Ã£o externa com APIs e JSON complexo, veja [04-PIX.md](04-PIX.md), que cobre `HttpClientFactory`, idempotÃªncia e servidor mock auto-contido.
 
-Para entender a arquitetura do Catálogo (CA híbrida em camadas), explore `src/Catalogo/Catalogo.Endpoints/Endpoints/`.
+Para entender a arquitetura do Catálogo (CA híbrida em camadas), explore `src/Catalogo/Catalogo.API/Endpoints/`.
 
 ---
 
@@ -40,7 +40,7 @@ Essa dispersÃ£o acontece porque o domÃ­nio Ã© **anÃªmico** â€” enti
 Uma **slice** (fatia) representa **um Ãºnico caso de uso** ou funcionalidade. Todas as peÃ§as necessÃ¡rias para executÃ¡-la residem em uma pasta isolada:
 
 ```
-src/Pedidos/Pedidos.Endpoints/CreatePedido/
+src/Pedidos/Pedidos.API/CreatePedido/
   ├─ CreatePedidoCommand.cs     # DTO de entrada + Handler (orquestração)
   ├─ CreatePedidoValidator.cs   # FluentValidation
   └─ CreatePedidoEndpoint.cs    # Rota HTTP, implementa IEndpoint
@@ -397,7 +397,7 @@ public void Pedido_AddItem_QuandoStatusNaoAberto_DeveRetornarFalha()
 
 Quando for adicionar um novo slice de Pedidos:
 
-- [ ] Criar pasta `src/Pedidos/Pedidos.Endpoints/NovoSlice/`
+- [ ] Criar pasta `src/Pedidos/Pedidos.API/NovoSlice/`
 - [ ] Criar `NovoSliceCommand.cs` (DTO + Handler)
 - [ ] Criar `NovoSliceValidator.cs` (FluentValidation)
 - [ ] Criar `NovoSliceEndpoint.cs` (implementa `IEndpoint`)
@@ -411,14 +411,14 @@ Quando for adicionar um novo slice de Pedidos:
 
 ### Catálogo (CA Híbrida)
 
-- Endpoints: [src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs)
+- Endpoints: [src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs](../src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs)
 - Service: [src/Catalogo/Catalogo.Application/Services/ProdutoService.cs](../src/Catalogo/Catalogo.Application/Services/ProdutoService.cs)
 - Testes: [src/Catalogo/Catalogo.Tests/](../src/Catalogo/Catalogo.Tests/)
 
 ### Vertical Slice (Pedidos)
 
 - Domain: [src/Pedidos/Pedidos.Domain/](../src/Pedidos/Pedidos.Domain/)
-- CreatePedido: [src/Pedidos/Pedidos.Endpoints/CreatePedido/](../src/Pedidos/Pedidos.Endpoints/CreatePedido/)
+- CreatePedido: [src/Pedidos/Pedidos.API/CreatePedido/](../src/Pedidos/Pedidos.API/CreatePedido/)
 - Result Pattern: [src/Shared/Kernel/Result.cs](../src/Shared/Kernel/Result.cs)
 - Testes: [src/Pedidos/Pedidos.Tests/](../src/Pedidos/Pedidos.Tests/)
 

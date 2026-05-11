@@ -63,28 +63,21 @@ net-minimal-api/
 │   │   └── Auth.Host/
 │   │
 │   ├── Catalogo/
-│   │   ├── Catalogo.Common/
-│   │   ├── Catalogo.Data/
 │   │   ├── Catalogo.Domain/
 │   │   ├── Catalogo.Application/
 │   │   ├── Catalogo.Infrastructure/
-│   │   ├── Catalogo.Endpoints/
 │   │   ├── Catalogo.API/
 │   │   └── Catalogo.Tests/
 │   │
 │   ├── Pedidos/
-│   │   ├── Pedidos.Common/
-│   │   ├── Pedidos.Data/
 │   │   ├── Pedidos.Domain/
-│   │   ├── Pedidos.Application/
 │   │   ├── Pedidos.Infrastructure/
-│   │   ├── Pedidos.Endpoints/
+│   │   ├── Pedidos.API/
 │   │   │   ├── CreatePedido/
 │   │   │   ├── GetPedido/
 │   │   │   ├── ListPedidos/
 │   │   │   ├── AddItemPedido/
 │   │   │   └── CancelPedido/
-│   │   ├── Pedidos.API/
 │   │   └── Pedidos.Tests/
 │   │
 │   └── Shared/

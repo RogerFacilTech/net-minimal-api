@@ -2,17 +2,14 @@
 
 ## 1. Estrutura de Projetos
 
-O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Architecture e Vertical Slice, organizada em 7 sub-projetos:
+O bounded context **Catálogo** adota uma arquitetura híbrida entre Clean Architecture e Vertical Slice, organizada em 4 sub-projetos:
 
-| Projeto                                 | Responsabilidade                                                 |
-| --------------------------------------- | ---------------------------------------------------------------- |
-| `src/Catalogo/Catalogo.Common/`         | Interfaces e tipos compartilhados entre camadas                  |
-| `src/Catalogo/Catalogo.Domain/`         | Entidades, value objects e regras de domínio                     |
-| `src/Catalogo/Catalogo.Application/`    | Serviços de aplicação, DTOs e validators (FluentValidation)      |
-| `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, migrations e DbSeeder                      |
-| `src/Catalogo/Catalogo.Data/`           | `CatalogoDbContext` e migrations                                 |
-| `src/Catalogo/Catalogo.Endpoints/`      | Endpoints Minimal API e extensões (ex: `RateLimitingExtensions`) |
-| `src/Catalogo/Catalogo.API/`            | Entry point da API, DI, middleware, Program.cs                   |
+| Projeto                                 | Responsabilidade                                            |
+| --------------------------------------- | ----------------------------------------------------------- |
+| `src/Catalogo/Catalogo.Domain/`         | Entidades, value objects e regras de domínio                |
+| `src/Catalogo/Catalogo.Application/`    | Serviços de aplicação, DTOs e validators (FluentValidation) |
+| `src/Catalogo/Catalogo.Infrastructure/` | Repositórios EF Core, DbContext, migrations e DbSeeder      |
+| `src/Catalogo/Catalogo.API/`            | Entry point da API, endpoints, DI, middleware, Program.cs   |
 
 ---
 
@@ -166,7 +163,7 @@ Testes que criam novos produtos começam a partir do ID 9.
 ### Registro de endpoint com rate limiting e auth
 
 ```csharp
-// src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs
+// src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
 var group = catalogoGroup.MapGroup("/produtos")
     .WithTags("Catálogo - Produtos");
 
@@ -256,7 +253,7 @@ public interface IProdutoCommandRepository
 ### Configuração das três políticas de rate limiting
 
 ```csharp
-// src/Catalogo/Catalogo.Endpoints/Extensions/RateLimitingExtensions.cs
+// src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs
 services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;

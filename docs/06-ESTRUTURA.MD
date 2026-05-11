@@ -30,22 +30,15 @@ src/
     Auth.Endpoints/              -> Endpoint de login (POST /api/v1/auth/login)
     Auth.Host/                   -> Entry point do microserviço Auth (porta 5020)
   Catalogo/
-    Catalogo.Application/        -> Casos de uso do Catálogo
-    Catalogo.Common/             -> Contratos e utilitários específicos do Catálogo
-    Catalogo.Data/               -> DbContext e migrations do Catálogo
     Catalogo.Domain/             -> Domínio do Catálogo
-    Catalogo.Endpoints/          -> Endpoints, DTOs, extensões HTTP
+    Catalogo.Application/        -> Casos de uso do Catálogo
+    Catalogo.Infrastructure/     -> Implementações de repositório, DbContext, migrations, DbSeeder
     Catalogo.API/                -> Entry point específico do Catálogo (porta 5000)
-    Catalogo.Infrastructure/     -> Implementações de repositório, queries, DbSeeder
     Catalogo.Tests/              -> Testes do Catálogo
   Pedidos/
-    Pedidos.Application/         -> Casos de uso de Pedidos
-    Pedidos.Common/              -> Contratos e utilitários específicos de Pedidos
-    Pedidos.Data/                -> DbContext e migrations de Pedidos
     Pedidos.Domain/              -> Domínio rico de Pedidos
-    Pedidos.Endpoints/           -> Endpoints, DTOs, validadores
+    Pedidos.Infrastructure/      -> Implementações de persistência, DbContext, migrations
     Pedidos.API/                 -> Entry point específico de Pedidos (porta 5001)
-    Pedidos.Infrastructure/      -> Implementações de persistência e integrações
     Pedidos.Tests/               -> Testes de Pedidos
   Shared/
     Data/                        -> Extensões de inicialização de banco compartilhadas
@@ -66,20 +59,13 @@ samples/
 | ----------------------- | --------------------------------------------------------------------------------------------- |
 | Auth.Endpoints          | Endpoint de login (`POST /api/v1/auth/login`), emissão de JWT assinado.                       |
 | Auth.Host               | Entry point do microserviço Auth. Demais serviços apenas validam o token emitido aqui.        |
-| Catalogo.Application    | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
-| Catalogo.Common         | Contratos e utilitários específicos do Catálogo.                                              |
-| Catalogo.Data           | DbContext e migrations do Catálogo.                                                           |
 | Catalogo.Domain         | Entidades, value objects e regras de negócio do Catálogo. Sem dependência de framework.       |
-| Catalogo.Endpoints      | Endpoints Minimal API, validadores, DTOs de request/response, extensões de rate limiting.     |
-| Catalogo.API            | Entry point específico do Catálogo.                                                           |
-| Catalogo.Infrastructure | Implementações de repositório (EF Core + Dapper), queries, DbSeeder, extensões de DI.         |
-| Pedidos.Application     | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
-| Pedidos.Common          | Contratos e utilitários específicos de Pedidos.                                               |
-| Pedidos.Data            | DbContext e migrations de Pedidos.                                                            |
+| Catalogo.Application    | Interfaces de repositório, serviços de aplicação, DTOs internos. Orquestra o domínio.         |
+| Catalogo.Infrastructure | Repositórios EF Core, DbContext, migrations, DbSeeder, extensões de DI.                       |
+| Catalogo.API            | Entry point do Catálogo. Endpoints, rate limiting, middleware, Program.cs.                    |
 | Pedidos.Domain          | Agregado rico Pedido + PedidoItem, StatusPedido e invariantes de negócio.                     |
-| Pedidos.Endpoints       | Endpoints Minimal API, validadores, DTOs de request/response.                                 |
-| Pedidos.API             | Entry point específico de Pedidos.                                                            |
-| Pedidos.Infrastructure  | Implementações de persistência e integrações.                                                 |
+| Pedidos.Infrastructure  | Repositórios concretos, DbContext, migrations.                                                |
+| Pedidos.API             | Entry point de Pedidos. Slices por caso de uso (CreatePedido, GetPedido, etc.).               |
 | Shared.Data             | Extensões de inicialização de banco e utilitários de persistência compartilhada.              |
 | Shared.Http             | Handlers HTTP, idempotência, correlation ID, logging de request.                              |
 | Shared.Kernel           | Result<T>, utilitários de domínio e contratos transversais.                                   |
@@ -97,13 +83,17 @@ Auth.Endpoints
   ^
 Auth.Host
 
-Catalogo.Domain   Pedidos.Domain
-  ^                   ^
-Catalogo.Application    Pedidos.Application
-  ^                   ^
-Catalogo.Infrastructure Pedidos.Infrastructure
-  ^                   ^
-Catalogo.Endpoints      Pedidos.Endpoints
-  ^                   ^
-Catalogo.API            Pedidos.API
+Catalogo.Domain
+  ^
+Catalogo.Application
+  ^
+Catalogo.Infrastructure
+  ^
+Catalogo.API
+
+Pedidos.Domain
+  ^
+Pedidos.Infrastructure
+  ^
+Pedidos.API
 ```

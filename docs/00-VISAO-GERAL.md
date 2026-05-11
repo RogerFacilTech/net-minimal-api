@@ -40,8 +40,8 @@ Caminhos relevantes:
 
 - `src/Catalogo/Catalogo.Domain/` — entidades e value objects
 - `src/Catalogo/Catalogo.Application/` — serviços, DTOs e validadores
-- `src/Catalogo/Catalogo.Infrastructure/` — repositórios EF Core e DbSeeder
-- `src/Catalogo/Catalogo.Endpoints/Endpoints/` — um arquivo por grupo de recursos
+- `src/Catalogo/Catalogo.Infrastructure/` — repositórios EF Core, DbContext e DbSeeder
+- `src/Catalogo/Catalogo.API/Endpoints/` — um arquivo por grupo de recursos
 
 ---
 
@@ -57,8 +57,9 @@ Demonstra organização por caso de uso (cada operação é uma pasta isolada), 
 
 Caminhos relevantes:
 
-- `src/Pedidos/Pedidos.Endpoints/` — pastas por caso de uso (CreatePedido, GetPedido, etc.)
+- `src/Pedidos/Pedidos.API/` — pastas por caso de uso (CreatePedido, GetPedido, etc.)
 - `src/Pedidos/Pedidos.Domain/` — aggregate Pedido
+- `src/Pedidos/Pedidos.Infrastructure/` — repositórios e DbContext
 - `src/Shared/Web/IEndpoint.cs` — contrato de auto-registro
 
 ---
@@ -172,7 +173,7 @@ Foco: entender a estrutura básica, testar a API e ver as boas práticas.
 
 4. Explorar a Clean Architecture do Catálogo
    docs/02-CATALOGO.md
-   → src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs
+   → src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
    → src/Catalogo/Catalogo.Application/Services/ProdutoService.cs
    → src/Catalogo/Catalogo.Domain/Produto.cs
 
@@ -193,7 +194,7 @@ Foco: padrões arquiteturais, domínio rico e Vertical Slice.
 2. Estudar Vertical Slice com Pedidos
    docs/03-PEDIDOS.md (completo — tem snippets de código)
    → src/Pedidos/Pedidos.Domain/           (aggregate rico)
-   → src/Pedidos/Pedidos.Endpoints/CreatePedido/    (slice completa)
+   → src/Pedidos/Pedidos.API/CreatePedido/  (slice completa)
    → src/Shared/Kernel/Result.cs           (Result pattern)
    → src/Shared/Web/IEndpoint.cs           (auto-discovery)
 
@@ -233,7 +234,7 @@ Foco: decisões arquiteturais registradas, integração externa, resiliência e 
 4. Estudar rate limiting avançado
    docs/02-CATALOGO.md → seção "Rate Limiting" e "Exemplos de Código"
    docs/05-TESTES.md → seção "Teste de rate limiting"
-   → src/Catalogo/Catalogo.Endpoints/Extensions/RateLimitingExtensions.cs
+   → src/Catalogo/Catalogo.API/Extensions/RateLimitingExtensions.cs
 
 5. Explorar o ClientDemo de resiliência
    → samples/Catalogo.HttpClientDemo/      (retry + circuit breaker)

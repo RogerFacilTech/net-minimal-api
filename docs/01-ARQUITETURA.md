@@ -14,15 +14,12 @@ O Catálogo usa Clean Architecture nas camadas internas e Vertical Slice na cama
 
 ### Sub-projetos
 
-| Sub-projeto               | Responsabilidade                                            |
-| ------------------------- | ----------------------------------------------------------- |
-| `Catalogo.Common`         | Interfaces e tipos compartilhados entre camadas             |
-| `Catalogo.Domain`         | Entidades, value objects, interfaces de repositório         |
-| `Catalogo.Application`    | Serviços, DTOs, validadores FluentValidation                |
-| `Catalogo.Infrastructure` | Repositórios EF Core, DbSeeder, configurações de mapeamento |
-| `Catalogo.Data`           | `CatalogoDbContext`, migrations                             |
-| `Catalogo.Endpoints`      | Endpoints Minimal API, extensões, rate limiting             |
-| `Catalogo.API`            | Entry point da API, DI, middleware, Program.cs              |
+| Sub-projeto               | Responsabilidade                                          |
+| ------------------------- | --------------------------------------------------------- |
+| `Catalogo.Domain`         | Entidades, value objects, interfaces de repositório       |
+| `Catalogo.Application`    | Serviços, DTOs, validadores FluentValidation              |
+| `Catalogo.Infrastructure` | Repositórios EF Core, DbContext, DbSeeder, migrations     |
+| `Catalogo.API`            | Entry point da API, endpoints, DI, middleware, Program.cs |
 
 ### Domain
 
@@ -41,12 +38,12 @@ Repositórios concretos implementam as interfaces definidas no Domain. O `DbSeed
 
 ### Endpoints
 
-Cada grupo de recursos tem seu próprio arquivo de endpoints (`ProdutoEndpoints.cs`, `CategoriaEndpoints.cs`, etc.) em `Catalogo.Endpoints`. Rate limiting é aplicado por política de rota — três políticas registradas: `leitura`, `escrita` e `criacao-produto`.
+Cada grupo de recursos tem seu próprio arquivo de endpoints (`ProdutoEndpoints.cs`, `CategoriaEndpoints.cs`, etc.) em `Catalogo.API/Endpoints/`. Rate limiting é aplicado por política de rota — três políticas registradas: `leitura`, `escrita` e `criacao-produto`.
 
 ### Fluxo de dados
 
 ```
-HTTP → Catalogo.Endpoints/Endpoints → Catalogo.Application/Services → Catalogo.Infrastructure/Repositories → CatalogoDbContext
+HTTP → Catalogo.API/Endpoints → Catalogo.Application/Services → Catalogo.Infrastructure/Repositories → CatalogoDbContext
                                     ↓
                            Catalogo.Domain (entities, value objects)
 ```
@@ -55,12 +52,12 @@ HTTP → Catalogo.Endpoints/Endpoints → Catalogo.Application/Services → Cata
 
 ## Pedidos — Vertical Slice + Domínio Rico
 
-O bounded context de Pedidos organiza o código por caso de uso, não por camada técnica. Cada operação é uma pasta autocontida dentro de `src/Pedidos/Pedidos.Endpoints/`.
+O bounded context de Pedidos organiza o código por caso de uso, não por camada técnica. Cada operação é uma pasta autocontida dentro de `src/Pedidos/Pedidos.API/`.
 
 ### Estrutura de uma feature
 
 ```
-Pedidos.Endpoints/
+Pedidos.API/
   CreatePedido/
     CreatePedidoCommand.cs     ← DTO de entrada + Handler (orquestração)
     CreatePedidoValidator.cs   ← FluentValidation
@@ -145,28 +142,21 @@ net-minimal-api/
 │   │   └── Auth.Host/                      # Entry point (porta 5020)
 │   │
 │   ├── Catalogo/                           # Bounded Context — Clean Architecture híbrida
-│   │   ├── Catalogo.Common/                # Interfaces e tipos compartilhados
 │   │   ├── Catalogo.Domain/                # Entidades, value objects, interfaces de repositório
 │   │   ├── Catalogo.Application/           # Serviços, DTOs, validators
-│   │   ├── Catalogo.Infrastructure/        # Repositórios EF Core, DbSeeder
-│   │   ├── Catalogo.Data/                  # CatalogoDbContext, migrations
-│   │   ├── Catalogo.Endpoints/             # Endpoints Minimal API, extensões, rate limiting
+│   │   ├── Catalogo.Infrastructure/        # Repositórios EF Core, DbContext, DbSeeder, migrations
 │   │   ├── Catalogo.API/                   # Entry point (porta 5000)
 │   │   └── Catalogo.Tests/                 # Testes do Catálogo
 │   │
 │   ├── Pedidos/                            # Bounded Context — Vertical Slice + Domínio Rico
-│   │   ├── Pedidos.Common/                 # DTOs e tipos compartilhados entre slices
 │   │   ├── Pedidos.Domain/                 # Aggregate Pedido, PedidoItem, StatusPedido
-│   │   ├── Pedidos.Application/            # Interfaces de repositório
-│   │   ├── Pedidos.Infrastructure/         # Repositórios concretos
-│   │   ├── Pedidos.Data/                   # PedidosDbContext, migrations
-│   │   ├── Pedidos.Endpoints/              # Slices por caso de uso
+│   │   ├── Pedidos.Infrastructure/         # Repositórios concretos, DbContext, migrations
+│   │   ├── Pedidos.API/                    # Entry point (porta 5001)
 │   │   │   ├── CreatePedido/               # Command + Handler, Validator, Endpoint
 │   │   │   ├── GetPedido/
 │   │   │   ├── ListPedidos/
 │   │   │   ├── AddItemPedido/
 │   │   │   └── CancelPedido/
-│   │   ├── Pedidos.API/                    # Entry point (porta 5001)
 │   │   └── Pedidos.Tests/                  # Testes de Pedidos
 │   │
 │   └── Shared/                             # Utilitários compartilhados

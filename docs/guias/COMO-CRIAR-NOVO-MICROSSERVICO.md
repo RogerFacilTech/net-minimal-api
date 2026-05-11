@@ -658,7 +658,7 @@ Validacoes esperadas:
 - Registro automatico de endpoints: src/Shared/Web/EndpointExtensions.cs
 - Contrato de endpoint em Vertical Slice: src/Shared/Web/IEndpoint.cs
 - Extensao para migrations na startup: src/Shared/Data/DbInitializationExtensions.cs
-- Exemplo de endpoint com auth e rate limit: src/Catalogo/Catalogo.Endpoints/Endpoints/Produtos/ProdutoEndpoints.cs
-- Exemplo de endpoint Vertical Slice: src/Pedidos/Pedidos.Endpoints/CreatePedido/CreatePedidoEndpoint.cs
+- Exemplo de endpoint com auth e rate limit: src/Catalogo/Catalogo.API/Endpoints/Produtos/ProdutoEndpoints.cs
+- Exemplo de endpoint Vertical Slice: src/Pedidos/Pedidos.API/CreatePedido/CreatePedidoEndpoint.cs
 
 Com esse roteiro, um desenvolvedor novo no projeto consegue criar um microservico do zero e chegar ate um Host funcional com boas praticas minimas de API.
