@@ -1,6 +1,7 @@
 using FacShopAPI.Catalogo.Application.DTOs.Midia;
 using FacShopAPI.Catalogo.Application.Services;
 using FacShopAPI.Catalogo.Endpoints.DTOs;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
@@ -41,8 +42,18 @@ public static class MidiaEndpoints
     private static async Task<IResult> Listar(IMidiaService service, int produtoId) =>
         Results.Ok(await service.ListarPorProdutoAsync(produtoId));
 
-    private static async Task<IResult> Criar(CriarMidiaRequest request, IMidiaService service)
+    private static async Task<IResult> Criar(CriarMidiaRequest request, IMidiaService service,
+        IValidator<CriarMidiaRequest> validator)
     {
+        var validation = await validator.ValidateAsync(request);
+        if (!validation.IsValid)
+            return Results.UnprocessableEntity(new ErrorResponse
+            {
+                Status = 422,
+                Title = "Validação falhou",
+                Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
+                Type = "https://api.example.com/errors/validation"
+            });
         var result = await service.CriarAsync(request);
         if (!result.IsSuccess)
             return Results.UnprocessableEntity(new ErrorResponse { Status = 422, Title = "Erro", Detail = result.Error! });

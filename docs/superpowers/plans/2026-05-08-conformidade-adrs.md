@@ -2,7 +2,7 @@
 
 Data levantamento: 2026-05-08
 Última atualização: 2026-05-11
-Status: Em andamento (3/5 concluídas)
+Status: Em andamento (4/5 concluídas)
 
 ---
 
@@ -60,27 +60,76 @@ Path real: `src/Shared/Web/IEndpoint.cs`.
 
 ---
 
-### 🟡 MODERADO — 3. FluentValidation em AtributoEndpoints e MidiaEndpoints (ADR-0010)
+### ✅ CONCLUÍDO — 3. FluentValidation em AtributoEndpoints e MidiaEndpoints (ADR-0010)
+
+**Decisão:** Opção A — adicionar validators (consistente com os demais recursos).
 
 **Problema:** Endpoints de Atributo e Mídia não chamam `IValidator<T>.ValidateAsync()`,
 violando o padrão definido no ADR-0010 e aplicado em Produto, Categoria, Variante.
 
-**Decisão a tomar antes de implementar:**
+---
 
-- **Opção A:** Adicionar validators `CriarAtributoValidator` e `CriarMidiaValidator` com FluentValidation
-  (consistente com ADR-0010 e os demais recursos)
-- **Opção B:** Documentar explicitamente no ADR-0010 que Atributo e Mídia (recursos CRUD simples
-  per ADR-0015) são exceção intencional ao padrão
+#### Plano de execução (Opção A)
 
-**Arquivos a modificar (se Opção A):**
+**Passo 1 — Criar `CriarAtributoValidator`**
 
-- `src/Catalogo/Catalogo.Endpoints/Validators/` — criar `CriarAtributoValidator.cs` e `CriarMidiaValidator.cs`
-- `src/Catalogo/Catalogo.Endpoints/Endpoints/Atributos/AtributoEndpoints.cs` — injetar IValidator e chamar ValidateAsync
-- `src/Catalogo/Catalogo.Endpoints/Endpoints/Midias/MidiaEndpoints.cs` — idem
+Arquivo novo: `src/Catalogo/Catalogo.Application/Validators/AtributoValidator.cs`
 
-**Arquivos a modificar (se Opção B):**
+Regras para `CriarAtributoRequest`:
 
-- `docs/ADRs/ADR-0010-fluentvalidation-validacao-entrada.md` — adicionar nota de exceção
+- `ProdutoId` — `GreaterThan(0)`, mensagem "ProdutoId inválido."
+- `Chave` — `NotEmpty`, `MaximumLength(100)`, mensagens padronizadas
+- `Valor` — `NotEmpty`, `MaximumLength(500)`, mensagens padronizadas
+
+Namespace: `FacShopAPI.Catalogo.Application.Validators`  
+Padrão: idêntico a `VarianteValidator.cs` (mesmo namespace, mesmo estilo de regras)
+
+---
+
+**Passo 2 — Criar `CriarMidiaValidator`**
+
+Arquivo novo: `src/Catalogo/Catalogo.Application/Validators/MidiaValidator.cs`
+
+Regras para `CriarMidiaRequest`:
+
+- `ProdutoId` — `GreaterThan(0)`, mensagem "ProdutoId inválido."
+- `Url` — `NotEmpty`, `MaximumLength(2048)`, mensagem "URL é obrigatória." / "URL não pode exceder 2048 caracteres."
+- `Ordem` — `GreaterThanOrEqualTo(0)`, mensagem "Ordem não pode ser negativa."
+
+Namespace: `FacShopAPI.Catalogo.Application.Validators`
+
+---
+
+**Passo 3 — Atualizar `AtributoEndpoints.cs`**
+
+Arquivo: `src/Catalogo/Catalogo.Endpoints/Endpoints/Atributos/AtributoEndpoints.cs`
+
+No handler `Criar`:
+
+- Adicionar parâmetro `IValidator<CriarAtributoRequest> validator`
+- Chamar `await validator.ValidateAsync(request)` antes do service
+- Retornar `Results.UnprocessableEntity(new ErrorResponse { ... })` com os erros concatenados se `!validation.IsValid`
+
+Padrão de resposta 422 idêntico ao de `ProdutoEndpoints.cs`:
+
+```csharp
+Status = 422, Title = "Validação falhou",
+Detail = string.Join("; ", validation.Errors.Select(e => e.ErrorMessage)),
+Type = "https://api.example.com/errors/validation"
+```
+
+---
+
+**Passo 4 — Atualizar `MidiaEndpoints.cs`**
+
+Arquivo: `src/Catalogo/Catalogo.Endpoints/Endpoints/Midias/MidiaEndpoints.cs`
+
+Mesma alteração no handler `Criar` com `IValidator<CriarMidiaRequest> validator`.
+
+---
+
+**Observação:** Os validators são registrados automaticamente pelo assembly scanning
+(`AddValidatorsFromAssemblyContaining<Program>()`) — não requer alteração no DI.
 
 ---
 
